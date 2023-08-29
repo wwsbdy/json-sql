@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.6.3'
+}
+
+group 'com.zj'
+version '0.1'
+
+repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+    maven { url'https://maven.aliyun.com/repository/public/' }
+    maven { url'https://maven.aliyun.com/repository/google/' }
+    maven { url'https://maven.aliyun.com/repository/jcenter/' }
+    maven { url'https://maven.aliyun.com/repository/central/' }
+    google()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version '2020.1.2'
+}
+patchPluginXml {
+    changeNotes """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+    // 这个意思是说当前定义的这个插件最早支持到什么版本的IDEA
+    // 这里配置sinceBuild=191，表示插件只能被版本号大于等于2019.1版本的IDEA安装，低于这个版本的将抛无法兼容的错误
+    sinceBuild "201"
+}
+
+
