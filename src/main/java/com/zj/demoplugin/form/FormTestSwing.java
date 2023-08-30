@@ -1,4 +1,4 @@
-package com.zj.demoplugin;
+package com.zj.demoplugin.form;
 
 
 import javax.swing.*;

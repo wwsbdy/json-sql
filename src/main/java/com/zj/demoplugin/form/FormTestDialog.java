@@ -1,4 +1,4 @@
-package com.zj.demoplugin;
+package com.zj.demoplugin.form;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;

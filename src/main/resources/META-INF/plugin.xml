@@ -17,6 +17,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <!-- 自定义 底部view -->
+        <executor id="TableExecutor" order="last"
+                  implementation="com.zj.demoplugin.table.TableExecutor"/>
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
@@ -30,8 +33,12 @@
             <add-to-group group-id="MainMenu" anchor="last"/>
             <!--这个用来指定一个分组下的触发动作，同样的需要一个id，自定义；class就是用来处理这个动作的逻辑类，具体的插件逻辑都会写到对应的action类里，text用来控制文案，description为描述-->
             <action id="Plugin.Test.Action"
-                    class="com.zj.demoplugin.FromAction"
+                    class="com.zj.demoplugin.form.FromAction"
                     text="表单测试" description="表单测试描述"/>
+            <action id="zhang.bottom_tool.id3"
+                    class="com.zj.demoplugin.table.TableAction"
+                    text="底部-ToolWindow-表格" description="Description">
+            </action>
         </group>
     </actions>
 </idea-plugin>

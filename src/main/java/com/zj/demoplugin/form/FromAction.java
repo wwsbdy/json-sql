@@ -1,4 +1,4 @@
-package com.zj.demoplugin;
+package com.zj.demoplugin.form;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

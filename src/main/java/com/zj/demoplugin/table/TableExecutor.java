@@ -1,4 +1,4 @@
-package com.zj.demoplugin;
+package com.zj.demoplugin.table;
 
 import com.intellij.execution.Executor;
 import com.intellij.icons.AllIcons;
@@ -6,10 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
 
-/**
- * url: https://blog.csdn.net/q258523454/article/details/123097368
- * @author arthur_zhou
- */
 public class TableExecutor extends Executor {
 
 
