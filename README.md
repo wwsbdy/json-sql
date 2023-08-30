@@ -43,3 +43,22 @@ plugins {
 
 IdeaIc-2020.1....zip下载慢问题，这个zip有500mb，需要等待较久时间
 
+### 5.lombok不识别
+
+修改前：
+
+```
+dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+}
+```
+
+修改后：
+
+```
+dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+}
+```
+

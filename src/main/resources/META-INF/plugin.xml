@@ -35,10 +35,9 @@
             <action id="Plugin.Test.Action"
                     class="com.zj.demoplugin.form.FromAction"
                     text="表单测试" description="表单测试描述"/>
-            <action id="zhang.bottom_tool.id3"
-                    class="com.zj.demoplugin.table.TableAction"
-                    text="底部-ToolWindow-表格" description="Description">
-            </action>
+            <action id="write"
+                    class="com.zj.demoplugin.form.write.FromAction"
+                    text="填入json" description="填入json"/>
         </group>
     </actions>
 </idea-plugin>

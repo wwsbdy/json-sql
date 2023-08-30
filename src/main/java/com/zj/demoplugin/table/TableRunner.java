@@ -1,5 +1,6 @@
 package com.zj.demoplugin.table;
 
+import com.alibaba.fastjson.JSONObject;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
@@ -12,12 +13,14 @@ import com.intellij.execution.ui.RunnerLayoutUi;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
-import com.zj.demoplugin.entity.table.MyTable;
+import com.zj.demoplugin.entity.json.JsonTable;
 import com.zj.demoplugin.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author arthur_zhou
@@ -35,7 +38,7 @@ public class TableRunner {
     }
 
 
-    public void run() {
+    public void run(Set<String> columns, List<JSONObject> objects) {
 
         // 返回定义的 Executor
         Executor executor = MyExecutorUtil.getRunExecutorInstance(TableExecutor.PLUGIN_ID);
@@ -69,11 +72,10 @@ public class TableRunner {
         }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
 
-        MyTable myTable = new MyTable();
-
+        JsonTable myTable = new JsonTable(columns, objects);
 
         final Content content = layoutUi.createContent("contentId", myTable.getBrowsersTable(), "displayName2", AllIcons.Debugger.Console, myTable.getBrowsersTable());
-        content.setCloseable(true);
+        content.setCloseable(false);
         layoutUi.addContent(content);
 
         RunContentManager.getInstance(project).showRunContent(executor, descriptor);

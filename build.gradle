@@ -18,6 +18,9 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
