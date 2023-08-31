@@ -62,3 +62,19 @@ dependencies {
 }
 ```
 
+### 6.项目启动，gbk乱码报错
+
+setting->build->gradle->build and run using和run tests using修改为idea?  
+在help->edit custom vm options 添加 -Dfile.encoding=UTF-8
+
+
+### 7.ui界面乱码
+
+build.gradle里配置
+
+```
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+```
+

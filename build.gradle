@@ -35,5 +35,8 @@ patchPluginXml {
     // 这里配置sinceBuild=191，表示插件只能被版本号大于等于2019.1版本的IDEA安装，低于这个版本的将抛无法兼容的错误
     sinceBuild "201"
 }
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 
 
