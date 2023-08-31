@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
 
+/**
+ * @author arthur_zhou
+ */
 public class TableExecutor extends Executor {
 
 

@@ -1,4 +1,4 @@
-package com.zj.demoplugin.entity.json;
+package com.zj.demoplugin.entity;
 
 import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.Function;

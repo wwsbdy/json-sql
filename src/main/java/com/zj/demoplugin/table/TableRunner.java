@@ -11,26 +11,24 @@ import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.RunContentManager;
 import com.intellij.execution.ui.RunnerLayoutUi;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.components.JBList;
-import com.intellij.ui.components.JBPanel;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.table.JBTable;
-import com.intellij.util.ui.EditableModel;
-import com.zj.demoplugin.entity.json.JsonTable;
+import com.intellij.ui.table.TableView;
+import com.intellij.util.ui.ColumnInfo;
+import com.intellij.util.ui.ListTableModel;
+import com.zj.demoplugin.entity.StrColumnInfo;
+import com.zj.demoplugin.form.sql.SqlDialog;
 import com.zj.demoplugin.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * @author arthur_zhou
@@ -82,8 +80,7 @@ public class TableRunner {
         }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
 
-        JsonTable myTable = new JsonTable(columns, objects);
-        JComponent jComponent = ets();
+        JComponent jComponent = getTablePanel(columns, objects);
         final Content content = layoutUi.createContent("contentId", jComponent, "displayName2", AllIcons.Debugger.Console, jComponent);
         content.setCloseable(false);
         layoutUi.addContent(content);
@@ -91,52 +88,38 @@ public class TableRunner {
         RunContentManager.getInstance(project).showRunContent(executor, descriptor);
     }
 
-    private JBPanel ets() {
-        // 数据面板（中间面板）
-        JBPanel tableBoxPanel = new JBPanel();
-        tableBoxPanel.setLayout(new BorderLayout(0, 0));
-
-        // 表头（列名）
-        Vector<String> columnNames = new Vector<String>();
-        columnNames.add("编号");
-        columnNames.add("姓名");
-        columnNames.add("性别");
-        columnNames.add("创建时间");
+    private JPanel getTablePanel(Set<String> columns, List<JSONObject> objects) {
+        ColumnInfo[] columnInfos = new ColumnInfo[columns.size()];
+        Object[] array = columns.toArray();
+        for (int i = 0; i < array.length; i++) {
+            columnInfos[i] = new StrColumnInfo(String.valueOf(array[i]));
+        }
         // 创建表格模型
-        DefaultTableModel dataModel = new DefaultTableModel(columnNames, 0);
+        ListTableModel<JSONObject> dataModel = new ListTableModel<>(columnInfos);
         // 创建JTable表格组件
-        JBTable table = new JBTable(dataModel);
+        TableView<JSONObject> table = new TableView<>(dataModel);
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
-        // 创建带滚动条的面板，并将表格添加到带滚动条的面板中
-        JBScrollPane scorllPane = new JBScrollPane(table);
-        // 将表头添加到面板中（布局的上方）
-        tableBoxPanel.add(table.getTableHeader(), BorderLayout.NORTH);
-        // 将带滚动条的面板添加到布局中（布局的中间）
-        tableBoxPanel.add(scorllPane, BorderLayout.CENTER);
-        // 数据列表
-        Vector<Vector<Object>> rowData = new Vector<>();
-        for (int i = 1; i <= 20; i++) {
-            Vector<Object> rowItem = new Vector<>();
-            rowItem.add(i);
-            rowItem.add("用户" + i);
-            rowItem.add(i % 2 == 1 ? "男" : "女");
-            rowItem.add(new Date());
-            rowData.add(rowItem);
-        }
         // 绑定结果
-        dataModel.setDataVector(rowData, columnNames);
+        dataModel.setItems(objects);
+        // 创建装饰器实例
+        ToolbarDecorator decorator = ToolbarDecorator.createDecorator(table, null);
+        // 禁用新增删除移动按钮
+        decorator.disableAddAction();
+        decorator.disableDownAction();
+        decorator.disableRemoveAction();
+        decorator.disableUpAction();
+        decorator.disableUpDownActions();
 
-        JBPanel buttonPanel = new JBPanel();
-        JButton button = new JButton("s");
-        button.addActionListener(e -> {
-            System.out.println(111);
-        });
-        button.setPreferredSize(new Dimension(25, 25));
-        buttonPanel.add(button);
-        buttonPanel.setPreferredSize(new Dimension(30, 300));
-
-        return tableBoxPanel;
+        AnActionButton edit = new AnActionButton("1233ewqd", AllIcons.Actions.Find) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                SqlDialog formTestDialog = new SqlDialog(Objects.requireNonNull(project));
+                formTestDialog.show();
+            }
+        };
+        decorator.addExtraAction(edit);
+        return decorator.createPanel();
     }
 
 
