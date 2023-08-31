@@ -1,7 +1,6 @@
 package com.zj.demoplugin.form.write;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.components.JBTextField;
@@ -10,10 +9,6 @@ import com.zj.demoplugin.table.TableRunner;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author arthur_zhou
@@ -105,15 +100,8 @@ public class FormDialog extends DialogWrapper {
                 //获取到name和age
                 String jsonStr = jsonContent.getText();
                 JSONArray jsonArray = JSONArray.parseArray(jsonStr);
-                List<JSONObject> objects = new ArrayList<>();
-                Set<String> columns = new LinkedHashSet<>();
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject object = jsonArray.getJSONObject(i);
-                    columns.addAll(object.keySet());
-                    objects.add(object);
-                }
                 // 打开表格
-                new TableRunner(project).run(columns, objects);
+                new TableRunner(project).run(jsonArray);
                 // 关闭窗口
                 doCancelAction();
             }

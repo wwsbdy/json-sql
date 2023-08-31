@@ -1,5 +1,6 @@
 package com.zj.demoplugin.table;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
@@ -19,16 +20,16 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
+import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.StrColumnInfo;
+import com.zj.demoplugin.entity.sql.Sql;
 import com.zj.demoplugin.form.sql.SqlDialog;
 import com.zj.demoplugin.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author arthur_zhou
@@ -46,14 +47,25 @@ public class TableRunner {
     }
 
 
-    public void run(Set<String> columns, List<JSONObject> objects) {
+    public void run(JSONArray jsonArray) {
 
+        List<JSONObject> objects = new ArrayList<>();
+        Set<String> columns = new LinkedHashSet<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject object = jsonArray.getJSONObject(i);
+            columns.addAll(object.keySet());
+            objects.add(object);
+        }
+        JsonInfo jsonInfo = new JsonInfo(new ArrayList<>(columns), objects);
+        run(jsonInfo);
+    }
+
+    public void run(JsonInfo jsonInfo) {
         // 返回定义的 Executor
         Executor executor = MyExecutorUtil.getRunExecutorInstance(TableExecutor.PLUGIN_ID);
         if (executor == null) {
             return;
         }
-
         // 创建 RunnerLayoutUi
         final RunnerLayoutUi.Factory factory = RunnerLayoutUi.Factory.getInstance(project);
         RunnerLayoutUi layoutUi = factory.create("id2", "title2", "session name2", project);
@@ -80,7 +92,7 @@ public class TableRunner {
         }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
 
-        JComponent jComponent = getTablePanel(columns, objects);
+        JComponent jComponent = getTablePanel(jsonInfo);
         final Content content = layoutUi.createContent("contentId", jComponent, "displayName2", AllIcons.Debugger.Console, jComponent);
         content.setCloseable(false);
         layoutUi.addContent(content);
@@ -88,11 +100,10 @@ public class TableRunner {
         RunContentManager.getInstance(project).showRunContent(executor, descriptor);
     }
 
-    private JPanel getTablePanel(Set<String> columns, List<JSONObject> objects) {
-        ColumnInfo[] columnInfos = new ColumnInfo[columns.size()];
-        Object[] array = columns.toArray();
-        for (int i = 0; i < array.length; i++) {
-            columnInfos[i] = new StrColumnInfo(String.valueOf(array[i]));
+    private JPanel getTablePanel(JsonInfo jsonInfo) {
+        ColumnInfo[] columnInfos = new ColumnInfo[jsonInfo.getColumns().size()];
+        for (int i = 0; i < jsonInfo.getColumns().size(); i++) {
+            columnInfos[i] = new StrColumnInfo(jsonInfo.getColumns().get(i));
         }
         // 创建表格模型
         ListTableModel<JSONObject> dataModel = new ListTableModel<>(columnInfos);
@@ -101,7 +112,11 @@ public class TableRunner {
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
         // 绑定结果
-        dataModel.setItems(objects);
+        dataModel.addRows(jsonInfo.getList());
+        // todo 编辑sql按钮
+        if ("clear".equals(jsonInfo.getSql().getStr())) {
+            dataModel.setItems(new ArrayList<>());
+        }
         // 创建装饰器实例
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(table, null);
         // 禁用新增删除移动按钮
@@ -110,15 +125,24 @@ public class TableRunner {
         decorator.disableRemoveAction();
         decorator.disableUpAction();
         decorator.disableUpDownActions();
-
-        AnActionButton edit = new AnActionButton("1233ewqd", AllIcons.Actions.Find) {
+        // 编辑sql按钮
+        AnActionButton editSql = new AnActionButton("sql：" + jsonInfo.getSql().getStr(), AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                SqlDialog formTestDialog = new SqlDialog(Objects.requireNonNull(project));
+                SqlDialog formTestDialog = new SqlDialog(project, jsonInfo);
                 formTestDialog.show();
             }
         };
-        decorator.addExtraAction(edit);
+        decorator.addExtraAction(editSql);
+        // 重置按钮
+        AnActionButton reset = new AnActionButton("重置", AllIcons.General.Reset) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                jsonInfo.setSql(new Sql("select * from arr"));
+                run(jsonInfo);
+            }
+        };
+        decorator.addExtraAction(reset);
         return decorator.createPanel();
     }
 

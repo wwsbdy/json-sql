@@ -3,6 +3,9 @@ package com.zj.demoplugin.form.sql;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.components.JBTextField;
+import com.zj.demoplugin.entity.JsonInfo;
+import com.zj.demoplugin.table.TableRunner;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,12 +23,15 @@ public class SqlDialog extends DialogWrapper {
      * swing样式类，定义在4.3.2
      */
     private final JLabel json = new JLabel("sql：");
-    private final JBTextField jsonContent = new JBTextField("select * from json_arr");
+    private final JBTextField sqlContent = new JBTextField("select * from json_arr");
+    private final JsonInfo jsonInfo;
 
-    public SqlDialog(Project project) {
+    public SqlDialog(Project project, JsonInfo jsonInfo) {
         super(true);
+        this.jsonInfo = jsonInfo;
         // 设置会话框标题
         setTitle("输入sql :");
+        sqlContent.setText(jsonInfo.getSql().getStr());
         // 获取到当前项目的名称
         this.project = project;
         // 触发一下init方法，否则swing样式将无法展示在会话框
@@ -67,7 +73,13 @@ public class SqlDialog extends DialogWrapper {
         submit.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.out.println("231141");
+                //获取到name和age
+                String sqlStr = sqlContent.getText();
+                if (StringUtils.isNotEmpty(sqlStr)) {
+                    jsonInfo.getSql().setStr(sqlStr);
+                }
+                // 打开表格
+                new TableRunner(project).run(jsonInfo);
                 // 关闭窗口
                 doCancelAction();
             }
@@ -83,7 +95,7 @@ public class SqlDialog extends DialogWrapper {
         center.setLayout(new GridLayout(3, 2));
         // row2：姓名+文本框
         center.add(json);
-        center.add(jsonContent);
+        center.add(sqlContent);
 
         return center;
     }

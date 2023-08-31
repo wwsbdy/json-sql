@@ -17,9 +17,17 @@ public class JsonInfo {
      * sql语句
      */
     private Sql sql;
+
+    private List<String> columns;
     /**
      * 导入数据列表
      */
     private List<JSONObject> list;
 
+
+    public JsonInfo(List<String> columns, List<JSONObject> list) {
+        this.sql = new Sql("select * from arr");
+        this.columns = columns;
+        this.list = list;
+    }
 }
