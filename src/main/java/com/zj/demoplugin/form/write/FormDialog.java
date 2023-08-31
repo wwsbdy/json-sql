@@ -69,7 +69,8 @@ public class FormDialog extends DialogWrapper {
         // 垂直居中
         submit.setVerticalAlignment(SwingConstants.CENTER);
         south.add(submit);
-
+        // todo
+        jsonContent.setText("[{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1},{\"a\":1}]");
         //按钮事件绑定
         submit.addActionListener(new AbstractAction() {
             @Override
@@ -80,9 +81,9 @@ public class FormDialog extends DialogWrapper {
                 List<JSONObject> objects = new ArrayList<>();
                 Set<String> columns = new LinkedHashSet<>();
                 for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject arrayJSONObject = jsonArray.getJSONObject(i);
-                    columns.addAll(arrayJSONObject.keySet());
-                    objects.add(arrayJSONObject);
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    columns.addAll(object.keySet());
+                    objects.add(object);
                 }
                 TableRunner executor = new TableRunner(project);
                 executor.run(columns, objects);
