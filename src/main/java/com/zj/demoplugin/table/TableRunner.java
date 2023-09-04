@@ -18,7 +18,6 @@ import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.table.TableView;
-import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.form.sql.SqlDialog;
@@ -110,11 +109,6 @@ public class TableRunner {
         table.getTableHeader().setReorderingAllowed(false);
         // 绑定结果
         dataModel.addRows(jsonInfo.getRows());
-        // todo 编辑sql按钮
-        if ("clear".equals(jsonInfo.getSql())) {
-            dataModel.setColumnInfos(new ColumnInfo[0]);
-            dataModel.setItems(new ArrayList<>());
-        }
         // 创建装饰器实例
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(table, null);
         // 禁用新增删除移动按钮

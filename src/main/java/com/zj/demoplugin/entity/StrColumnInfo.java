@@ -16,10 +16,7 @@ public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
      */
     private String originalName;
 
-    public StrColumnInfo(@Nls(capitalization = Nls.Capitalization.Title) String name) {
-        super(name);
-        this.originalName = name;
-    }
+    private String text;
 
     public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name) {
         super(name);
@@ -43,5 +40,15 @@ public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
             return "NULL";
         }
         return value;
+    }
+
+    /**
+     * 表头提示
+     *
+     * @return
+     */
+    @Override
+    public @Nls(capitalization = Nls.Capitalization.Sentence) @Nullable String getTooltipText() {
+        return text;
     }
 }
