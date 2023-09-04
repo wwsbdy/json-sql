@@ -6,6 +6,7 @@ import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * json信息
@@ -33,20 +34,25 @@ public class JsonInfo extends BaseJsonInfo {
 
     public void setSql(String sql) {
         this.sql = sql;
+        sqlNode = null;
+        setSqlNode(sql);
     }
 
     @Override
     public ColumnInfo<?, ?>[] getFields() {
-        sqlNode = setSqlNode(sql);
+        setSqlNode(sql);
         return SqlUtil.getFields(super.getColumns(), sqlNode);
     }
 
-    private synchronized SqlSelect setSqlNode(String sql) {
-        return SqlUtil.toSqlSelect(sql);
+    private synchronized void setSqlNode(String sql) {
+        if (Objects.isNull(sqlNode)) {
+            sqlNode = SqlUtil.toSqlSelect(sql);
+        }
     }
 
     @Override
     public List<JSONObject> getRows() {
+        setSqlNode(sql);
         return SqlUtil.getDataList(super.getList(), sqlNode);
     }
 }

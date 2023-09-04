@@ -21,6 +21,13 @@ import java.util.*;
  */
 public class SqlUtil {
 
+    private static final SqlParser.Config CONFIG;
+    static {
+        CONFIG = SqlParser.config()
+                .withLex(Lex.MYSQL)
+                // 保持原有大小写
+                .withCaseSensitive(false);
+    }
     /**
      * 获取满足条件的数据
      *
@@ -100,13 +107,10 @@ public class SqlUtil {
             return null;
         }
         try {
-            SqlParser.Config config = SqlParser.config()
-                    .withLex(Lex.MYSQL)
-                    // 保持原有大小写
-                    .withCaseSensitive(false);
-            SqlParser parser = SqlParser.create(sql, config);
+            SqlParser parser = SqlParser.create(sql, CONFIG);
             SqlNode node = parser.parseStmt();
             SqlKind kind = node.getKind();
+            // 不支持!= 可以使用 <>
             if (SqlKind.SELECT == kind) {
                 return (SqlSelect) node;
             }
