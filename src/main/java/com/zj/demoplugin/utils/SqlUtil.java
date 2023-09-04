@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.ui.ColumnInfo;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.StrColumnInfo;
+import com.zj.demoplugin.strategy.AbstractStrategy;
+import com.zj.demoplugin.strategy.StrategyBean;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlKind;
@@ -15,6 +17,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author arthur_zhou
@@ -22,12 +26,14 @@ import java.util.*;
 public class SqlUtil {
 
     private static final SqlParser.Config CONFIG;
+
     static {
         CONFIG = SqlParser.config()
                 .withLex(Lex.MYSQL)
                 // 保持原有大小写
                 .withCaseSensitive(false);
     }
+
     /**
      * 获取满足条件的数据
      *
@@ -40,13 +46,13 @@ public class SqlUtil {
         if (CollectionUtils.isEmpty(dataList)) {
             return Collections.emptyList();
         }
-        return dataList;
-        // todo
-//        Stream<JSONObject> stream = dataList.stream().filter(sql::filter);
+        SqlNode where = sqlNode.getWhere();
+        AbstractStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
+        Stream<JSONObject> stream = dataList.stream().filter(strategy::apply);
 //        if (Objects.nonNull(sql.getLimit())) {
 //            stream = stream.skip(sql.getLimit().getFrom()).limit(sql.getLimit().getSize());
 //        }
-//        return stream.collect(Collectors.toList());
+        return stream.collect(Collectors.toList());
     }
 
     /**
