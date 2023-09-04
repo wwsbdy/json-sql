@@ -21,15 +21,16 @@ import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import com.zj.demoplugin.entity.JsonInfo;
-import com.zj.demoplugin.entity.StrColumnInfo;
-import com.zj.demoplugin.entity.sql.Sql;
 import com.zj.demoplugin.form.sql.SqlDialog;
 import com.zj.demoplugin.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author arthur_zhou
@@ -101,20 +102,17 @@ public class TableRunner {
     }
 
     private JPanel getTablePanel(JsonInfo jsonInfo) {
-        ColumnInfo[] columnInfos = new ColumnInfo[jsonInfo.getColumns().size()];
-        for (int i = 0; i < jsonInfo.getColumns().size(); i++) {
-            columnInfos[i] = new StrColumnInfo(jsonInfo.getColumns().get(i));
-        }
         // 创建表格模型
-        ListTableModel<JSONObject> dataModel = new ListTableModel<>(columnInfos);
+        ListTableModel<JSONObject> dataModel = new ListTableModel<>(jsonInfo.getFields());
         // 创建JTable表格组件
         TableView<JSONObject> table = new TableView<>(dataModel);
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
         // 绑定结果
-        dataModel.addRows(jsonInfo.getList());
+        dataModel.addRows(jsonInfo.getRows());
         // todo 编辑sql按钮
-        if ("clear".equals(jsonInfo.getSql().getStr())) {
+        if ("clear".equals(jsonInfo.getSql())) {
+            dataModel.setColumnInfos(new ColumnInfo[0]);
             dataModel.setItems(new ArrayList<>());
         }
         // 创建装饰器实例
@@ -126,7 +124,7 @@ public class TableRunner {
         decorator.disableUpAction();
         decorator.disableUpDownActions();
         // 编辑sql按钮
-        AnActionButton editSql = new AnActionButton("sql：" + jsonInfo.getSql().getStr(), AllIcons.Actions.Find) {
+        AnActionButton editSql = new AnActionButton("sql：" + jsonInfo.getSql(), AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(project, jsonInfo);
@@ -138,8 +136,9 @@ public class TableRunner {
         AnActionButton reset = new AnActionButton("重置", AllIcons.General.Reset) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                jsonInfo.setSql(new Sql("select * from arr"));
-                run(jsonInfo);
+                jsonInfo.setSql("select * from arr");
+                dataModel.setColumnInfos(jsonInfo.getFields());
+                dataModel.setItems(jsonInfo.getRows());
             }
         };
         decorator.addExtraAction(reset);

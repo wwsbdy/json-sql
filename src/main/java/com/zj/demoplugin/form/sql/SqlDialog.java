@@ -31,7 +31,7 @@ public class SqlDialog extends DialogWrapper {
         this.jsonInfo = jsonInfo;
         // 设置会话框标题
         setTitle("输入sql :");
-        sqlContent.setText(jsonInfo.getSql().getStr());
+        sqlContent.setText(jsonInfo.getSql());
         // 获取到当前项目的名称
         this.project = project;
         // 触发一下init方法，否则swing样式将无法展示在会话框
@@ -76,7 +76,7 @@ public class SqlDialog extends DialogWrapper {
                 //获取到name和age
                 String sqlStr = sqlContent.getText();
                 if (StringUtils.isNotEmpty(sqlStr)) {
-                    jsonInfo.getSql().setStr(sqlStr);
+                    jsonInfo.setSql(sqlStr);
                 }
                 // 打开表格
                 new TableRunner(project).run(jsonInfo);

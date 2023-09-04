@@ -1,8 +1,9 @@
 package com.zj.demoplugin.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zj.demoplugin.entity.sql.Sql;
-import lombok.Data;
+import com.intellij.util.ui.ColumnInfo;
+import com.zj.demoplugin.utils.SqlUtil;
+import org.apache.calcite.sql.SqlSelect;
 
 import java.util.List;
 
@@ -11,23 +12,41 @@ import java.util.List;
  *
  * @author arthur_zhou
  */
-@Data
-public class JsonInfo {
+public class JsonInfo extends BaseJsonInfo {
     /**
      * sql语句
      */
-    private Sql sql;
-
-    private List<String> columns;
+    private String sql;
     /**
-     * 导入数据列表
+     * sql解析树
      */
-    private List<JSONObject> list;
-
+    private SqlSelect sqlNode;
 
     public JsonInfo(List<String> columns, List<JSONObject> list) {
-        this.sql = new Sql("select * from arr");
-        this.columns = columns;
-        this.list = list;
+        super(columns, list);
+        this.sql = "select * from arr";
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    @Override
+    public ColumnInfo<?, ?>[] getFields() {
+        sqlNode = setSqlNode(sql);
+        return SqlUtil.getFields(super.getColumns(), sqlNode);
+    }
+
+    private synchronized SqlSelect setSqlNode(String sql) {
+        return SqlUtil.toSqlSelect(sql);
+    }
+
+    @Override
+    public List<JSONObject> getRows() {
+        return SqlUtil.getDataList(super.getList(), sqlNode);
     }
 }

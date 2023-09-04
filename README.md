@@ -78,3 +78,16 @@ tasks.withType(JavaCompile) {
 }
 ```
 
+### 7.依赖冲突
+
+org.apache.calcite:calcite-core:1.35.0 和 com.jetbrains:ideaIC:2020.1.2 的 slf4j依赖冲突
+
+排除calcite的slf4j
+```
+dependencies {
+    implementation("org.apache.calcite:calcite-core:1.35.0") {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+}
+```
+

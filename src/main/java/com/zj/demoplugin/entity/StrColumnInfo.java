@@ -11,15 +11,25 @@ import org.jetbrains.annotations.Nullable;
  */
 @EqualsAndHashCode(callSuper = true)
 public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
+    /**
+     * 原始名称
+     */
+    private String originalName;
 
     public StrColumnInfo(@Nls(capitalization = Nls.Capitalization.Title) String name) {
         super(name);
+        this.originalName = name;
+    }
+
+    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name) {
+        super(name);
+        this.originalName = originalName;
     }
 
     @Nullable
     @Override
     public String valueOf(JSONObject jsonObject) {
-        return jsonObject == null ? "NULL" : getValue(jsonObject.getString(getName()));
+        return jsonObject == null ? "NULL" : getValue(jsonObject.getString(originalName));
     }
 
     /**
