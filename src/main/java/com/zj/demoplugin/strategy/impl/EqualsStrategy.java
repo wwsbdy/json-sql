@@ -3,7 +3,6 @@ package com.zj.demoplugin.strategy.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.utils.JsonUtil;
-import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -25,7 +24,7 @@ public class EqualsStrategy extends AbstractStrategy {
             return;
         }
         setField(operandList.get(0).toString());
-        this.value = getValue((SqlLiteral) operandList.get(1));
+        this.value = getValue(operandList.get(1));
     }
 
     @Override

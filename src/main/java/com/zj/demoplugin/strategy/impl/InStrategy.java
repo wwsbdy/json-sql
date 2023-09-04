@@ -3,7 +3,6 @@ package com.zj.demoplugin.strategy.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.utils.JsonUtil;
-import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,7 +30,7 @@ public class InStrategy extends AbstractStrategy {
         SqlNodeList param2 = (SqlNodeList) operandList.get(1);
         this.value = new HashSet<>();
         for (SqlNode sqlNode : param2) {
-            Object value = getValue((SqlLiteral) sqlNode);
+            Object value = getValue(sqlNode);
             if (Objects.nonNull(value)) {
                 this.value.add(value);
             }

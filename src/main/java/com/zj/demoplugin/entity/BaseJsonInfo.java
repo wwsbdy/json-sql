@@ -12,13 +12,13 @@ public abstract class BaseJsonInfo {
     /**
      * 原始列
      */
-    private List<String> columns;
+    private List<Field> columns;
     /**
      * 导入数据列表
      */
     private List<JSONObject> list;
 
-    public List<String> getColumns() {
+    public List<Field> getColumns() {
         return columns;
     }
 
@@ -26,7 +26,7 @@ public abstract class BaseJsonInfo {
         return list;
     }
 
-    public BaseJsonInfo(List<String> columns, List<JSONObject> list) {
+    public BaseJsonInfo(List<Field> columns, List<JSONObject> list) {
         this.columns = columns;
         this.list = list;
     }

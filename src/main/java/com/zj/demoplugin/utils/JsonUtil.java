@@ -27,15 +27,10 @@ public class JsonUtil {
     /**
      * 获取字段类型
      *
-     * @param jsonObject
-     * @param key
+     * @param value
      * @return
      */
-    public static Object getType(JSONObject jsonObject, String key) {
-        if (Objects.isNull(jsonObject) || Objects.isNull(key)) {
-            return null;
-        }
-        Object value = jsonObject.get(key);
+    public static String getType(Object value) {
         if (Objects.isNull(value)) {
             return "NULL";
         }
@@ -44,6 +39,9 @@ public class JsonUtil {
         }
         if (value instanceof CharSequence) {
             return "string";
+        }
+        if (value instanceof Boolean) {
+            return "boolean";
         }
         return "object";
     }

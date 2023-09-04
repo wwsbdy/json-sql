@@ -62,7 +62,7 @@ public class SqlUtil {
      * @param sqlNode
      * @return
      */
-    public static ColumnInfo<?, ?>[] getFields(List<String> columns, SqlSelect sqlNode) {
+    public static ColumnInfo<?, ?>[] getFields(List<Field> columns, SqlSelect sqlNode) {
         Objects.requireNonNull(sqlNode);
         if (CollectionUtils.isEmpty(columns)) {
             return new ColumnInfo[0];
@@ -72,7 +72,8 @@ public class SqlUtil {
             String name = node.toString();
             // 查全部
             if ("*".equals(name)) {
-                for (String column : columns) {
+                for (Field field : columns) {
+                    String column = field.getOriginalName();
                     select.add(new Field(column, column));
                 }
                 continue;
@@ -91,13 +92,20 @@ public class SqlUtil {
                     break;
             }
         }
-        HashSet<String> columnSet = new HashSet<>(columns);
+        Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
         // 取交集
-        select.removeIf(v -> !columnSet.contains(v.getOriginalName()));
+        select.removeIf(v -> {
+            String type = typeMap.get(v.getOriginalName());
+            if (StringUtils.isEmpty(type)) {
+                return true;
+            }
+            v.setType(type);
+            return false;
+        });
         ColumnInfo<?, ?>[] columnInfos = new ColumnInfo[select.size()];
         for (int i = 0; i < select.size(); i++) {
             Field field = select.get(i);
-            columnInfos[i] = new StrColumnInfo(field.getOriginalName(), field.getName());
+            columnInfos[i] = new StrColumnInfo(field.getOriginalName(), field.getName(), field.getType());
         }
         return columnInfos;
     }

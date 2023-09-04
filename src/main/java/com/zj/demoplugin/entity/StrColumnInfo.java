@@ -18,9 +18,10 @@ public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
 
     private String text;
 
-    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name) {
+    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name, String text) {
         super(name);
         this.originalName = originalName;
+        this.text = text;
     }
 
     @Nullable

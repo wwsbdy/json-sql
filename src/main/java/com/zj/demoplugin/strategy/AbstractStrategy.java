@@ -1,7 +1,9 @@
 package com.zj.demoplugin.strategy;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlLiteral;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.util.NlsString;
 
 import java.util.Objects;
@@ -50,7 +52,11 @@ public abstract class AbstractStrategy {
      */
     public abstract boolean apply(JSONObject item);
 
-    protected static Object getValue(SqlLiteral sqlLiteral) {
+    protected static Object getValue(SqlNode sqlNode) {
+        if (sqlNode instanceof SqlIdentifier){
+            return ((SqlIdentifier) sqlNode).getSimple();
+        }
+        SqlLiteral sqlLiteral = (SqlLiteral) sqlNode;
         if (Objects.isNull(sqlLiteral)) {
             return null;
         }

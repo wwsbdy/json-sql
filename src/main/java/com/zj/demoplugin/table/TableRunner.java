@@ -19,8 +19,10 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ListTableModel;
+import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.form.sql.SqlDialog;
+import com.zj.demoplugin.utils.JsonUtil;
 import com.zj.demoplugin.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,10 +52,13 @@ public class TableRunner {
     public void run(JSONArray jsonArray) {
 
         List<JSONObject> objects = new ArrayList<>();
-        Set<String> columns = new LinkedHashSet<>();
+        Set<Field> columns = new LinkedHashSet<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject object = jsonArray.getJSONObject(i);
-            columns.addAll(object.keySet());
+            for (String key : object.keySet()) {
+                columns.add(new Field(key, null, JsonUtil.getType(object.get(key))));
+
+            }
             objects.add(object);
         }
         JsonInfo jsonInfo = new JsonInfo(new ArrayList<>(columns), objects);

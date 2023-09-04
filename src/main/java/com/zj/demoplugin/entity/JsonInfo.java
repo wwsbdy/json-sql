@@ -23,7 +23,7 @@ public class JsonInfo extends BaseJsonInfo {
      */
     private SqlSelect sqlNode;
 
-    public JsonInfo(List<String> columns, List<JSONObject> list) {
+    public JsonInfo(List<Field> columns, List<JSONObject> list) {
         super(columns, list);
         this.sql = "select * from arr";
     }
