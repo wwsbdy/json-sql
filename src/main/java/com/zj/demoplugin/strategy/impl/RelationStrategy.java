@@ -47,6 +47,6 @@ public class RelationStrategy extends AbstractStrategy {
                 return false;
             }
         }
-        return SqlKind.AND == sqlKind;
+        return isReverse() != (SqlKind.AND == sqlKind);
     }
 }
