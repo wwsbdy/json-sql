@@ -1,6 +1,5 @@
 package com.zj.demoplugin.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.ui.ColumnInfo;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
@@ -10,13 +9,13 @@ import org.jetbrains.annotations.Nullable;
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
+public class StrColumnInfo extends ColumnInfo<MyJson, String> {
     /**
      * 原始名称
      */
-    private String originalName;
+    private final String originalName;
 
-    private String text;
+    private final String text;
 
     public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name, String text) {
         super(name);
@@ -26,8 +25,8 @@ public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
 
     @Nullable
     @Override
-    public String valueOf(JSONObject jsonObject) {
-        return jsonObject == null ? "NULL" : getValue(jsonObject.getString(originalName));
+    public String valueOf(MyJson myJson) {
+        return myJson == null ? "NULL" : getValue(myJson.get(originalName));
     }
 
     /**
@@ -36,11 +35,11 @@ public class StrColumnInfo extends ColumnInfo<JSONObject, String> {
      * @param value
      * @return
      */
-    private String getValue(String value) {
+    private String getValue(Object value) {
         if (value == null) {
             return "NULL";
         }
-        return value;
+        return value.toString();
     }
 
     /**

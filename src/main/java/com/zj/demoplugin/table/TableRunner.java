@@ -1,7 +1,6 @@
 package com.zj.demoplugin.table;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
@@ -21,6 +20,7 @@ import com.intellij.ui.table.TableView;
 import com.intellij.util.ui.ListTableModel;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.form.sql.SqlDialog;
 import com.zj.demoplugin.utils.JsonUtil;
 import com.zj.demoplugin.utils.MyExecutorUtil;
@@ -51,13 +51,12 @@ public class TableRunner {
 
     public void run(JSONArray jsonArray) {
 
-        List<JSONObject> objects = new ArrayList<>();
+        List<MyJson> objects = new ArrayList<>();
         Set<Field> columns = new LinkedHashSet<>();
         for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
+            MyJson object = new MyJson(jsonArray.getJSONObject(i));
             for (String key : object.keySet()) {
-                columns.add(new Field(key, null, JsonUtil.getType(object.get(key))));
-
+                columns.add(new Field(key, null, JsonUtil.getType(object.get(key)).name()));
             }
             objects.add(object);
         }
@@ -107,9 +106,9 @@ public class TableRunner {
 
     private JPanel getTablePanel(JsonInfo jsonInfo) {
         // 创建表格模型
-        ListTableModel<JSONObject> dataModel = new ListTableModel<>(jsonInfo.getFields());
+        ListTableModel<MyJson> dataModel = new ListTableModel<>(jsonInfo.getFields());
         // 创建JTable表格组件
-        TableView<JSONObject> table = new TableView<>(dataModel);
+        TableView<MyJson> table = new TableView<>(dataModel);
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
         // 绑定结果

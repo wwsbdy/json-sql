@@ -1,6 +1,6 @@
 package com.zj.demoplugin.strategy.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.utils.JsonUtil;
 import org.apache.calcite.sql.SqlNode;
@@ -28,12 +28,25 @@ public class EqualsStrategy extends AbstractStrategy {
     }
 
     @Override
-    public boolean apply(JSONObject item) {
+    public boolean apply(MyJson item) {
         if (Objects.isNull(item) || Objects.isNull(getField()) || Objects.isNull(value)) {
             return false;
         }
-        Object o = JsonUtil.get(item, getField());
-        boolean equals = value.equals(String.valueOf(o));
+        boolean equals = false;
+        Object o = item.get(getField());
+        Object convert = JsonUtil.convert(o);
+        // 如果是数组，只要有一个满足就行
+        if (convert instanceof List) {
+            List list = (List) convert;
+            for (Object o1 : list) {
+                if (value.equals(String.valueOf(o1))) {
+                    equals = true;
+                    break;
+                }
+            }
+        } else {
+            equals = value.equals(String.valueOf(convert));
+        }
         return isReverse() != equals;
     }
 }

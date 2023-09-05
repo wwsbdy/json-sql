@@ -1,6 +1,5 @@
 package com.zj.demoplugin.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.ui.ColumnInfo;
 
 import java.util.List;
@@ -16,17 +15,17 @@ public abstract class BaseJsonInfo {
     /**
      * 导入数据列表
      */
-    private List<JSONObject> list;
+    private List<MyJson> list;
 
     public List<Field> getColumns() {
         return columns;
     }
 
-    public List<JSONObject> getList() {
+    public List<MyJson> getList() {
         return list;
     }
 
-    public BaseJsonInfo(List<Field> columns, List<JSONObject> list) {
+    public BaseJsonInfo(List<Field> columns, List<MyJson> list) {
         this.columns = columns;
         this.list = list;
     }
@@ -43,5 +42,5 @@ public abstract class BaseJsonInfo {
      *
      * @return
      */
-    public abstract List<JSONObject> getRows();
+    public abstract List<MyJson> getRows();
 }

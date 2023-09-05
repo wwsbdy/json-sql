@@ -1,6 +1,6 @@
 package com.zj.demoplugin.strategy;
 
-import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.entity.MyJson;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
@@ -22,7 +22,7 @@ public abstract class AbstractStrategy {
      */
     protected static final int SIMPLE_SIZE = 2;
     /**
-     * ture,取反
+     * true,取反
      */
     boolean reverse;
 
@@ -51,7 +51,7 @@ public abstract class AbstractStrategy {
      * @param item 行值
      * @return
      */
-    public abstract boolean apply(JSONObject item);
+    public abstract boolean apply(MyJson item);
 
     protected static Object getValue(SqlNode sqlNode) {
         if (sqlNode instanceof SqlIdentifier){

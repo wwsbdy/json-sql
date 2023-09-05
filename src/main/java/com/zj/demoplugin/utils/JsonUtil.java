@@ -1,8 +1,13 @@
 package com.zj.demoplugin.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.enums.JsonEnum;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,25 +29,49 @@ public class JsonUtil {
         return value;
     }
 
-    /**
-     * 获取字段类型
-     *
-     * @param value
-     * @return
-     */
-    public static String getType(Object value) {
-        if (Objects.isNull(value)) {
-            return "NULL";
+    public static JsonEnum getType(Object object) {
+        if (Objects.isNull(object)) {
+            return JsonEnum.NULL;
         }
-        if (value instanceof Number) {
-            return "number";
+        if (object instanceof Number) {
+            return JsonEnum.NUMBER;
         }
-        if (value instanceof CharSequence) {
-            return "string";
+        if (object instanceof String) {
+            return JsonEnum.STRING;
         }
-        if (value instanceof Boolean) {
-            return "boolean";
+        if (object instanceof JSONArray) {
+            return JsonEnum.ARRAY;
         }
-        return "object";
+        if (object instanceof JSONObject) {
+            return JsonEnum.OBJECT;
+        }
+        if (object instanceof Boolean) {
+            return JsonEnum.BOOLEAN;
+        }
+        return JsonEnum.UNKNOWN;
+    }
+
+    public static Object convert(Object object){
+        if (Objects.isNull(object)) {
+            return null;
+        }
+        if (object instanceof Number) {
+            return new BigDecimal(object.toString());
+        }
+        if (object instanceof JSONArray) {
+            JSONArray jsonArray = (JSONArray) object;
+            if (CollectionUtils.isEmpty(jsonArray)) {
+                return null;
+            }
+            List<Object> list = new ArrayList<>();
+            for (Object o : jsonArray) {
+                Object convert = convert(o);
+                if (Objects.nonNull(convert)) {
+                    list.add(convert);
+                }
+            }
+            return CollectionUtils.isEmpty(list) ? null : list;
+        }
+        return object.toString();
     }
 }

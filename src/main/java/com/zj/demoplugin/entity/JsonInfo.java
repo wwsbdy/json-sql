@@ -1,6 +1,5 @@
 package com.zj.demoplugin.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.ui.ColumnInfo;
 import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
@@ -23,7 +22,7 @@ public class JsonInfo extends BaseJsonInfo {
      */
     private SqlSelect sqlNode;
 
-    public JsonInfo(List<Field> columns, List<JSONObject> list) {
+    public JsonInfo(List<Field> columns, List<MyJson> list) {
         super(columns, list);
         this.sql = "select * from arr";
     }
@@ -51,7 +50,7 @@ public class JsonInfo extends BaseJsonInfo {
     }
 
     @Override
-    public List<JSONObject> getRows() {
+    public List<MyJson> getRows() {
         setSqlNode(sql);
         return SqlUtil.getDataList(super.getList(), sqlNode);
     }

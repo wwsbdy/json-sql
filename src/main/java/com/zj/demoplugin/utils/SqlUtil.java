@@ -1,8 +1,8 @@
 package com.zj.demoplugin.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.util.ui.ColumnInfo;
 import com.zj.demoplugin.entity.Field;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.entity.StrColumnInfo;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.strategy.StrategyBean;
@@ -41,14 +41,14 @@ public class SqlUtil {
      * @param sqlNode
      * @return
      */
-    public static List<JSONObject> getDataList(List<JSONObject> dataList, SqlSelect sqlNode) {
+    public static List<MyJson> getDataList(List<MyJson> dataList, SqlSelect sqlNode) {
         Objects.requireNonNull(sqlNode);
         if (CollectionUtils.isEmpty(dataList)) {
             return Collections.emptyList();
         }
         SqlNode where = sqlNode.getWhere();
         AbstractStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
-        Stream<JSONObject> stream = dataList.stream().filter(strategy::apply);
+        Stream<MyJson> stream = dataList.stream().filter(strategy::apply);
 //        if (Objects.nonNull(sql.getLimit())) {
 //            stream = stream.skip(sql.getLimit().getFrom()).limit(sql.getLimit().getSize());
 //        }

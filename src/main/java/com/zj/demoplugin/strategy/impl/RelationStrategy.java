@@ -1,6 +1,6 @@
 package com.zj.demoplugin.strategy.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.strategy.StrategyBean;
 import org.apache.calcite.sql.SqlBasicCall;
@@ -34,7 +34,7 @@ public class RelationStrategy extends AbstractStrategy {
     }
 
     @Override
-    public boolean apply(JSONObject item) {
+    public boolean apply(MyJson item) {
         if (CollectionUtils.isEmpty(strategyList)) {
             return false;
         }

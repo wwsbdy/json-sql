@@ -1,6 +1,6 @@
 package com.zj.demoplugin.strategy;
 
-import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.impl.EqualsStrategy;
 import com.zj.demoplugin.strategy.impl.InStrategy;
 import com.zj.demoplugin.strategy.impl.RelationStrategy;
@@ -15,14 +15,14 @@ public class StrategyBean {
 
     private static final AbstractStrategy ALWAYS_TURE_STRATEGY = new AbstractStrategy(false) {
         @Override
-        public boolean apply(JSONObject item) {
+        public boolean apply(MyJson item) {
             return true;
         }
     };
 
     private static final AbstractStrategy ALWAYS_FALSE_STRATEGY = new AbstractStrategy(false) {
         @Override
-        public boolean apply(JSONObject item) {
+        public boolean apply(MyJson item) {
             return false;
         }
     };

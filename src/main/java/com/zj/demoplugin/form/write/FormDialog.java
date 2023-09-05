@@ -89,7 +89,7 @@ public class FormDialog extends DialogWrapper {
                 "        \"name\": \"lp;\",\n" +
                 "        \"age\": 15,\n" +
                 "        \"sex\": true,\n" +
-                "        \"level\": \"一二三\",\n" +
+                "        \"level\": {\"level2\":[{\"abc\":1},{\"abc\":2},{\"abc\":3}]},\n" +
                 "        \"score\": 33.01\n" +
                 "    }\n" +
                 "]");
