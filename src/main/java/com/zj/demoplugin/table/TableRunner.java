@@ -56,7 +56,7 @@ public class TableRunner {
         for (int i = 0; i < jsonArray.size(); i++) {
             MyJson object = new MyJson(jsonArray.getJSONObject(i));
             for (String key : object.keySet()) {
-                columns.add(new Field(key, null, JsonUtil.getType(object.get(key)).name()));
+                columns.add(new Field(key, null, JsonUtil.getType(object.get(key)).name().toLowerCase()));
             }
             objects.add(object);
         }

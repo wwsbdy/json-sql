@@ -29,6 +29,12 @@ public class JsonUtil {
         return value;
     }
 
+    /**
+     * 判断对象的json类型
+     *
+     * @param object
+     * @return
+     */
     public static JsonEnum getType(Object object) {
         if (Objects.isNull(object)) {
             return JsonEnum.NULL;
@@ -51,7 +57,13 @@ public class JsonUtil {
         return JsonEnum.UNKNOWN;
     }
 
-    public static Object convert(Object object){
+    /**
+     * 转换类型
+     *
+     * @param object
+     * @return 仅返回，Number、List、String
+     */
+    public static Object convert(Object object) {
         if (Objects.isNull(object)) {
             return null;
         }
