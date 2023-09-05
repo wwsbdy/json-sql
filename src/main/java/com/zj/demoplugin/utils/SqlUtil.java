@@ -1,9 +1,7 @@
 package com.zj.demoplugin.utils;
 
 import com.intellij.util.ui.ColumnInfo;
-import com.zj.demoplugin.entity.Field;
-import com.zj.demoplugin.entity.MyJson;
-import com.zj.demoplugin.entity.StrColumnInfo;
+import com.zj.demoplugin.entity.*;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.strategy.StrategyBean;
 import org.apache.calcite.config.Lex;
@@ -102,10 +100,12 @@ public class SqlUtil {
             v.setType(type);
             return false;
         });
-        ColumnInfo<?, ?>[] columnInfos = new ColumnInfo[select.size()];
+        ColumnInfo<?, ?>[] columnInfos = new ColumnInfo[select.size() + 2];
+        columnInfos[0] = new IdColumnInfo();
+        columnInfos[1] = new BooleanColumnInfo("选择");
         for (int i = 0; i < select.size(); i++) {
             Field field = select.get(i);
-            columnInfos[i] = new StrColumnInfo(field.getOriginalName(), field.getName(), field.getType());
+            columnInfos[i + 2] = new StrColumnInfo(field.getOriginalName(), field.getName(), field.getType());
         }
         return columnInfos;
     }

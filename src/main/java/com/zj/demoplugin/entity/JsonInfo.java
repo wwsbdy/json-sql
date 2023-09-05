@@ -1,8 +1,6 @@
 package com.zj.demoplugin.entity;
 
-import com.intellij.openapi.ui.Messages;
 import com.intellij.util.ui.ColumnInfo;
-import com.zj.demoplugin.enums.NoticeEnum;
 import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
 
@@ -64,6 +62,10 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public List<MyJson> getRows() {
-        return SqlUtil.getDataList(super.getList(), sqlNode);
+        List<MyJson> dataList = SqlUtil.getDataList(super.getList(), sqlNode);
+        for (int i = 0; i < dataList.size(); i++) {
+            dataList.get(i).setId(i + 1);
+        }
+        return dataList;
     }
 }

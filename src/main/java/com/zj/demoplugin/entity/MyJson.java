@@ -16,10 +16,30 @@ import java.util.Set;
  */
 public class MyJson {
 
+    private int id;
+
+    private boolean selected;
+
     private final JSONObject jsonObject;
 
     public MyJson(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     /**

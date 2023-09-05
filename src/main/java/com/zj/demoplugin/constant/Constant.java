@@ -9,11 +9,11 @@ public interface Constant {
     /**
      * 最大行数
      */
-    int ROWS_MAX = 500;
+    int ROWS_MAX = 100;
     /**
      * 最大列数
      */
-    int COLUMNS_MAX = 50;
+    int COLUMNS_MAX = 30;
     /**
      * 最大SQL长度
      */
