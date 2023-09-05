@@ -127,6 +127,9 @@ public class TableRunner {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(project, jsonInfo);
                 formTestDialog.show();
+                // 重新赋值
+                dataModel.setColumnInfos(jsonInfo.getFields());
+                dataModel.setItems(jsonInfo.getRows());
             }
         };
         decorator.addExtraAction(editSql);

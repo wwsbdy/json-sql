@@ -8,7 +8,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.demoplugin.entity.JsonInfo;
-import com.zj.demoplugin.table.TableRunner;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -70,8 +69,6 @@ public class SqlDialog extends DialogWrapper {
                 if (StringUtils.isNotEmpty(sqlStr)) {
                     jsonInfo.setSql(sqlStr);
                 }
-                // 打开表格
-                new TableRunner(project).run(jsonInfo);
                 // 关闭窗口
                 doCancelAction();
             }
