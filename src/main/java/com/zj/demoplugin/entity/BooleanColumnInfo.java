@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
+
 /**
  * @author arthur_zhou
  */
@@ -34,5 +36,10 @@ public class BooleanColumnInfo extends ColumnInfo<MyJson, Boolean> {
     @Override
     public boolean isCellEditable(MyJson myJson) {
         return true;
+    }
+
+    @Override
+    public int getWidth(JTable table) {
+        return 40;
     }
 }
