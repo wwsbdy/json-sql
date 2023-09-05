@@ -3,6 +3,7 @@ package com.zj.demoplugin.strategy;
 import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.impl.EqualsStrategy;
 import com.zj.demoplugin.strategy.impl.InStrategy;
+import com.zj.demoplugin.strategy.impl.RangeStrategy;
 import com.zj.demoplugin.strategy.impl.RelationStrategy;
 import org.apache.calcite.sql.SqlBasicCall;
 
@@ -40,6 +41,12 @@ public class StrategyBean {
                 return new InStrategy(false, where.getOperandList());
             case NOT_IN:
                 return new InStrategy(true, where.getOperandList());
+            case GREATER_THAN:
+            case GREATER_THAN_OR_EQUAL:
+            case LESS_THAN:
+            case LESS_THAN_OR_EQUAL:
+            case BETWEEN:
+                return new RangeStrategy(false, where.getKind(), where.getOperandList());
             case OR:
             case AND:
                 return new RelationStrategy(false, where.getKind(), where.getOperandList());

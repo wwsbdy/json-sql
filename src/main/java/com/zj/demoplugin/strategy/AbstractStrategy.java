@@ -22,6 +22,10 @@ public abstract class AbstractStrategy {
      */
     protected static final int SIMPLE_SIZE = 2;
     /**
+     *
+     */
+    protected static final int BETWEEN_SIZE = 3;
+    /**
      * true,取反
      */
     boolean reverse;
