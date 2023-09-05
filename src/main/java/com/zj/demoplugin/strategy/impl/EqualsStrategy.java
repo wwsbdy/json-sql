@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class EqualsStrategy extends AbstractStrategy {
 
-    private Object value;
+    private String value;
 
     public EqualsStrategy(boolean reverse, List<SqlNode> operandList) {
         super(reverse);
@@ -24,7 +24,7 @@ public class EqualsStrategy extends AbstractStrategy {
             return;
         }
         setField(operandList.get(0).toString());
-        this.value = getValue(operandList.get(1));
+        this.value = String.valueOf(getValue(operandList.get(1)));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class EqualsStrategy extends AbstractStrategy {
             return false;
         }
         Object o = JsonUtil.get(item, getField());
-        boolean equals = value.equals(o);
+        boolean equals = value.equals(String.valueOf(o));
         return isReverse() != equals;
     }
 }

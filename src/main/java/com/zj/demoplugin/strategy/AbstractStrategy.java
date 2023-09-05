@@ -6,6 +6,7 @@ import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.util.NlsString;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -61,12 +62,12 @@ public abstract class AbstractStrategy {
             return null;
         }
         Object value = sqlLiteral.getValue();
-        if (Objects.isNull(value)) {
-            return null;
-        }
         if (value instanceof NlsString) {
             value = ((NlsString) value).getValue().replaceAll("^'|'$", "");
         }
-        return value;
+        if (value instanceof Number) {
+            return new BigDecimal(String.valueOf(value));
+        }
+        return String.valueOf(value);
     }
 }
