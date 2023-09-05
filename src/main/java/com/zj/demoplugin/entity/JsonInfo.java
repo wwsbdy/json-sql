@@ -1,6 +1,8 @@
 package com.zj.demoplugin.entity;
 
+import com.intellij.openapi.ui.Messages;
 import com.intellij.util.ui.ColumnInfo;
+import com.zj.demoplugin.enums.NoticeEnum;
 import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
 
@@ -31,10 +33,18 @@ public class JsonInfo extends BaseJsonInfo {
         return sql;
     }
 
-    public void setSql(String sql) {
+    public void resetSql(String sql) {
         this.sql = sql;
         sqlNode = null;
         setSqlNode(sql);
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public void setSqlNode(SqlSelect sqlNode) {
+        this.sqlNode = sqlNode;
     }
 
     @Override
@@ -46,6 +56,10 @@ public class JsonInfo extends BaseJsonInfo {
     private synchronized void setSqlNode(String sql) {
         if (Objects.isNull(sqlNode)) {
             sqlNode = SqlUtil.toSqlSelect(sql);
+        }
+        if (Objects.isNull(sqlNode)) {
+            Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+            throw new RuntimeException();
         }
     }
 

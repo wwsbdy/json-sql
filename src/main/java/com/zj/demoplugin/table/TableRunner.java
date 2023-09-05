@@ -122,7 +122,7 @@ public class TableRunner {
         decorator.disableUpAction();
         decorator.disableUpDownActions();
         // 编辑sql按钮
-        AnActionButton editSql = new AnActionButton("sql：" + jsonInfo.getSql(), AllIcons.Actions.Find) {
+        AnActionButton editSql = new AnActionButton("SQL查询", AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(project, jsonInfo);
@@ -137,7 +137,7 @@ public class TableRunner {
         AnActionButton reset = new AnActionButton("重置", AllIcons.General.Reset) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                jsonInfo.setSql("select * from arr");
+                jsonInfo.resetSql("select * from arr");
                 dataModel.setColumnInfos(jsonInfo.getFields());
                 dataModel.setItems(jsonInfo.getRows());
             }

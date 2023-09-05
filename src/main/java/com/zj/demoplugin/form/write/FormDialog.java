@@ -3,10 +3,12 @@ package com.zj.demoplugin.form.write;
 import com.alibaba.fastjson.JSONArray;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
+import com.zj.demoplugin.enums.NoticeEnum;
 import com.zj.demoplugin.table.TableRunner;
 
 import javax.swing.*;
@@ -24,7 +26,6 @@ public class FormDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final JLabel json = new JLabel("json：");
     private final JTextPane jsonContent = new JTextPane();
 
     public FormDialog(Project project) {
@@ -55,11 +56,6 @@ public class FormDialog extends DialogWrapper {
         return null;
     }
 
-    /**
-     * 特别说明：不需要展示SouthPanel要重写返回null，否则IDEA将展示默认的"Cancel"和"OK"按钮
-     *
-     * @return
-     */
     @Override
     protected JComponent createSouthPanel() {
         final JPanel south = new JPanel();
@@ -104,11 +100,16 @@ public class FormDialog extends DialogWrapper {
             public void actionPerformed(ActionEvent actionEvent) {
                 //获取到name和age
                 String jsonStr = jsonContent.getText();
-                JSONArray jsonArray = JSONArray.parseArray(jsonStr);
-                // 打开表格
-                new TableRunner(project).run(jsonArray);
-                // 关闭窗口
-                doCancelAction();
+                try {
+                    JSONArray jsonArray = JSONArray.parseArray(jsonStr);
+                    // 打开表格
+                    new TableRunner(project).run(jsonArray);
+                    // 关闭窗口
+                    doCancelAction();
+                }catch (Exception e) {
+                    Messages.showErrorDialog(project, NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
+                }
+
             }
         });
         return south;

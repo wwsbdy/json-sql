@@ -2,17 +2,20 @@ package com.zj.demoplugin.form.sql;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.components.JBTextArea;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.demoplugin.entity.JsonInfo;
-import org.apache.commons.lang3.StringUtils;
+import com.zj.demoplugin.enums.NoticeEnum;
+import com.zj.demoplugin.utils.SqlUtil;
+import org.apache.calcite.sql.SqlSelect;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Objects;
 
 /**
  * @author arthur_zhou
@@ -25,7 +28,7 @@ public class SqlDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final JBTextArea sqlContent = new JBTextArea();
+    private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
 
     public SqlDialog(Project project, JsonInfo jsonInfo) {
@@ -45,11 +48,6 @@ public class SqlDialog extends DialogWrapper {
         return null;
     }
 
-    /**
-     * 特别说明：不需要展示SouthPanel要重写返回null，否则IDEA将展示默认的"Cancel"和"OK"按钮
-     *
-     * @return
-     */
     @Override
     protected JComponent createSouthPanel() {
         final JPanel south = new JPanel();
@@ -66,11 +64,15 @@ public class SqlDialog extends DialogWrapper {
             public void actionPerformed(ActionEvent actionEvent) {
                 //获取到name和age
                 String sqlStr = sqlContent.getText();
-                if (StringUtils.isNotEmpty(sqlStr)) {
+                SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                if (Objects.isNull(sqlSelect)) {
+                    Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+                } else {
                     jsonInfo.setSql(sqlStr);
+                    jsonInfo.setSqlNode(sqlSelect);
+                    // 关闭窗口
+                    doCancelAction();
                 }
-                // 关闭窗口
-                doCancelAction();
             }
         });
         return south;
