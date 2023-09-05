@@ -35,9 +35,10 @@ patchPluginXml {
     changeNotes """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
-    // 这个意思是说当前定义的这个插件最早支持到什么版本的IDEA
-    // 这里配置sinceBuild=191，表示插件只能被版本号大于等于2019.1版本的IDEA安装，低于这个版本的将抛无法兼容的错误
-    sinceBuild "201"
+    // 前两位代表主版本的后两位【2020中20】， 最后一位是副版本 也就是2020.1
+    sinceBuild = "201"
+    // 最高支持版本
+    untilBuild = '233.*'
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

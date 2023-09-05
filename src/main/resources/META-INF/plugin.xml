@@ -23,7 +23,7 @@
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
-    <idea-version since-build="201"/>
+    <idea-version since-build="201" until-build="233.*"/>
 
     <actions>
         <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.form.write.FromAction"

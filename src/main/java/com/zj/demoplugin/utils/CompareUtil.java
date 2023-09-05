@@ -1,5 +1,7 @@
 package com.zj.demoplugin.utils;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -24,10 +26,12 @@ public class CompareUtil {
         if (Objects.isNull(var2)) {
             return 1;
         }
-        if (var1 instanceof Number && var2 instanceof Number) {
-            return new BigDecimal(var1.toString()).compareTo(new BigDecimal(var2.toString()));
+        String str1 = var1.toString();
+        String str2 = var2.toString();
+        if (NumberUtils.isNumber(str1) && NumberUtils.isNumber(str2)) {
+            return new BigDecimal(str1).compareTo(new BigDecimal(str2));
         }
-        return var1.toString().compareTo(var2.toString());
+        return str1.compareTo(str2);
     }
 
 }

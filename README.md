@@ -78,7 +78,7 @@ tasks.withType(JavaCompile) {
 }
 ```
 
-### 7.依赖冲突
+### 8.依赖冲突
 
 org.apache.calcite:calcite-core:1.35.0 和 com.jetbrains:ideaIC:2020.1.2 的 slf4j依赖冲突
 
@@ -88,6 +88,16 @@ dependencies {
     implementation("org.apache.calcite:calcite-core:1.35.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
+}
+```
+
+### 9.IDEA2021.3不支持安装该插件
+
+在build.gradle里配置最高版本和最低版本
+```
+patchPluginXml {
+    sinceBuild = "201"
+    untilBuild = '233.*'
 }
 ```
 
