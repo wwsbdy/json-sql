@@ -7,10 +7,12 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
+import com.zj.demoplugin.constant.Constant;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.enums.NoticeEnum;
 import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,14 +66,18 @@ public class SqlDialog extends DialogWrapper {
             public void actionPerformed(ActionEvent actionEvent) {
                 //获取到name和age
                 String sqlStr = sqlContent.getText();
-                SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
-                if (Objects.isNull(sqlSelect)) {
-                    Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+                if (StringUtils.isNotEmpty(sqlStr) && sqlStr.length() > Constant.SQL_MAX) {
+                    Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
                 } else {
-                    jsonInfo.setSql(sqlStr);
-                    jsonInfo.setSqlNode(sqlSelect);
-                    // 关闭窗口
-                    doCancelAction();
+                    SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                    if (Objects.isNull(sqlSelect)) {
+                        Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+                    } else {
+                        jsonInfo.setSql(sqlStr);
+                        jsonInfo.setSqlNode(sqlSelect);
+                        // 关闭窗口
+                        doCancelAction();
+                    }
                 }
             }
         });

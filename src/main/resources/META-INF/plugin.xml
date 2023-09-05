@@ -27,7 +27,7 @@
 
     <actions>
         <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.form.write.FromAction"
-                text="解析jsonArray" description="解析jsonArray">
+                text="JsonArray解析" description="JsonArray解析">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>

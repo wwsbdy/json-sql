@@ -27,16 +27,17 @@ public class JsonInfo extends BaseJsonInfo {
     public JsonInfo(List<Field> columns, List<MyJson> list) {
         super(columns, list);
         this.sql = "select * from arr";
+        setSqlNode();
     }
 
     public String getSql() {
         return sql;
     }
 
-    public void resetSql(String sql) {
-        this.sql = sql;
+    public void resetSql() {
+        this.sql = "select * from arr";
         sqlNode = null;
-        setSqlNode(sql);
+        setSqlNode();
     }
 
     public void setSql(String sql) {
@@ -49,23 +50,20 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public ColumnInfo<?, ?>[] getFields() {
-        setSqlNode(sql);
         return SqlUtil.getFields(super.getColumns(), sqlNode);
     }
 
-    private synchronized void setSqlNode(String sql) {
+    private void setSqlNode() {
         if (Objects.isNull(sqlNode)) {
             sqlNode = SqlUtil.toSqlSelect(sql);
         }
         if (Objects.isNull(sqlNode)) {
-            Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
             throw new RuntimeException();
         }
     }
 
     @Override
     public List<MyJson> getRows() {
-        setSqlNode(sql);
         return SqlUtil.getDataList(super.getList(), sqlNode);
     }
 }
