@@ -91,7 +91,7 @@ public class RangeStrategy extends AbstractStrategy {
         Object convert = JsonUtil.convert(o);
         // 如果是数组，只要有一个满足就行
         if (convert instanceof List) {
-            List list = (List) convert;
+            List<?> list = (List<?>) convert;
             for (Object o1 : list) {
                 if (range.compare(o1)) {
                     equals = true;
