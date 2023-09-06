@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 判空
+ *
  * @author arthur_zhou
  */
 public class NullStrategy extends AbstractStrategy {

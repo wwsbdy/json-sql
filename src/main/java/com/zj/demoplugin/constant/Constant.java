@@ -17,5 +17,5 @@ public interface Constant {
     /**
      * 最大SQL长度
      */
-    int SQL_MAX = 100;
+    int SQL_MAX = 300;
 }
