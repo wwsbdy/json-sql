@@ -93,7 +93,14 @@ public class SqlUtil {
         Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
         // 取交集
         select.removeIf(v -> {
-            String type = typeMap.get(v.getOriginalName());
+            if (StringUtils.isEmpty(v.getOriginalName())) {
+                return true;
+            }
+            String[] keys = v.getOriginalName().split("\\.");
+            if (keys.length == 0) {
+                return true;
+            }
+            String type = typeMap.get(keys[0]);
             if (StringUtils.isEmpty(type)) {
                 return true;
             }
