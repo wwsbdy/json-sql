@@ -11,7 +11,7 @@ public enum NoticeEnum {
     /**
      * sql错误
      */
-    SQL_ERROR("SQL解析错误", "请检查SQL，支持：查询、等值、like、null、in、<>、范围、排序、limit；不支持：insert等、union、group、函数"),
+    SQL_ERROR("SQL解析错误", "请检查SQL，支持：查询、等值、like、null、in、范围、排序、limit；不支持：insert等、union、group、函数"),
     /**
      * Json过长
      */

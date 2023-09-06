@@ -46,6 +46,10 @@ public class StrategyBean {
                     return new LikeStrategy(true, where.getOperandList());
                 }
                 return ALWAYS_FALSE_STRATEGY;
+            case IS_NULL:
+                return new NullStrategy(false, where.getOperandList());
+            case IS_NOT_NULL:
+                return new NullStrategy(true, where.getOperandList());
             case GREATER_THAN:
             case GREATER_THAN_OR_EQUAL:
             case LESS_THAN:
