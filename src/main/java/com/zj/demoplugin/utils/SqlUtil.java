@@ -9,6 +9,7 @@ import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.sql.validate.SqlConformanceEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class SqlUtil {
     static {
         CONFIG = SqlParser.config()
                 .withLex(Lex.MYSQL)
+                .withConformance(SqlConformanceEnum.MYSQL_5)
                 // 保持原有大小写
                 .withCaseSensitive(false);
     }
@@ -59,6 +61,14 @@ public class SqlUtil {
                     .collect(Collectors.toMap(v-> StringUtils.isEmpty(v.getName()) ? v.getOriginalName() : v.getName(), Field::getOriginalName, (v1, v2) -> v2));
             SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
             stream = stream.sorted(sortStrategy::orderBy);
+        }
+        SqlNode offset = sqlNode.getOffset();
+        if (Objects.nonNull(offset)) {
+            stream = stream.skip(Long.parseLong(offset.toString()));
+        }
+        SqlNode fetch = sqlNode.getFetch();
+        if (Objects.nonNull(fetch)) {
+            stream = stream.limit(Long.parseLong(fetch.toString()));
         }
         return stream.collect(Collectors.toList());
     }
@@ -146,7 +156,6 @@ public class SqlUtil {
             SqlParser parser = SqlParser.create(sql, CONFIG);
             SqlNode node = parser.parseStmt();
             SqlKind kind = node.getKind();
-            // 不支持!= 可以使用 <>
             if (SqlKind.SELECT == kind) {
                 return (SqlSelect) node;
             }
@@ -154,6 +163,8 @@ public class SqlUtil {
                 SqlOrderBy orderBy = (SqlOrderBy) node;
                 SqlSelect query = (SqlSelect) orderBy.query;
                 query.setOrderBy(orderBy.orderList);
+                query.setOffset(orderBy.offset);
+                query.setFetch(orderBy.fetch);
                 return query;
             }
             return null;

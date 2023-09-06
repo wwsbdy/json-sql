@@ -1,10 +1,7 @@
 package com.zj.demoplugin.strategy;
 
 import com.zj.demoplugin.entity.MyJson;
-import com.zj.demoplugin.strategy.impl.EqualsStrategy;
-import com.zj.demoplugin.strategy.impl.InStrategy;
-import com.zj.demoplugin.strategy.impl.RangeStrategy;
-import com.zj.demoplugin.strategy.impl.RelationStrategy;
+import com.zj.demoplugin.strategy.impl.*;
 import org.apache.calcite.sql.SqlBasicCall;
 
 import java.util.Objects;
@@ -41,6 +38,14 @@ public class StrategyBean {
                 return new InStrategy(false, where.getOperandList());
             case NOT_IN:
                 return new InStrategy(true, where.getOperandList());
+            case LIKE:
+                String operator = String.valueOf(where.getOperator());
+                if (LikeStrategy.LIKE.equals(operator)) {
+                    return new LikeStrategy(false, where.getOperandList());
+                } else if (LikeStrategy.NOT_LIKE.equals(operator)) {
+                    return new LikeStrategy(true, where.getOperandList());
+                }
+                return ALWAYS_FALSE_STRATEGY;
             case GREATER_THAN:
             case GREATER_THAN_OR_EQUAL:
             case LESS_THAN:
