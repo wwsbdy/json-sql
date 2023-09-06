@@ -27,7 +27,9 @@ public class LikeStrategy extends AbstractStrategy {
             return;
         }
         setField(operandList.get(0).toString());
-        this.value = String.valueOf(getValue(operandList.get(1))).replaceAll("%", ".*");
+        this.value = String.valueOf(getValue(operandList.get(1)))
+                .replaceAll("_", ".")
+                .replaceAll("%", ".*");
     }
 
     @Override
