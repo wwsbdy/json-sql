@@ -42,7 +42,7 @@ public class SortStrategy {
         for (SqlNode sqlNode : orderList) {
             if (sqlNode instanceof SqlIdentifier) {
                 SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
-                sortList.add(new Sort(sqlIdentifier.getSimple()));
+                sortList.add(new Sort(sqlIdentifier.toString()));
             }
             if (sqlNode instanceof SqlBasicCall) {
                 SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
