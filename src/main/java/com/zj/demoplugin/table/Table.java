@@ -6,9 +6,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
+import com.intellij.ui.wizard.WizardModel;
 import com.intellij.util.ui.ListTableModel;
+import com.zj.demoplugin.entity.ExportInfo;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
+import com.zj.demoplugin.form.export.Json;
+import com.zj.demoplugin.form.export.MyWizardDialog;
+import com.zj.demoplugin.form.export.Setting;
 import com.zj.demoplugin.form.sql.SqlDialog;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,9 +68,12 @@ public class Table {
         AnActionButton export = new AnActionButton("导出", AllIcons.Actions.Commit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                jsonInfo.resetSql();
-                dataModel.setColumnInfos(jsonInfo.getFields());
-                dataModel.setItems(jsonInfo.getRows());
+                WizardModel wizardModel = new WizardModel("导出");
+                ExportInfo exportInfo = new ExportInfo();
+                wizardModel.add(new Setting(exportInfo));
+                wizardModel.add(new Json(exportInfo));
+                MyWizardDialog wizardDialog = new MyWizardDialog(project, true, wizardModel);
+                wizardDialog.show();
             }
         };
         decorator.addExtraAction(editSql);
