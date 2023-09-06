@@ -96,6 +96,6 @@ public class SortStrategy {
             return null;
         }
         split[0] = realColumn;
-        return var.get(String.join(".", split));
+        return var.get(split);
     }
 }

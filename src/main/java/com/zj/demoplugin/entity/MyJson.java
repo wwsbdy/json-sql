@@ -49,11 +49,16 @@ public class MyJson {
      * @return
      */
     public Object get(String key) {
-        if (Objects.isNull(jsonObject) || StringUtils.isEmpty(key)) {
+        if (StringUtils.isEmpty(key)) {
             return null;
         }
         String[] keys = key.split("\\.");
-        if (keys.length == 0) {
+        return get(keys);
+    }
+
+    @Nullable
+    public Object get(String[] keys) {
+        if (Objects.isNull(jsonObject) || Objects.isNull(keys) || keys.length == 0) {
             return null;
         }
         Object object = jsonObject;
