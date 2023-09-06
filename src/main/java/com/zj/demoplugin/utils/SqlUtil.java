@@ -3,16 +3,15 @@ package com.zj.demoplugin.utils;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.AbstractStrategy;
+import com.zj.demoplugin.strategy.SortStrategy;
 import com.zj.demoplugin.strategy.StrategyBean;
 import org.apache.calcite.config.Lex;
-import org.apache.calcite.sql.SqlBasicCall;
-import org.apache.calcite.sql.SqlKind;
-import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.SqlSelect;
+import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,10 +35,11 @@ public class SqlUtil {
      * 获取满足条件的数据
      *
      * @param dataList
+     * @param columns
      * @param sqlNode
      * @return
      */
-    public static List<MyJson> getDataList(List<MyJson> dataList, SqlSelect sqlNode) {
+    public static List<MyJson> getDataList(List<MyJson> dataList, List<Field> columns, SqlSelect sqlNode) {
         Objects.requireNonNull(sqlNode);
         if (CollectionUtils.isEmpty(dataList)) {
             return Collections.emptyList();
@@ -47,9 +47,19 @@ public class SqlUtil {
         SqlNode where = sqlNode.getWhere();
         AbstractStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
         Stream<MyJson> stream = dataList.stream().filter(strategy::apply);
-//        if (Objects.nonNull(sql.getLimit())) {
-//            stream = stream.skip(sql.getLimit().getFrom()).limit(sql.getLimit().getSize());
-//        }
+        SqlNodeList orderList = sqlNode.getOrderList();
+        if (CollectionUtils.isNotEmpty(orderList)) {
+            // 获取查询的字段
+            List<Field> selectList = getSelectList(columns, sqlNode);
+            // 追加表字段
+            selectList.addAll(columns);
+            // 获取别名和原始名
+            Map<String, String> nameMap = selectList.stream()
+                    .filter(v->StringUtils.isNotEmpty(v.getOriginalName()))
+                    .collect(Collectors.toMap(v-> StringUtils.isEmpty(v.getName()) ? v.getOriginalName() : v.getName(), Field::getOriginalName, (v1, v2) -> v2));
+            SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
+            stream = stream.sorted(sortStrategy::orderBy);
+        }
         return stream.collect(Collectors.toList());
     }
 
@@ -65,6 +75,35 @@ public class SqlUtil {
         if (CollectionUtils.isEmpty(columns)) {
             return Collections.emptyList();
         }
+        List<Field> select = getSelectList(columns, sqlNode);
+        Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
+        // 取交集
+        select.removeIf(v -> {
+            if (StringUtils.isEmpty(v.getOriginalName())) {
+                return true;
+            }
+            String[] keys = v.getOriginalName().split("\\.");
+            if (keys.length == 0) {
+                return true;
+            }
+            String type = typeMap.get(keys[0]);
+            if (StringUtils.isEmpty(type)) {
+                return true;
+            }
+            v.setType(type);
+            return false;
+        });
+        return select;
+    }
+
+    /**
+     * 获取查询字段
+     * @param columns
+     * @param sqlNode
+     * @return
+     */
+    @NotNull
+    public static List<Field> getSelectList(List<Field> columns, SqlSelect sqlNode) {
         List<Field> select = new ArrayList<>();
         for (SqlNode node : sqlNode.getSelectList()) {
             String name = node.toString();
@@ -90,23 +129,6 @@ public class SqlUtil {
                     break;
             }
         }
-        Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
-        // 取交集
-        select.removeIf(v -> {
-            if (StringUtils.isEmpty(v.getOriginalName())) {
-                return true;
-            }
-            String[] keys = v.getOriginalName().split("\\.");
-            if (keys.length == 0) {
-                return true;
-            }
-            String type = typeMap.get(keys[0]);
-            if (StringUtils.isEmpty(type)) {
-                return true;
-            }
-            v.setType(type);
-            return false;
-        });
         return select;
     }
 
@@ -127,6 +149,12 @@ public class SqlUtil {
             // 不支持!= 可以使用 <>
             if (SqlKind.SELECT == kind) {
                 return (SqlSelect) node;
+            }
+            if (SqlKind.ORDER_BY == kind) {
+                SqlOrderBy orderBy = (SqlOrderBy) node;
+                SqlSelect query = (SqlSelect) orderBy.query;
+                query.setOrderBy(orderBy.orderList);
+                return query;
             }
             return null;
         } catch (SqlParseException e) {

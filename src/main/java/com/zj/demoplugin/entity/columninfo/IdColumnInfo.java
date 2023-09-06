@@ -1,7 +1,8 @@
-package com.zj.demoplugin.entity;
+package com.zj.demoplugin.entity.columninfo;
 
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.ColumnInfo;
+import com.zj.demoplugin.entity.MyJson;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nullable;
 

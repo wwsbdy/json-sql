@@ -1,6 +1,5 @@
 package com.zj.demoplugin.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**

@@ -21,7 +21,6 @@ dependencies {
     implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-    implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '2.6.1'
     implementation("org.apache.calcite:calcite-core:1.35.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }

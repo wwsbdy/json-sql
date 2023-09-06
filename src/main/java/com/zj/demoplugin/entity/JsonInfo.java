@@ -1,6 +1,9 @@
 package com.zj.demoplugin.entity;
 
 import com.intellij.util.ui.ColumnInfo;
+import com.zj.demoplugin.entity.columninfo.BooleanColumnInfo;
+import com.zj.demoplugin.entity.columninfo.IdColumnInfo;
+import com.zj.demoplugin.entity.columninfo.StrColumnInfo;
 import com.zj.demoplugin.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,8 +28,7 @@ public class JsonInfo extends BaseJsonInfo {
 
     public JsonInfo(List<Field> columns, List<MyJson> list) {
         super(columns, list);
-        this.sql = "select * from arr";
-        setSqlNode();
+        resetSql();
     }
 
     public String getSql() {
@@ -64,7 +66,7 @@ public class JsonInfo extends BaseJsonInfo {
         return columnInfos;
     }
 
-    private void setSqlNode() {
+    private synchronized void setSqlNode() {
         if (Objects.isNull(sqlNode)) {
             sqlNode = SqlUtil.toSqlSelect(sql);
         }
@@ -75,7 +77,7 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public List<MyJson> getRows() {
-        List<MyJson> dataList = SqlUtil.getDataList(super.getList(), sqlNode);
+        List<MyJson> dataList = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
         for (int i = 0; i < dataList.size(); i++) {
             dataList.get(i).setId(i + 1);
         }

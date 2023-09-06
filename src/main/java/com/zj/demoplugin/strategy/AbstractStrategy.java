@@ -57,6 +57,11 @@ public abstract class AbstractStrategy {
      */
     public abstract boolean apply(MyJson item);
 
+    /**
+     * 获取值
+     * @param sqlNode
+     * @return
+     */
     protected static Object getValue(SqlNode sqlNode) {
         if (sqlNode instanceof SqlIdentifier){
             return ((SqlIdentifier) sqlNode).getSimple();

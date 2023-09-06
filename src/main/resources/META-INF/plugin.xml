@@ -26,7 +26,7 @@
     <idea-version since-build="201" until-build="233.*"/>
 
     <actions>
-        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.form.write.FromAction"
+        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.form.json.FromAction"
                 text="JsonArray解析" description="JsonArray解析">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
