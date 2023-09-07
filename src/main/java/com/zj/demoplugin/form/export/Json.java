@@ -1,5 +1,7 @@
 package com.zj.demoplugin.form.export;
 
+import com.intellij.json.JsonLanguage;
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
@@ -7,6 +9,7 @@ import com.intellij.ui.wizard.WizardStep;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
+import com.zj.demoplugin.edit.CustomEditorField;
 import com.zj.demoplugin.entity.ExportInfo;
 
 import javax.swing.*;
@@ -18,9 +21,11 @@ import java.awt.*;
 public class Json extends WizardStep<WizardModel> {
 
     private final ExportInfo exportInfo;
+    private final Project project;
 
-    public Json(ExportInfo exportInfo) {
+    public Json(ExportInfo exportInfo, Project project) {
         this.exportInfo = exportInfo;
+        this.project = project;
     }
 
     @Override
@@ -36,7 +41,7 @@ public class Json extends WizardStep<WizardModel> {
         panel1.add(center, BorderLayout.CENTER);
         final JBScrollPane scrollPane1 = new JBScrollPane();
         center.add(scrollPane1, BorderLayout.CENTER);
-        scrollPane1.setViewportView(new JTextPane());
+        scrollPane1.setViewportView(new CustomEditorField(JsonLanguage.INSTANCE, project, ""));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);

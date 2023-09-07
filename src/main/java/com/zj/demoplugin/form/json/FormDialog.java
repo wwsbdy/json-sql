@@ -1,6 +1,7 @@
 package com.zj.demoplugin.form.json;
 
 import com.alibaba.fastjson.JSONArray;
+import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -9,6 +10,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.demoplugin.constant.Constant;
+import com.zj.demoplugin.edit.CustomEditorField;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
@@ -33,7 +35,7 @@ public class FormDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final JTextPane jsonContent = new JTextPane();
+    private final CustomEditorField jsonContent;
 
     public FormDialog(Project project) {
         super(true);
@@ -41,8 +43,9 @@ public class FormDialog extends DialogWrapper {
         setTitle("输入json");
         // 获取到当前项目的名称
         this.project = project;
+        jsonContent = new CustomEditorField(JsonLanguage.INSTANCE, project, "");
+        jsonContent.setPreferredSize(new Dimension(500, 700));
         // 触发一下init方法，否则swing样式将无法展示在会话框
-
         init();
     }
 

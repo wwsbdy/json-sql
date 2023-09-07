@@ -56,7 +56,9 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setRound(roundCheckBox.isSelected());
             }
         });
-        jPanel.add(new JLabel("平铺数组"));
+        JLabel label = new JLabel("平铺数组");
+        label.setToolTipText("<html>仅有一个字段导出时，会把对象平铺成基础值</html>");
+        jPanel.add(label);
         jPanel.add(roundCheckBox);
         JBCheckBox beautifyCheckBox = new JBCheckBox();
         beautifyCheckBox.addActionListener(new AbstractAction() {
@@ -67,6 +69,9 @@ public class Setting extends WizardStep<WizardModel> {
         });
         jPanel.add(new JLabel("美化Json"));
         jPanel.add(beautifyCheckBox);
-        return jPanel;
+        JPanel resultPanel = new JPanel(new GridLayout(4, 1));
+        resultPanel.setPreferredSize(new Dimension(500, 500));
+        resultPanel.add(jPanel);
+        return resultPanel;
     }
 }

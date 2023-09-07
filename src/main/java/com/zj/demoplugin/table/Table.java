@@ -71,7 +71,7 @@ public class Table {
                 WizardModel wizardModel = new WizardModel("导出");
                 ExportInfo exportInfo = new ExportInfo();
                 wizardModel.add(new Setting(exportInfo));
-                wizardModel.add(new Json(exportInfo));
+                wizardModel.add(new Json(exportInfo, project));
                 MyWizardDialog wizardDialog = new MyWizardDialog(project, true, wizardModel);
                 wizardDialog.show();
             }
