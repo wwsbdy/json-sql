@@ -3,6 +3,9 @@ package com.zj.demoplugin.form.export;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.wizard.WizardDialog;
 import com.intellij.ui.wizard.WizardModel;
+import com.zj.demoplugin.entity.ExportInfo;
+import com.zj.demoplugin.entity.JsonInfo;
+import com.zj.demoplugin.utils.JsonUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +18,14 @@ import java.util.Objects;
  */
 public class MyWizardDialog extends WizardDialog<WizardModel> {
 
-    public MyWizardDialog(Project project, boolean canBeParent, WizardModel model) {
+    private final ExportInfo exportInfo;
+    private final JsonInfo jsonInfo;
+
+    public MyWizardDialog(ExportInfo exportInfo, JsonInfo jsonInfo, Project project, boolean canBeParent, WizardModel model) {
         super(project, canBeParent, model);
+        this.jsonInfo = jsonInfo;
         setResizable(false);
+        this.exportInfo = exportInfo;
     }
 
     @Override
@@ -29,7 +37,9 @@ public class MyWizardDialog extends WizardDialog<WizardModel> {
         if (Objects.nonNull(components) && components.length > 0) {
             JPanel panel = (JPanel) components[0];
             panel1.add(panel.getComponent(0));
-            panel1.add(panel.getComponent(0));
+            JButton jButton = (JButton) panel.getComponent(0);
+            jButton.addActionListener(event -> exportInfo.setJsonArrayStr(JsonUtil.getJsonStr(jsonInfo, exportInfo)));
+            panel1.add(jButton);
         }
         final JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(panel1, BorderLayout.EAST);

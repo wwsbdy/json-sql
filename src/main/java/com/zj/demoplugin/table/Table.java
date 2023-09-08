@@ -72,7 +72,7 @@ public class Table {
                 ExportInfo exportInfo = new ExportInfo();
                 wizardModel.add(new Setting(exportInfo));
                 wizardModel.add(new Json(exportInfo, project));
-                MyWizardDialog wizardDialog = new MyWizardDialog(project, true, wizardModel);
+                MyWizardDialog wizardDialog = new MyWizardDialog(exportInfo, jsonInfo, project, true, wizardModel);
                 wizardDialog.show();
             }
         };

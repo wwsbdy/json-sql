@@ -24,4 +24,6 @@ public class ExportInfo {
      */
     private boolean beautify;
 
+    private String jsonArrayStr = "";
+
 }

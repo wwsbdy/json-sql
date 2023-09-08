@@ -2,6 +2,7 @@ package com.zj.demoplugin.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.zj.demoplugin.entity.ExportInfo;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
@@ -120,7 +121,10 @@ public class JsonUtil {
         List<Field> columns = SqlUtil.getColumn(jsonInfo, realExportInfo.getColumn());
         // 组装数据
         JSONArray jsonArray = getJsonArray(rows, columns, realExportInfo.isRound());
-        // todo 是否美化
+        // 是否美化
+        if (realExportInfo.isBeautify()) {
+            return jsonArray.toString(SerializerFeature.PrettyFormat);
+        }
         return jsonArray.toString();
     }
 

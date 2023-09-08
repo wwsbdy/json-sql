@@ -2,6 +2,7 @@ package com.zj.demoplugin.form.export;
 
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.AncestorListenerAdapter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
@@ -13,6 +14,7 @@ import com.zj.demoplugin.edit.CustomEditorField;
 import com.zj.demoplugin.entity.ExportInfo;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
 import java.awt.*;
 
 /**
@@ -41,7 +43,14 @@ public class Json extends WizardStep<WizardModel> {
         panel1.add(center, BorderLayout.CENTER);
         final JBScrollPane scrollPane1 = new JBScrollPane();
         center.add(scrollPane1, BorderLayout.CENTER);
-        scrollPane1.setViewportView(new CustomEditorField(JsonLanguage.INSTANCE, project, ""));
+        CustomEditorField customEditorField = new CustomEditorField(JsonLanguage.INSTANCE, project, "");
+        customEditorField.addAncestorListener(new AncestorListenerAdapter() {
+            @Override
+            public void ancestorAdded(AncestorEvent event) {
+                customEditorField.setText(exportInfo.getJsonArrayStr());
+            }
+        });
+        scrollPane1.setViewportView(customEditorField);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
