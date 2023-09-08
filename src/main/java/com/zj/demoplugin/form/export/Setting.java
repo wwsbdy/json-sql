@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * @author arthur_zhou
+ */
 public class Setting extends WizardStep<WizardModel> {
 
     private final ExportInfo exportInfo;
@@ -27,6 +30,7 @@ public class Setting extends WizardStep<WizardModel> {
         rowComboBox.addItem("SQL查询");
         rowComboBox.addItem("勾选行");
         rowComboBox.addItem("全部");
+        rowComboBox.setSelectedIndex(exportInfo.getRow());
         rowComboBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -40,6 +44,7 @@ public class Setting extends WizardStep<WizardModel> {
         ComboBox<Object> columnComboBox = new ComboBox<>();
         columnComboBox.addItem("SQL查询");
         columnComboBox.addItem("全部");
+        columnComboBox.setSelectedIndex(exportInfo.getColumn());
         columnComboBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,6 +55,7 @@ public class Setting extends WizardStep<WizardModel> {
         jPanel.add(columnComboBox);
 
         JBCheckBox roundCheckBox = new JBCheckBox();
+        roundCheckBox.setSelected(exportInfo.isRound());
         roundCheckBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,6 +67,7 @@ public class Setting extends WizardStep<WizardModel> {
         jPanel.add(label);
         jPanel.add(roundCheckBox);
         JBCheckBox beautifyCheckBox = new JBCheckBox();
+        beautifyCheckBox.setSelected(exportInfo.isBeautify());
         beautifyCheckBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
