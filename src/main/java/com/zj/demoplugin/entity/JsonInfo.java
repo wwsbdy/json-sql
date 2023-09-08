@@ -5,6 +5,7 @@ import com.zj.demoplugin.entity.columninfo.BooleanColumnInfo;
 import com.zj.demoplugin.entity.columninfo.IdColumnInfo;
 import com.zj.demoplugin.entity.columninfo.StrColumnInfo;
 import com.zj.demoplugin.utils.SqlUtil;
+import lombok.Getter;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
  *
  * @author arthur_zhou
  */
+@Getter
 public class JsonInfo extends BaseJsonInfo {
     /**
      * sql语句
@@ -25,14 +27,18 @@ public class JsonInfo extends BaseJsonInfo {
      * sql解析树
      */
     private SqlSelect sqlNode;
+    /**
+     * 查询列
+     */
+    private List<Field> select;
+    /**
+     * 查询结果
+     */
+    private List<MyJson> result;
 
     public JsonInfo(List<Field> columns, List<MyJson> list) {
         super(columns, list);
         resetSql();
-    }
-
-    public String getSql() {
-        return sql;
     }
 
     public void resetSql() {
@@ -51,7 +57,7 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public ColumnInfo<?, ?>[] getFields() {
-        List<Field> select = SqlUtil.getFields(super.getColumns(), sqlNode);
+        select = SqlUtil.getFields(super.getColumns(), sqlNode);
         if (CollectionUtils.isEmpty(select)) {
             return new ColumnInfo[0];
         }
@@ -66,7 +72,7 @@ public class JsonInfo extends BaseJsonInfo {
         return columnInfos;
     }
 
-    private synchronized void setSqlNode() {
+    private void setSqlNode() {
         if (Objects.isNull(sqlNode)) {
             sqlNode = SqlUtil.toSqlSelect(sql);
         }
@@ -77,10 +83,10 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public List<MyJson> getRows() {
-        List<MyJson> dataList = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
-        for (int i = 0; i < dataList.size(); i++) {
-            dataList.get(i).setId(i + 1);
+        result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
+        for (int i = 0; i < result.size(); i++) {
+            result.get(i).setId(i + 1);
         }
-        return dataList;
+        return result;
     }
 }

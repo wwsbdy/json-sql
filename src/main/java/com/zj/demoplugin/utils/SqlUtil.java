@@ -1,6 +1,7 @@
 package com.zj.demoplugin.utils;
 
 import com.zj.demoplugin.entity.Field;
+import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.strategy.AbstractStrategy;
 import com.zj.demoplugin.strategy.SortStrategy;
@@ -57,8 +58,7 @@ public class SqlUtil {
             selectList.addAll(columns);
             // 获取别名和原始名
             Map<String, String> nameMap = selectList.stream()
-                    .filter(v->StringUtils.isNotEmpty(v.getOriginalName()))
-                    .collect(Collectors.toMap(v-> StringUtils.isEmpty(v.getName()) ? v.getOriginalName() : v.getName(), Field::getOriginalName, (v1, v2) -> v2));
+                    .collect(Collectors.toMap(Field::getName, Field::getOriginalName, (v1, v2) -> v2));
             SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
             stream = stream.sorted(sortStrategy::orderBy);
         }
@@ -108,6 +108,7 @@ public class SqlUtil {
 
     /**
      * 获取查询字段
+     *
      * @param columns
      * @param sqlNode
      * @return
@@ -170,6 +171,42 @@ public class SqlUtil {
             return null;
         } catch (SqlParseException e) {
             return null;
+        }
+    }
+
+    /**
+     * 获取导出行
+     *
+     * @param jsonInfo
+     * @param row       0-SQL查询，1-勾选行，2-全部
+     * @return
+     */
+    public static List<MyJson> getRow(JsonInfo jsonInfo, int row) {
+        switch (row) {
+            case 0:
+                return jsonInfo.getResult();
+            case 1:
+                return jsonInfo.getResult().stream().filter(MyJson::isSelected).collect(Collectors.toList());
+            case 2:
+                return jsonInfo.getList();
+            default:
+                return Collections.emptyList();
+        }
+    }
+
+    /**
+     * @param jsonInfo
+     * @param column   0-SQL查询，1-全部
+     * @return
+     */
+    public static List<Field> getColumn(JsonInfo jsonInfo, int column) {
+        switch (column) {
+            case 0:
+                return jsonInfo.getSelect();
+            case 1:
+                return jsonInfo.getColumns();
+            default:
+                return Collections.emptyList();
         }
     }
 }

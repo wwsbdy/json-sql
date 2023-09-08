@@ -11,11 +11,11 @@ public abstract class BaseJsonInfo {
     /**
      * 原始列
      */
-    private List<Field> columns;
+    private final List<Field> columns;
     /**
      * 导入数据列表
      */
-    private List<MyJson> list;
+    private final List<MyJson> list;
 
     public List<Field> getColumns() {
         return columns;

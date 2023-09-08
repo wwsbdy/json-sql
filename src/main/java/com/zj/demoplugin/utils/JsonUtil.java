@@ -2,8 +2,13 @@ package com.zj.demoplugin.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zj.demoplugin.entity.ExportInfo;
+import com.zj.demoplugin.entity.Field;
+import com.zj.demoplugin.entity.JsonInfo;
+import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.enums.JsonEnum;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,6 +19,10 @@ import java.util.Objects;
  * @author 19242
  */
 public class JsonUtil {
+
+    private static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
+    private static final String EMPTY_JSON_ARRAY_STR = "[]";
+
 
     public static Object get(JSONObject jsonObject, String key) {
         if (Objects.isNull(jsonObject) || Objects.isNull(key)) {
@@ -85,5 +94,67 @@ public class JsonUtil {
             return CollectionUtils.isEmpty(list) ? null : list;
         }
         return object.toString();
+    }
+
+    /**
+     * 将jsonArray通过配置转成字符串
+     *
+     * @param jsonInfo
+     * @param exportInfo
+     * @return
+     */
+    public static String getJsonStr(JsonInfo jsonInfo, ExportInfo exportInfo) {
+        if (Objects.isNull(jsonInfo) || CollectionUtils.isEmpty(jsonInfo.getList())) {
+            return "";
+        }
+        ExportInfo realExportInfo;
+        if (Objects.isNull(realExportInfo = exportInfo)) {
+            realExportInfo = new ExportInfo();
+        }
+        // 获取行
+        List<MyJson> rows = SqlUtil.getRow(jsonInfo, realExportInfo.getRow());
+        if (CollectionUtils.isEmpty(rows)) {
+            return EMPTY_JSON_ARRAY_STR;
+        }
+        // 获取列
+        List<Field> columns = SqlUtil.getColumn(jsonInfo, realExportInfo.getColumn());
+        // 组装数据
+        JSONArray jsonArray = getJsonArray(rows, columns, realExportInfo.isRound());
+        // todo 是否美化
+        return jsonArray.toString();
+    }
+
+    /**
+     * 根据行和列组装JsonArray
+     *
+     * @param rows
+     * @param columns
+     * @param round   true且columns只有一个时，平铺
+     * @return
+     */
+    private static JSONArray getJsonArray(List<MyJson> rows, List<Field> columns, boolean round) {
+        JSONArray jsonArray = new JSONArray();
+        if (round && CollectionUtils.isNotEmpty(columns) && columns.size() == 1) {
+            String singleColumn = columns.get(0).getOriginalName();
+            for (MyJson row : rows) {
+                if (StringUtils.isNotEmpty(singleColumn)) {
+                    Object o = row.get(singleColumn);
+                    jsonArray.add(o);
+                }
+            }
+            return jsonArray;
+        }
+        for (MyJson row : rows) {
+            if (CollectionUtils.isEmpty(columns)) {
+                jsonArray.add(EMPTY_JSON_OBJECT);
+                continue;
+            }
+            JSONObject jsonObject = new JSONObject();
+            for (Field column : columns) {
+                jsonObject.put(column.getName(), row.get(column.getOriginalName()));
+            }
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 }
