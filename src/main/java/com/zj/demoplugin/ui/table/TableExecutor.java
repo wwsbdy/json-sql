@@ -12,9 +12,9 @@ import javax.swing.Icon;
 public class TableExecutor extends Executor {
 
 
-    public static final String PLUGIN_ID = "TableExecutor";
+    public static final String PLUGIN_ID = "JsonSql";
 
-    public static final String TOOL_WINDOW_ID = "TableExecutor";
+    public static final String TOOL_WINDOW_ID = "JsonSql";
 
     public static final String CONTEXT_ACTION_ID = "2222";
 
@@ -31,13 +31,13 @@ public class TableExecutor extends Executor {
 
     @Override
     public Icon getToolWindowIcon() {
-        return AllIcons.Actions.Redo;
+        return AllIcons.FileTypes.Json;
     }
 
     @NotNull
     @Override
     public Icon getIcon() {
-        return AllIcons.Actions.Redo;
+        return AllIcons.Actions.Show;
     }
 
     @Override

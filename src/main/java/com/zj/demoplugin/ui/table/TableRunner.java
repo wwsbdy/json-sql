@@ -67,7 +67,7 @@ public class TableRunner {
         descriptor.setExecutionId(System.nanoTime());
 
         JComponent jComponent = Table.create(project, jsonInfo);
-        final Content content = layoutUi.createContent("contentId", jComponent, "displayName2", AllIcons.Debugger.Console, jComponent);
+        final Content content = layoutUi.createContent("contentId", jComponent, "json数据", AllIcons.Toolwindows.ToolWindowMessages, jComponent);
         content.setCloseable(false);
         layoutUi.addContent(content);
 

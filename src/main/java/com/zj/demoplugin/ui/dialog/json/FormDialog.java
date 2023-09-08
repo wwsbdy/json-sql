@@ -76,34 +76,6 @@ public class FormDialog extends DialogWrapper {
         // 垂直居中
         submit.setVerticalAlignment(SwingConstants.CENTER);
         south.add(submit);
-        // todo
-        jsonContent.setText("[\n" +
-                "    {\n" +
-                "        \"name\": \"123\",\n" +
-                "        \"age\": 12,\n" +
-                "        \"sex\": true,\n" +
-                "        \"score\": 17.2\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"name\": \"vf\",\n" +
-                "        \"age\": 1234,\n" +
-                "        \"sex\": false,\n" +
-                "        \"score\": 2.6\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"name\": \"zjk\",\n" +
-                "        \"age\": 55,\n" +
-                "        \"sex\": true,\n" +
-                "        \"score\": 60\n" +
-                "    },\n" +
-                "    {\n" +
-                "        \"name\": \"lp;\",\n" +
-                "        \"age\": 15,\n" +
-                "        \"sex\": true,\n" +
-                "        \"level\": {\"level2\":[{\"abc\":1},{\"abc\":2},{\"abc\":3}]},\n" +
-                "        \"score\": 33.01\n" +
-                "    }\n" +
-                "]");
         //按钮事件绑定
         submit.addActionListener(new AbstractAction() {
             @Override

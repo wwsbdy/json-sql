@@ -1,24 +1,43 @@
 
 <idea-plugin>
     <!--插件的id，注意不要跟其他插件重复，这个id全局唯一，尽可能复杂些-->
-    <id>plugin.test</id>
+    <id>com.zj.demoplugin.JsonSql</id>
     <!--插件的名称-->
-    <name>PluginTest</name>
-    <vendor email="xxxx@qq.com" url="http://www.bilibili.com">你公司的名字</vendor>
+    <name>JsonSql</name>
+    <vendor>zhoujie</vendor>
 
     <!--插件的描述信息，支持html，展示的位置参考图14-->
     <description><![CDATA[
-    Plugin Test<br>
-    第一行：单纯只是个测试<br>
-    第二行：都说了只是个测试(●￣(ｴ)￣●)<br>
-    <a href='https://www.bilibili.com'>你猜猜这是哪个网站？</a>
-    <em>v1.0</em>
+    Json Sql<br>
+    将json通过sql查出想要的数据<br>
+    并把sql再转成json<br>
+    插件位于Tools里<br>
+    支持的sql语句有：
+    <ul>
+        <li>select *、name、name as alias、name.surname（多层查询）</li>
+        <li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null</li>
+        <li>and、or、嵌套and和or</li>
+        <li>order by asc、desc</li>
+        <li>limit 1,2</li>
+    </ul>
+    不支持的sql语句有：
+    <ul>
+        <li>update、insert、delete</li>
+        <li>group by</li>
+        <li>函数</li>
+        <li>连表</li>
+    </ul>
+    一些例子：
+    <ul>
+        <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
+        <li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')</li>
+    </ul>
     ]]></description>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <!-- 自定义 底部view -->
-        <executor id="TableExecutor" order="last"
+        <executor id="JsonSql" order="last"
                   implementation="com.zj.demoplugin.ui.table.TableExecutor"/>
     </extensions>
 
@@ -27,7 +46,7 @@
 
     <actions>
         <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.ui.dialog.json.FromAction"
-                text="JsonArray解析" description="JsonArray解析">
+                text="JsonSql" description="JsonArray解析" icon="AllIcons.FileTypes.JsonSchema">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
