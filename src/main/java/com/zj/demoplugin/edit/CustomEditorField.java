@@ -17,6 +17,7 @@ public class CustomEditorField extends LanguageTextField {
 
     public CustomEditorField(Language language, @Nullable Project project, @NotNull String value) {
         super(language, project, value);
+        addComponentListener(new TabComponentAdapter(this));
         // 关闭只能一行编辑
         setOneLineMode(false);
     }

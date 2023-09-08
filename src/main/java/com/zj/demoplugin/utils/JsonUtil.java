@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -142,8 +143,7 @@ public class JsonUtil {
             String singleColumn = columns.get(0).getOriginalName();
             for (MyJson row : rows) {
                 if (StringUtils.isNotEmpty(singleColumn)) {
-                    Object o = row.get(singleColumn);
-                    jsonArray.add(o);
+                    jsonArray.addAll(round(row.get(singleColumn)));
                 }
             }
             return jsonArray;
@@ -160,5 +160,35 @@ public class JsonUtil {
             jsonArray.add(jsonObject);
         }
         return jsonArray;
+    }
+
+    /**
+     * 平铺
+     *
+     * @param o
+     * @return
+     */
+    private static List<?> round(Object o) {
+        if (Objects.isNull(o)) {
+            return Collections.emptyList();
+        }
+        JsonEnum type = getType(o);
+        switch (type) {
+            case OBJECT:
+                JSONObject jsonObject = (JSONObject) o;
+                if (jsonObject.size() == 1) {
+                    return round(jsonObject.values().stream().findFirst().orElse(null));
+                }
+                return Collections.singletonList(o);
+            case ARRAY:
+                List list = new ArrayList<>();
+                JSONArray jsonArray = (JSONArray) o;
+                for (Object o1 : jsonArray) {
+                    list.addAll(round(o1));
+                }
+                return list;
+            default:
+                return Collections.singletonList(o);
+        }
     }
 }
