@@ -19,14 +19,14 @@
         <!-- Add your extensions here -->
         <!-- 自定义 底部view -->
         <executor id="TableExecutor" order="last"
-                  implementation="com.zj.demoplugin.table.TableExecutor"/>
+                  implementation="com.zj.demoplugin.ui.table.TableExecutor"/>
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
     <idea-version since-build="201" until-build="233.*"/>
 
     <actions>
-        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.form.json.FromAction"
+        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.ui.dialog.json.FromAction"
                 text="JsonArray解析" description="JsonArray解析">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>

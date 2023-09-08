@@ -55,10 +55,10 @@ public class StrategyBean {
             case LESS_THAN:
             case LESS_THAN_OR_EQUAL:
             case BETWEEN:
-                return new RangeStrategy(false, where.getKind(), where.getOperandList());
+                return new RangeStrategy(where.getKind(), where.getOperandList());
             case OR:
             case AND:
-                return new RelationStrategy(false, where.getKind(), where.getOperandList());
+                return new RelationStrategy(where.getKind(), where.getOperandList());
             default:
                 return ALWAYS_FALSE_STRATEGY;
         }

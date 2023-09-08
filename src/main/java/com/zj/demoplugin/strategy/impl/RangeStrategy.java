@@ -28,17 +28,17 @@ public class RangeStrategy extends AbstractStrategy {
         private Object lt;
         private Object le;
 
-        private boolean compare(Object var1){
-            if (Objects.nonNull(gt) && CompareUtil.compare(var1,gt) <= 0) {
+        private boolean compare(Object var1) {
+            if (Objects.nonNull(gt) && CompareUtil.compare(var1, gt) <= 0) {
                 return false;
             }
-            if (Objects.nonNull(ge) && CompareUtil.compare(var1,ge) < 0) {
+            if (Objects.nonNull(ge) && CompareUtil.compare(var1, ge) < 0) {
                 return false;
             }
-            if (Objects.nonNull(lt) && CompareUtil.compare(var1,lt) >= 0) {
+            if (Objects.nonNull(lt) && CompareUtil.compare(var1, lt) >= 0) {
                 return false;
             }
-            if (Objects.nonNull(le) && CompareUtil.compare(var1,le) > 0) {
+            if (Objects.nonNull(le) && CompareUtil.compare(var1, le) > 0) {
                 return false;
             }
             return true;
@@ -46,8 +46,8 @@ public class RangeStrategy extends AbstractStrategy {
     }
 
 
-    public RangeStrategy(boolean reverse, SqlKind sqlKind, List<SqlNode> operandList) {
-        super(reverse);
+    public RangeStrategy(SqlKind sqlKind, List<SqlNode> operandList) {
+        super(false);
         if (CollectionUtils.isEmpty(operandList) && operandList.size() < SIMPLE_SIZE) {
             return;
         }
@@ -83,7 +83,7 @@ public class RangeStrategy extends AbstractStrategy {
         if (Objects.isNull(range)) {
             return false;
         }
-        if (Objects.isNull(range.getGt()) && Objects.isNull(range.getGe()) && Objects.isNull(range.getLt()) && Objects.isNull(range.getLe())){
+        if (Objects.isNull(range.getGt()) && Objects.isNull(range.getGe()) && Objects.isNull(range.getLt()) && Objects.isNull(range.getLe())) {
             return false;
         }
         boolean equals = false;

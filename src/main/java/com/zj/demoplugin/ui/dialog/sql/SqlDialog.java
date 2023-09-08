@@ -1,4 +1,4 @@
-package com.zj.demoplugin.form.sql;
+package com.zj.demoplugin.ui.dialog.sql;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;

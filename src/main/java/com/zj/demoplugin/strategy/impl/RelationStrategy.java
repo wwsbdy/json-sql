@@ -22,8 +22,8 @@ public class RelationStrategy extends AbstractStrategy {
     List<AbstractStrategy> strategyList;
 
 
-    public RelationStrategy(boolean reverse, SqlKind sqlKind, List<SqlNode> operandList) {
-        super(reverse);
+    public RelationStrategy(SqlKind sqlKind, List<SqlNode> operandList) {
+        super(false);
         if (SqlKind.AND != sqlKind && SqlKind.OR != sqlKind) {
             return;
         }
@@ -42,18 +42,13 @@ public class RelationStrategy extends AbstractStrategy {
         if (Objects.isNull(sqlKind) || CollectionUtils.isEmpty(strategyList)) {
             return false;
         }
+        // or:至少有一个满足 and:全部满足
         boolean isOr = SqlKind.OR == sqlKind;
         for (AbstractStrategy strategy : strategyList) {
-            boolean apply = strategy.apply(item);
-            // or:至少有一个满足
-            if (isOr && apply) {
-                return true;
-            }
-            // and:全部满足
-            if (!isOr && !apply) {
-                return false;
+            if (isOr == strategy.apply(item)) {
+                return isOr;
             }
         }
-        return isReverse() == isOr;
+        return isOr;
     }
 }

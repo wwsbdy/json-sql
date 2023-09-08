@@ -1,4 +1,4 @@
-package com.zj.demoplugin.form.json;
+package com.zj.demoplugin.ui.dialog.json;
 
 import com.alibaba.fastjson.JSONArray;
 import com.intellij.json.JsonLanguage;
@@ -10,12 +10,12 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.demoplugin.constant.Constant;
-import com.zj.demoplugin.edit.CustomEditorField;
+import com.zj.demoplugin.ui.edit.CustomEditorField;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.enums.NoticeEnum;
-import com.zj.demoplugin.table.TableRunner;
+import com.zj.demoplugin.ui.table.TableRunner;
 import com.zj.demoplugin.utils.JsonUtil;
 
 import javax.swing.*;

@@ -181,7 +181,7 @@ public class JsonUtil {
                 }
                 return Collections.singletonList(o);
             case ARRAY:
-                List list = new ArrayList<>();
+                List<Object> list = new ArrayList<>();
                 JSONArray jsonArray = (JSONArray) o;
                 for (Object o1 : jsonArray) {
                     list.addAll(round(o1));

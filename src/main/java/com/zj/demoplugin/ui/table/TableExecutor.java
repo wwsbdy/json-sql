@@ -1,4 +1,4 @@
-package com.zj.demoplugin.table;
+package com.zj.demoplugin.ui.table;
 
 import com.intellij.execution.Executor;
 import com.intellij.icons.AllIcons;

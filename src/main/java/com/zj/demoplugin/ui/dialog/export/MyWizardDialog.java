@@ -1,4 +1,4 @@
-package com.zj.demoplugin.form.export;
+package com.zj.demoplugin.ui.dialog.export;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.wizard.WizardDialog;

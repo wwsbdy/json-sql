@@ -1,4 +1,4 @@
-package com.zj.demoplugin.table;
+package com.zj.demoplugin.ui.table;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -11,10 +11,10 @@ import com.intellij.util.ui.ListTableModel;
 import com.zj.demoplugin.entity.ExportInfo;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
-import com.zj.demoplugin.form.export.Json;
-import com.zj.demoplugin.form.export.MyWizardDialog;
-import com.zj.demoplugin.form.export.Setting;
-import com.zj.demoplugin.form.sql.SqlDialog;
+import com.zj.demoplugin.ui.dialog.export.Json;
+import com.zj.demoplugin.ui.dialog.export.MyWizardDialog;
+import com.zj.demoplugin.ui.dialog.export.Setting;
+import com.zj.demoplugin.ui.dialog.sql.SqlDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package com.zj.demoplugin.edit;
+package com.zj.demoplugin.ui.edit;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.EditorSettings;

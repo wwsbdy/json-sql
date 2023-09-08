@@ -23,7 +23,9 @@ public class ExportInfo {
      * true 美化json
      */
     private boolean beautify;
-
+    /**
+     * 展示的json字符串
+     */
     private String jsonArrayStr = "";
 
 }

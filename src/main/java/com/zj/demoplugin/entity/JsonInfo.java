@@ -5,6 +5,7 @@ import com.zj.demoplugin.entity.columninfo.BooleanColumnInfo;
 import com.zj.demoplugin.entity.columninfo.IdColumnInfo;
 import com.zj.demoplugin.entity.columninfo.StrColumnInfo;
 import com.zj.demoplugin.utils.SqlUtil;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,6 +19,7 @@ import java.util.Objects;
  * @author arthur_zhou
  */
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class JsonInfo extends BaseJsonInfo {
     /**
      * sql语句

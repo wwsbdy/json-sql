@@ -1,4 +1,4 @@
-package com.zj.demoplugin.edit;
+package com.zj.demoplugin.ui.edit;
 
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.command.WriteCommandAction;

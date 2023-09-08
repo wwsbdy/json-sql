@@ -1,4 +1,4 @@
-package com.zj.demoplugin.table;
+package com.zj.demoplugin.ui.table;
 
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionException;
