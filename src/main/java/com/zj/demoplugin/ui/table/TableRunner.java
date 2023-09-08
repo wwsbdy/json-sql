@@ -55,13 +55,13 @@ public class TableRunner {
             @NotNull
             @Override
             public String getName() {
-                return "name";
+                return "running";
             }
 
             @Nullable
             @Override
             public Icon getIcon() {
-                return null;
+                return AllIcons.Actions.Show;
             }
         }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
