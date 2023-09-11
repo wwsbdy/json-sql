@@ -12,9 +12,9 @@ json-sql
 
 ## 2.操作步骤
 <ul>
-<li>输入jsonArray</li>
-<li>通过sql查询出数据</li>
-<li>按需求导出查询数据</li>
+    <li>输入jsonArray</li>
+    <li>通过sql查询出数据</li>
+    <li>按需求导出查询数据</li>
 </ul>
 # 3.说明
 
@@ -22,23 +22,28 @@ json-sql
 
 ## 1.支持的sql语句有：
 
-<li>select *、name、name as alias、name.surname（多层查询）
-<li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null
-<li>and、or、嵌套and和or
-<li>order by asc、desc
-<li>limit 1,2
+<ul>
+    <li>select *、name、name as alias、name.surname（多层查询）
+    <li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null
+    <li>and、or、嵌套and和or
+    <li>order by asc、desc
+    <li>limit 1,2
+</ul>
 
 ## 1.不支持的sql语句有：
 
-<li>update、insert、delete
-<li>group by
-<li>函数
-<li>连表
-<li>distinct、union
+<ul>
+    <li>update、insert、delete
+    <li>group by
+    <li>函数
+    <li>连表
+    <li>distinct、union
+</ul>
 
 ## 3.一些例子：
-<li>select level.type.name t from arr where level.type.name in ('hello') order by t
-<li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')
-
+<ul>
+    <li>select level.type.name t from arr where level.type.name in ('hello') order by t
+    <li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')
+</ul>
 
 
