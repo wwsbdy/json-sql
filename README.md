@@ -16,6 +16,7 @@ json-sql
     <li>通过sql查询出数据
     <li>按需求导出查询数据
 </ul>
+
 # 3.说明
 
 仅支持部分sql语句
@@ -30,7 +31,7 @@ json-sql
     <li>limit 1,2
 </ul>
 
-## 1.不支持的sql语句有：
+## 2.不支持的sql语句有：
 
 <ul>
     <li>update、insert、delete
