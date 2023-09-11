@@ -12,9 +12,9 @@ json-sql
 
 ## 2.操作步骤
 
-<li>输入jsonArray
-<li>通过sql查询出数据
-<li>按需求导出查询数据
+<li>输入jsonArray</li>
+<li>通过sql查询出数据</li>
+<li>按需求导出查询数据</li>
 
 # 3.说明
 
