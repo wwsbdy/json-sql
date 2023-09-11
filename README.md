@@ -11,11 +11,11 @@ json-sql
 再顶部Tools里的JsonSql
 
 ## 2.操作步骤
-
+<ul>
 <li>输入jsonArray</li>
 <li>通过sql查询出数据</li>
 <li>按需求导出查询数据</li>
-
+</ul>
 # 3.说明
 
 仅支持部分sql语句
