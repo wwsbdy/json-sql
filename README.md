@@ -1,103 +1,44 @@
 # 1. 简介
 
-插件demo
+json-sql  
+将JsonArray转成数据列表，通过sql来查询数据  
+还可以把查出的数据再传成Json
 
-# 项目遇到的问题
+# 2.使用
 
-## 1.初始化项目时
+## 1.位置
 
-### 1.gradle-6.1.1-all.zip重复下载
-    
-问题：初始化gradle时，gradle-6.1.1-all.zip重复下载  
-解决：下载好gradle-6.1.1-all.zip，在gradle/wrapper/gradle-wrapper.properties里修改distributionUrl路径  
-```properties
-distributionUrl=file\:///D:/gradle/gradle-6.1.1-all.zip
-```
+再顶部Tools里的JsonSql
 
-### 2.下载超时 
+## 2.操作步骤
 
-解决：配置maven镜像  
-build.gradle里
-```
-repositories {
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-    maven { url'https://maven.aliyun.com/repository/public/' }
-    maven { url'https://maven.aliyun.com/repository/google/' }
-    maven { url'https://maven.aliyun.com/repository/jcenter/' }
-    maven { url'https://maven.aliyun.com/repository/central/' }
-    google()
-    jcenter()
-}
-```
+<li>输入jsonArray
+<li>通过sql查询出数据
+<li>按需求导出查询数据
 
-### 3.gradle插件版本过高无法启动
-解决：build.gradle里降低版本
-```
-plugins {
-    id 'java'
-    id 'org.jetbrains.intellij' version '0.6.3'
-}
-```
+# 3.说明
 
-### 4.初始化慢
+仅支持部分sql语句
 
-IdeaIc-2020.1....zip下载慢问题，这个zip有500mb，需要等待较久时间
+## 1.支持的sql语句有：
 
-### 5.lombok不识别
+<li>select *、name、name as alias、name.surname（多层查询）
+<li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null
+<li>and、or、嵌套and和or
+<li>order by asc、desc
+<li>limit 1,2
 
-修改前：
+## 1.不支持的sql语句有：
 
-```
-dependencies {
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-}
-```
+<li>update、insert、delete
+<li>group by
+<li>函数
+<li>连表
+<li>distinct、union
 
-修改后：
-
-```
-dependencies {
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-}
-```
-
-### 6.项目启动，gbk乱码报错
-
-setting->build->gradle->build and run using和run tests using修改为idea?  
-在help->edit custom vm options 添加 -Dfile.encoding=UTF-8
+## 3.一些例子：
+<li>select level.type.name t from arr where level.type.name in ('hello') order by t
+<li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')
 
 
-### 7.ui界面乱码
-
-build.gradle里配置
-
-```
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-```
-
-### 8.依赖冲突
-
-org.apache.calcite:calcite-core:1.35.0 和 com.jetbrains:ideaIC:2020.1.2 的 slf4j依赖冲突
-
-排除calcite的slf4j
-```
-dependencies {
-    implementation("org.apache.calcite:calcite-core:1.35.0") {
-        exclude group: 'org.slf4j', module: 'slf4j-api'
-    }
-}
-```
-
-### 9.IDEA2021.3不支持安装该插件
-
-在build.gradle里配置最高版本和最低版本
-```
-patchPluginXml {
-    sinceBuild = "201"
-    untilBuild = '233.*'
-}
-```
 

@@ -1,7 +1,7 @@
 
 <idea-plugin>
     <!--插件的id，注意不要跟其他插件重复，这个id全局唯一，尽可能复杂些-->
-    <id>com.zj.demoplugin.JsonSql</id>
+    <id>com.zj.jsonsql.JsonSql</id>
     <!--插件的名称-->
     <name>JsonSql</name>
     <vendor>zhoujie</vendor>
@@ -39,14 +39,14 @@
         <!-- Add your extensions here -->
         <!-- 自定义 底部view -->
         <executor id="JsonSql" order="last"
-                  implementation="com.zj.demoplugin.ui.table.TableExecutor"/>
+                  implementation="com.zj.jsonsql.ui.table.TableExecutor"/>
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
     <idea-version since-build="201" until-build="233.*"/>
 
     <actions>
-        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.demoplugin.ui.dialog.json.FromAction"
+        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.dialog.json.FromAction"
                 text="JsonSql" description="JsonArray解析" icon="AllIcons.FileTypes.JsonSchema">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
