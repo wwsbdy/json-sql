@@ -39,6 +39,7 @@ json-sql
     <li>函数
     <li>连表
     <li>distinct、union
+    <li>特殊的关键词如：result、date（要带上``）
 </ul>
 
 ## 3.一些例子：

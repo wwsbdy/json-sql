@@ -27,6 +27,7 @@
         <li>函数</li>
         <li>连表</li>
         <li>distinct、union</li>
+        <li>特殊的关键词如：result、date（要带上``）</li>
     </ul>
     一些例子：
     <ul>
