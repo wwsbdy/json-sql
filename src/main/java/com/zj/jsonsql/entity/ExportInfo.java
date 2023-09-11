@@ -22,7 +22,7 @@ public class ExportInfo {
     /**
      * true 美化json
      */
-    private boolean beautify;
+    private boolean beautify = true;
     /**
      * 展示的json字符串
      */
