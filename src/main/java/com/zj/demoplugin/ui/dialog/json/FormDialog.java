@@ -5,16 +5,15 @@ import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.demoplugin.constant.Constant;
-import com.zj.demoplugin.ui.edit.CustomEditorField;
 import com.zj.demoplugin.entity.Field;
 import com.zj.demoplugin.entity.JsonInfo;
 import com.zj.demoplugin.entity.MyJson;
 import com.zj.demoplugin.enums.NoticeEnum;
+import com.zj.demoplugin.ui.edit.CustomEditorField;
 import com.zj.demoplugin.ui.table.TableRunner;
 import com.zj.demoplugin.utils.JsonUtil;
 
@@ -129,9 +128,7 @@ public class FormDialog extends DialogWrapper {
         center.setLayout(new BorderLayout(0, 0));
         center.setPreferredSize(new Dimension(750, 300));
         panel1.add(center, BorderLayout.CENTER);
-        final JBScrollPane scrollPane1 = new JBScrollPane();
-        center.add(scrollPane1, BorderLayout.CENTER);
-        scrollPane1.setViewportView(jsonContent);
+        center.add(jsonContent, BorderLayout.CENTER);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);

@@ -26,6 +26,7 @@
         <li>group by</li>
         <li>函数</li>
         <li>连表</li>
+        <li>distinct、union</li>
     </ul>
     一些例子：
     <ul>

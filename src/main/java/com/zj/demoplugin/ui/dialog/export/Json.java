@@ -3,15 +3,14 @@ package com.zj.demoplugin.ui.dialog.export;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AncestorListenerAdapter;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
 import com.intellij.ui.wizard.WizardStep;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
-import com.zj.demoplugin.ui.edit.CustomEditorField;
 import com.zj.demoplugin.entity.ExportInfo;
+import com.zj.demoplugin.ui.edit.CustomEditorField;
 
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
@@ -41,8 +40,6 @@ public class Json extends WizardStep<WizardModel> {
         center.setLayout(new BorderLayout(0, 0));
         center.setPreferredSize(new Dimension(500, 250));
         panel1.add(center, BorderLayout.CENTER);
-        final JBScrollPane scrollPane1 = new JBScrollPane();
-        center.add(scrollPane1, BorderLayout.CENTER);
         CustomEditorField customEditorField = new CustomEditorField(JsonLanguage.INSTANCE, project, "");
         customEditorField.addAncestorListener(new AncestorListenerAdapter() {
             @Override
@@ -50,7 +47,7 @@ public class Json extends WizardStep<WizardModel> {
                 customEditorField.setText(exportInfo.getJsonArrayStr());
             }
         });
-        scrollPane1.setViewportView(customEditorField);
+        center.add(customEditorField, BorderLayout.CENTER);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
