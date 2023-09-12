@@ -161,7 +161,7 @@ public class SqlDialog extends DialogWrapper {
                             int finalWordStart = wordStart;
                             keywordItem.addActionListener(e -> {
                                 try {
-                                    document.remove(finalWordStart, caretPosition - finalWordStart);
+                                    document.remove(finalWordStart, text.length() - finalWordStart);
                                     document.insertString(finalWordStart, keyword, null);
                                 } catch (BadLocationException badLocationException) {
                                     badLocationException.printStackTrace();
