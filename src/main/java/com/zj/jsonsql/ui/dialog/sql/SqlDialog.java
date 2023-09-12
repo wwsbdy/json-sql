@@ -2,12 +2,14 @@ package com.zj.jsonsql.ui.dialog.sql;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.constant.Constant;
+import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
@@ -15,9 +17,17 @@ import org.apache.calcite.sql.SqlSelect;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author arthur_zhou
@@ -38,9 +48,10 @@ public class SqlDialog extends DialogWrapper {
         this.jsonInfo = jsonInfo;
         // 设置会话框标题
         setTitle("输入sql");
-        sqlContent.setText(jsonInfo.getSql());
         // 获取到当前项目的名称
         this.project = project;
+        // 初始化文本框
+        initSqlContent();
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();
     }
@@ -102,6 +113,77 @@ public class SqlDialog extends DialogWrapper {
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
         return contentPanel;
+    }
+
+    /**
+     * 初始化文本
+     */
+    private void initSqlContent() {
+        sqlContent.setText(jsonInfo.getSql());
+        // 创建关键字提示框
+        List<String> keywords = jsonInfo.getColumns().stream()
+                .map(Field::getOriginalName)
+                .collect(Collectors.toList());
+        Document document = sqlContent.getDocument();
+        JBPopupMenu keywordPopup = new JBPopupMenu();
+        keywordPopup.setFocusable(false);
+        document.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                showKeywordPopup();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                showKeywordPopup();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                showKeywordPopup();
+            }
+
+            private void showKeywordPopup() {
+                keywordPopup.setVisible(false);
+                keywordPopup.removeAll();
+                String text = sqlContent.getText();
+                int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
+                int wordStart = caretPosition;
+
+                while (wordStart > 0 && Character.isLetterOrDigit(text.charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+                String word = text.substring(wordStart, caretPosition);
+                if (!word.isEmpty()) {
+                    for (String keyword : keywords) {
+                        if (keyword.startsWith(word)) {
+                            JMenuItem keywordItem = new JMenuItem(keyword);
+                            int finalWordStart = wordStart;
+                            keywordItem.addActionListener(e -> {
+                                try {
+                                    document.remove(finalWordStart, caretPosition - finalWordStart);
+                                    document.insertString(finalWordStart, keyword, null);
+                                } catch (BadLocationException badLocationException) {
+                                    badLocationException.printStackTrace();
+                                }
+                            });
+                            keywordPopup.add(keywordItem);
+                        }
+                    }
+                }
+
+                if (keywordPopup.getComponentCount() > 0) {
+                    try {
+                        Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordStart, Position.Bias.Backward);
+                        keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    keywordPopup.setVisible(false);
+                }
+            }
+        });
     }
 }
 
