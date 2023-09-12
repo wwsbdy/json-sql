@@ -14,6 +14,7 @@ import com.zj.jsonsql.entity.MyJson;
 import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.MyWizardDialog;
 import com.zj.jsonsql.ui.dialog.export.Setting;
+import com.zj.jsonsql.ui.dialog.json.FormDialog;
 import com.zj.jsonsql.ui.dialog.sql.SqlDialog;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,13 @@ public class Table {
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(table, null);
         // 禁用自带的按钮
         disableButton(decorator);
+        // 编辑sql按钮
+        AnActionButton modifyJson = new AnActionButton("编辑json", AllIcons.Actions.Edit) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                new FormDialog(project, jsonInfo.getJsonContent()).show();
+            }
+        };
         // 编辑sql按钮
         AnActionButton editSql = new AnActionButton("SQL查询", AllIcons.Actions.Find) {
             @Override
@@ -76,6 +84,7 @@ public class Table {
                 wizardDialog.show();
             }
         };
+        decorator.addExtraAction(modifyJson);
         decorator.addExtraAction(editSql);
         decorator.addExtraAction(reset);
         decorator.addExtraAction(export);

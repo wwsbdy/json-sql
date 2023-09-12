@@ -8,6 +8,9 @@ import java.util.List;
  * @author arthur_zhou
  */
 public abstract class BaseJsonInfo {
+
+    private final String jsonContent;
+
     /**
      * 原始列
      */
@@ -25,9 +28,14 @@ public abstract class BaseJsonInfo {
         return list;
     }
 
-    public BaseJsonInfo(List<Field> columns, List<MyJson> list) {
+    public String getJsonContent() {
+        return jsonContent;
+    }
+
+    public BaseJsonInfo(List<Field> columns, List<MyJson> list, String jsonContent) {
         this.columns = columns;
         this.list = list;
+        this.jsonContent = jsonContent;
     }
 
     /**

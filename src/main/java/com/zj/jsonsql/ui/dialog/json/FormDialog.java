@@ -1,6 +1,9 @@
 package com.zj.jsonsql.ui.dialog.json;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -36,13 +39,16 @@ public class FormDialog extends DialogWrapper {
      */
     private final CustomEditorField jsonContent;
 
-    public FormDialog(Project project) {
+    public FormDialog(Project project, String content) {
         super(true);
+        if (Objects.isNull(content)) {
+            content = "";
+        }
         // 设置会话框标题
         setTitle("输入json");
         // 获取到当前项目的名称
         this.project = project;
-        jsonContent = new CustomEditorField(JsonLanguage.INSTANCE, project, "");
+        jsonContent = new CustomEditorField(JsonLanguage.INSTANCE, project, content);
         jsonContent.setPreferredSize(new Dimension(500, 700));
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();
@@ -81,37 +87,48 @@ public class FormDialog extends DialogWrapper {
             public void actionPerformed(ActionEvent actionEvent) {
                 //获取到name和age
                 String jsonStr = jsonContent.getText();
+                JSONArray jsonArray = null;
                 try {
-                    JSONArray jsonArray = JSONArray.parseArray(jsonStr);
-                    if (Objects.isNull(jsonArray)) {
+                    Object parse = JSON.parse(jsonStr, Feature.OrderedField);
+                    if (parse instanceof JSONObject) {
                         jsonArray = new JSONArray();
-                    }
-                    if (jsonArray.size() > Constant.ROWS_MAX) {
-                        Messages.showErrorDialog(project, NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
-                    } else {
-                        List<MyJson> objects = new ArrayList<>();
-                        Set<Field> columns = new LinkedHashSet<>();
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            MyJson object = new MyJson(jsonArray.getJSONObject(i));
-                            for (String key : object.keySet()) {
-                                columns.add(new Field(key, key, JsonUtil.getType(object.get(key)).name().toLowerCase()));
-                            }
-                            objects.add(object);
-                        }
-                        if (columns.size() > Constant.COLUMNS_MAX) {
-                            Messages.showErrorDialog(project, NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
-                        } else {
-                            JsonInfo jsonInfo = new JsonInfo(new ArrayList<>(columns), objects);
-                            // 打开表格
-                            new TableRunner(project).run(jsonInfo);
-                            // 关闭窗口
-                            doCancelAction();
-                        }
+                        jsonArray.add(parse);
+                    } else if (parse instanceof JSONArray) {
+                        jsonArray = JSONArray.parseArray(jsonStr, Feature.OrderedField);
                     }
                 } catch (Exception e) {
                     Messages.showErrorDialog(project, NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
+                    return;
                 }
-
+                if (Objects.isNull(jsonArray)) {
+                    Messages.showErrorDialog(project, NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
+                    return;
+                }
+                if (jsonArray.size() > Constant.ROWS_MAX) {
+                    Messages.showErrorDialog(project, NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
+                    return;
+                }
+                List<MyJson> objects = new ArrayList<>();
+                Set<Field> columns = new LinkedHashSet<>();
+                for (Object o : jsonArray) {
+                    if (!(o instanceof JSONObject)) {
+                        continue;
+                    }
+                    MyJson object = new MyJson((JSONObject) o);
+                    for (String key : object.keySet()) {
+                        columns.add(new Field(key, key, JsonUtil.getType(object.get(key)).name().toLowerCase()));
+                    }
+                    objects.add(object);
+                }
+                if (columns.size() > Constant.COLUMNS_MAX) {
+                    Messages.showErrorDialog(project, NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
+                    return;
+                }
+                JsonInfo jsonInfo = new JsonInfo(new ArrayList<>(columns), objects, jsonStr);
+                // 打开表格
+                new TableRunner(project).run(jsonInfo);
+                // 关闭窗口
+                doCancelAction();
             }
         });
         return south;

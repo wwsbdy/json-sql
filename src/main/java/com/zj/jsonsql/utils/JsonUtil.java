@@ -1,5 +1,6 @@
 package com.zj.jsonsql.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -122,11 +123,19 @@ public class JsonUtil {
         List<Field> columns = SqlUtil.getColumn(jsonInfo, realExportInfo.getColumn());
         // 组装数据
         JSONArray jsonArray = getJsonArray(rows, columns, realExportInfo.isRound());
+        JSON result = jsonArray;
+        // 当只有一个元素时，只要不要[]
+        if (CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
+            Object o = jsonArray.get(0);
+            if (o instanceof JSON) {
+                result = (JSON) o;
+            }
+        }
         // 是否美化
         if (realExportInfo.isBeautify()) {
-            return jsonArray.toString(SerializerFeature.PrettyFormat);
+            return result.toString(SerializerFeature.PrettyFormat);
         }
-        return jsonArray.toString();
+        return result.toString();
     }
 
     /**
@@ -153,7 +162,7 @@ public class JsonUtil {
                 jsonArray.add(EMPTY_JSON_OBJECT);
                 continue;
             }
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject = new JSONObject(true);
             for (Field column : columns) {
                 jsonObject.put(column.getName(), row.get(column.getOriginalName()));
             }

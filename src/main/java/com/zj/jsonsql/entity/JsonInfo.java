@@ -38,8 +38,8 @@ public class JsonInfo extends BaseJsonInfo {
      */
     private List<MyJson> result;
 
-    public JsonInfo(List<Field> columns, List<MyJson> list) {
-        super(columns, list);
+    public JsonInfo(List<Field> columns, List<MyJson> list, String jsonContent) {
+        super(columns, list, jsonContent);
         resetSql();
     }
 
