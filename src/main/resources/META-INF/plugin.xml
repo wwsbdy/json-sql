@@ -17,7 +17,7 @@
         <li>select *、name、name as alias、name.surname（多层查询）</li>
         <li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null</li>
         <li>and、or、嵌套and和or</li>
-        <li>order by asc、desc</li>
+        <li>order by asc、desc、distinct</li>
         <li>limit 1,2</li>
     </ul>
     不支持的sql语句有：
@@ -26,7 +26,7 @@
         <li>group by</li>
         <li>函数</li>
         <li>连表</li>
-        <li>distinct、union</li>
+        <li>union</li>
         <li>特殊的关键词如：result、date（要带上``）</li>
     </ul>
     一些例子：

@@ -27,7 +27,7 @@ json-sql
     <li>select *、name、name as alias、name.surname（多层查询）
     <li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null
     <li>and、or、嵌套and和or
-    <li>order by asc、desc
+    <li>order by asc、desc、distinct
     <li>limit 1,2
 </ul>
 
@@ -38,14 +38,14 @@ json-sql
     <li>group by
     <li>函数
     <li>连表
-    <li>distinct、union
+    <li>union
     <li>特殊的关键词如：result、date（要带上``）
 </ul>
 
 ## 3.一些例子：
 <ul>
     <li>select level.type.name t from arr where level.type.name in ('hello') order by t
-    <li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')
+    <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%lin%')
 </ul>
 
 

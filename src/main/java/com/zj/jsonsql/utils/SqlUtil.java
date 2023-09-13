@@ -1,5 +1,6 @@
 package com.zj.jsonsql.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.MyJson;
@@ -47,13 +48,25 @@ public class SqlUtil {
         if (CollectionUtils.isEmpty(dataList)) {
             return Collections.emptyList();
         }
+        // 过滤
         SqlNode where = sqlNode.getWhere();
         AbstractStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
         Stream<MyJson> stream = dataList.stream().filter(strategy::apply);
+        // 获取查询的字段
+        List<Field> selectList = getSelectList(columns, sqlNode);
+        // 去重
+        if (Objects.nonNull(sqlNode.getModifierNode(SqlSelectKeyword.DISTINCT))) {
+            stream = stream.collect(Collectors.toMap(myJson -> {
+                JSONObject jsonObject = new JSONObject();
+                for (Field select : selectList) {
+                    jsonObject.put(select.getName(), myJson.get(select.getOriginalName()));
+                }
+                return jsonObject;
+            }, v -> v, (v1, v2) -> v1, LinkedHashMap::new)).values().stream();
+        }
+        // 排序
         SqlNodeList orderList = sqlNode.getOrderList();
         if (CollectionUtils.isNotEmpty(orderList)) {
-            // 获取查询的字段
-            List<Field> selectList = getSelectList(columns, sqlNode);
             // 追加表字段
             selectList.addAll(columns);
             // 获取别名和原始名
@@ -62,6 +75,7 @@ public class SqlUtil {
             SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
             stream = stream.sorted(sortStrategy::orderBy);
         }
+        // limit
         SqlNode offset = sqlNode.getOffset();
         if (Objects.nonNull(offset)) {
             stream = stream.skip(Long.parseLong(offset.toString()));
@@ -178,7 +192,7 @@ public class SqlUtil {
      * 获取导出行
      *
      * @param jsonInfo
-     * @param row       0-SQL查询，1-勾选行，2-全部
+     * @param row      0-SQL查询，1-勾选行，2-全部
      * @return
      */
     public static List<MyJson> getRow(JsonInfo jsonInfo, int row) {
