@@ -15,7 +15,7 @@
     支持的sql语句有：
     <ul>
         <li>select *、name、name as alias、name.surname（多层查询）</li>
-        <li>where =、!=、in、not in、>、>=、<、<=、between、like、not like、is null、is not null</li>
+        <li>where =、!=、in、not in、&gt;、&gt;=、&lt;、&lt;=、between、like、not like、is null、is not null</li>
         <li>and、or、嵌套and和or</li>
         <li>order by asc、desc、distinct</li>
         <li>limit 1,2</li>
