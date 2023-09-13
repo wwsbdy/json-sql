@@ -74,17 +74,17 @@ public class SqlDialog extends DialogWrapper {
                 String sqlStr = sqlContent.getText();
                 if (StringUtils.isNotEmpty(sqlStr) && sqlStr.length() > Constant.SQL_MAX) {
                     Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
-                } else {
-                    SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
-                    if (Objects.isNull(sqlSelect)) {
-                        Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
-                    } else {
-                        jsonInfo.setSql(sqlStr);
-                        jsonInfo.setSqlNode(sqlSelect);
-                        // 关闭窗口
-                        doCancelAction();
-                    }
+                    return;
                 }
+                SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                if (Objects.isNull(sqlSelect)) {
+                    Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+                    return;
+                }
+                jsonInfo.setSql(sqlStr);
+                jsonInfo.setSqlNode(sqlSelect);
+                // 关闭窗口
+                doCancelAction();
             }
         });
         return south;
