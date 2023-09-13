@@ -32,7 +32,7 @@
     一些例子：
     <ul>
         <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
-        <li>select name from a where name = 'hello' and (age >= 11 or level like '%lin%')</li>
+        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%lin%')</li>
     </ul>
     ]]></description>
 
