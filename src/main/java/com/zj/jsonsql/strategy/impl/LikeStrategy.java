@@ -28,8 +28,9 @@ public class LikeStrategy extends AbstractStrategy {
         }
         setField(operandList.get(0).toString());
         this.value = String.valueOf(getValue(operandList.get(1)))
-                .replaceAll("_", ".")
-                .replaceAll("%", ".*");
+                .replaceAll("(?<!\\\\)_", ".")
+                .replaceAll("(?<!\\\\)%", ".*")
+                .replaceAll("\\\\\\\\(?=[_%])", "");
     }
 
     @Override
