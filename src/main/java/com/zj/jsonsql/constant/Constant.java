@@ -9,7 +9,7 @@ public interface Constant {
     /**
      * 最大行数
      */
-    int ROWS_MAX = 100;
+    int ROWS_MAX = 500;
     /**
      * 最大列数
      */
@@ -17,5 +17,5 @@ public interface Constant {
     /**
      * 最大SQL长度
      */
-    int SQL_MAX = 300;
+    int SQL_MAX = 500;
 }
