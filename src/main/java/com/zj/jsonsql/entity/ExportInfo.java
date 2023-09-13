@@ -24,6 +24,10 @@ public class ExportInfo {
      */
     private boolean beautify = true;
     /**
+     * true 去重
+     */
+    private boolean distinct;
+    /**
      * 展示的json字符串
      */
     private String jsonArrayStr = "";

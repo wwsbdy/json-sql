@@ -25,7 +25,7 @@ public class Setting extends WizardStep<WizardModel> {
     @Override
     public JComponent prepare(WizardNavigationState state) {
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(4, 2));
+        jPanel.setLayout(new GridLayout(5, 2));
         ComboBox<Object> rowComboBox = new ComboBox<>();
         rowComboBox.addItem("SQL查询");
         rowComboBox.addItem("勾选行");
@@ -76,6 +76,16 @@ public class Setting extends WizardStep<WizardModel> {
         });
         jPanel.add(new JLabel("美化Json"));
         jPanel.add(beautifyCheckBox);
+        JBCheckBox distinctCheckBox = new JBCheckBox();
+        distinctCheckBox.setSelected(exportInfo.isDistinct());
+        distinctCheckBox.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportInfo.setDistinct(beautifyCheckBox.isSelected());
+            }
+        });
+        jPanel.add(new JLabel("数据去重"));
+        jPanel.add(distinctCheckBox);
         JPanel resultPanel = new JPanel(new GridLayout(4, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);

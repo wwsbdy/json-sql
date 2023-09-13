@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author 19242
@@ -123,6 +124,10 @@ public class JsonUtil {
         List<Field> columns = SqlUtil.getColumn(jsonInfo, realExportInfo.getColumn());
         // 组装数据
         JSONArray jsonArray = getJsonArray(rows, columns, realExportInfo.isRound());
+        // 是否去重
+        if (realExportInfo.isDistinct()) {
+            jsonArray = jsonArray.stream().distinct().collect(Collectors.toCollection(JSONArray::new));
+        }
         JSON result = jsonArray;
         // 当只有一个元素时，只要不要[]
         if (CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
