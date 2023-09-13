@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,7 +85,11 @@ public class SqlUtil {
         if (Objects.nonNull(fetch)) {
             stream = stream.limit(Long.parseLong(fetch.toString()));
         }
-        return stream.collect(Collectors.toList());
+        AtomicInteger i = new AtomicInteger();
+        return stream.peek(v -> {
+            v.setId(i.getAndIncrement());
+            v.setSelected(false);
+        }).collect(Collectors.toList());
     }
 
     /**

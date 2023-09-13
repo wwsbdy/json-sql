@@ -85,10 +85,6 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public List<MyJson> getRows() {
-        result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
-        for (int i = 0; i < result.size(); i++) {
-            result.get(i).setId(i + 1);
-        }
-        return result;
+        return result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
     }
 }
