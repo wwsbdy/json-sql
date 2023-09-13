@@ -38,10 +38,10 @@ public class SqlUtil {
     /**
      * 获取满足条件的数据
      *
-     * @param dataList
-     * @param columns
-     * @param sqlNode
-     * @return
+     * @param dataList 原始数据
+     * @param columns  原始字段
+     * @param sqlNode  sql解析树
+     * @return 过滤得到的数据
      */
     public static List<MyJson> getDataList(List<MyJson> dataList, List<Field> columns, SqlSelect sqlNode) {
         Objects.requireNonNull(sqlNode);
@@ -88,11 +88,11 @@ public class SqlUtil {
     }
 
     /**
-     * 获取字段名
+     * 获取表头
      *
-     * @param columns
-     * @param sqlNode
-     * @return
+     * @param columns 原始字段
+     * @param sqlNode sql解析树
+     * @return 表头
      */
     public static List<Field> getFields(List<Field> columns, SqlSelect sqlNode) {
         Objects.requireNonNull(sqlNode);
@@ -123,9 +123,9 @@ public class SqlUtil {
     /**
      * 获取查询字段
      *
-     * @param columns
-     * @param sqlNode
-     * @return
+     * @param columns 原始字段
+     * @param sqlNode sql解析树
+     * @return 查询字段
      */
     @NotNull
     public static List<Field> getSelectList(List<Field> columns, SqlSelect sqlNode) {
@@ -160,8 +160,8 @@ public class SqlUtil {
     /**
      * 解析sql
      *
-     * @param sql
-     * @return
+     * @param sql sql语句
+     * @return sql解析树
      */
     public static SqlSelect toSqlSelect(String sql) {
         if (StringUtils.isEmpty(sql)) {
@@ -191,9 +191,9 @@ public class SqlUtil {
     /**
      * 获取导出行
      *
-     * @param jsonInfo
+     * @param jsonInfo json信息
      * @param row      0-SQL查询，1-勾选行，2-全部
-     * @return
+     * @return 导出行
      */
     public static List<MyJson> getRow(JsonInfo jsonInfo, int row) {
         switch (row) {
@@ -209,9 +209,11 @@ public class SqlUtil {
     }
 
     /**
-     * @param jsonInfo
+     * 获取导出列
+     *
+     * @param jsonInfo json信息
      * @param column   0-SQL查询，1-全部
-     * @return
+     * @return 导出列
      */
     public static List<Field> getColumn(JsonInfo jsonInfo, int column) {
         switch (column) {

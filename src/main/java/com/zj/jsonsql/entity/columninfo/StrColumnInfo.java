@@ -33,8 +33,8 @@ public class StrColumnInfo extends ColumnInfo<MyJson, String> {
     /**
      * 处理value
      *
-     * @param value
-     * @return
+     * @param value value
+     * @return 处理过的value
      */
     private String getValue(Object value) {
         if (value == null) {
@@ -46,7 +46,7 @@ public class StrColumnInfo extends ColumnInfo<MyJson, String> {
     /**
      * 表头提示
      *
-     * @return
+     * @return 表头的提示信息
      */
     @Override
     public @Nls(capitalization = Nls.Capitalization.Sentence) @Nullable String getTooltipText() {

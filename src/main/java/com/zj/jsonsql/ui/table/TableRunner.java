@@ -1,7 +1,6 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.execution.DefaultExecutionResult;
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
@@ -27,7 +26,7 @@ public class TableRunner {
     /**
      * Project
      */
-    private Project project;
+    private final Project project;
 
 
     public TableRunner(@NotNull Project project) {
@@ -46,21 +45,18 @@ public class TableRunner {
 
         // 创建描述信息
         RunContentDescriptor descriptor = new RunContentDescriptor(new RunProfile() {
-            @Nullable
             @Override
-            public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException {
+            public @Nullable RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) {
                 return null;
             }
 
-            @NotNull
             @Override
-            public String getName() {
+            public @NotNull String getName() {
                 return "running";
             }
 
-            @Nullable
             @Override
-            public Icon getIcon() {
+            public @NotNull Icon getIcon() {
                 return AllIcons.Actions.Show;
             }
         }, new DefaultExecutionResult(), layoutUi);

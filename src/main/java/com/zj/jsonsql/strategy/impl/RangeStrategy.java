@@ -38,10 +38,7 @@ public class RangeStrategy extends AbstractStrategy {
             if (Objects.nonNull(lt) && CompareUtil.compare(var1, lt) >= 0) {
                 return false;
             }
-            if (Objects.nonNull(le) && CompareUtil.compare(var1, le) > 0) {
-                return false;
-            }
-            return true;
+            return !Objects.nonNull(le) || CompareUtil.compare(var1, le) <= 0;
         }
     }
 

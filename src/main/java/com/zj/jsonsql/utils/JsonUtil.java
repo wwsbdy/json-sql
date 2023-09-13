@@ -45,8 +45,8 @@ public class JsonUtil {
     /**
      * 判断对象的json类型
      *
-     * @param object
-     * @return
+     * @param object 数据
+     * @return 类型枚举
      */
     public static JsonEnum getType(Object object) {
         if (Objects.isNull(object)) {
@@ -73,7 +73,7 @@ public class JsonUtil {
     /**
      * 转换类型
      *
-     * @param object
+     * @param object 数据
      * @return 仅返回，Number、List、String
      */
     public static Object convert(Object object) {
@@ -103,9 +103,9 @@ public class JsonUtil {
     /**
      * 将jsonArray通过配置转成字符串
      *
-     * @param jsonInfo
-     * @param exportInfo
-     * @return
+     * @param jsonInfo   Json信息
+     * @param exportInfo 导出设置
+     * @return 转换的JsonStr
      */
     public static String getJsonStr(JsonInfo jsonInfo, ExportInfo exportInfo) {
         if (Objects.isNull(jsonInfo) || CollectionUtils.isEmpty(jsonInfo.getList())) {
@@ -146,10 +146,10 @@ public class JsonUtil {
     /**
      * 根据行和列组装JsonArray
      *
-     * @param rows
-     * @param columns
+     * @param rows    要组装的行
+     * @param columns 要组装的列
      * @param round   true且columns只有一个时，平铺
-     * @return
+     * @return 组装好的JsonArray
      */
     private static JSONArray getJsonArray(List<MyJson> rows, List<Field> columns, boolean round) {
         JSONArray jsonArray = new JSONArray();
@@ -179,8 +179,8 @@ public class JsonUtil {
     /**
      * 平铺
      *
-     * @param o
-     * @return
+     * @param o 数据
+     * @return 平铺的数据
      */
     private static List<?> round(Object o) {
         if (Objects.isNull(o)) {

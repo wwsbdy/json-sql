@@ -46,7 +46,7 @@ public class MyJson {
      * 获取value
      *
      * @param key 多层用 . 隔开
-     * @return
+     * @return value
      */
     public Object get(String key) {
         if (StringUtils.isEmpty(key)) {

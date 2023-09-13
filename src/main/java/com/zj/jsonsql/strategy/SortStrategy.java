@@ -56,9 +56,9 @@ public class SortStrategy {
     /**
      * 排序
      *
-     * @param var1
-     * @param var2
-     * @return
+     * @param var1 排序json1
+     * @param var2 排序json2
+     * @return 顺序倒序还是不变
      */
     public int orderBy(MyJson var1, MyJson var2) {
         if (CollectionUtils.isEmpty(sortList)) {
@@ -79,9 +79,9 @@ public class SortStrategy {
     /**
      * 获取字段值
      *
-     * @param var
-     * @param column
-     * @return
+     * @param var    Json
+     * @param column key
+     * @return value
      */
     Object get(MyJson var, String column) {
         if (Objects.isNull(var) || StringUtils.isEmpty(column)) {

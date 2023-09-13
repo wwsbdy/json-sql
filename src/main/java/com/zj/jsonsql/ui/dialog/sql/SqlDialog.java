@@ -1,6 +1,5 @@
 package com.zj.jsonsql.ui.dialog.sql;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.Messages;
@@ -32,10 +31,7 @@ import java.util.stream.Collectors;
 /**
  * @author arthur_zhou
  */
-
 public class SqlDialog extends DialogWrapper {
-
-    private Project project;
 
     /**
      * swing样式类，定义在4.3.2
@@ -43,13 +39,12 @@ public class SqlDialog extends DialogWrapper {
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
 
-    public SqlDialog(Project project, JsonInfo jsonInfo) {
+    public SqlDialog(JsonInfo jsonInfo) {
         super(true);
         this.jsonInfo = jsonInfo;
         // 设置会话框标题
         setTitle("输入sql");
         // 获取到当前项目的名称
-        this.project = project;
         // 初始化文本框
         initSqlContent();
         // 触发一下init方法，否则swing样式将无法展示在会话框

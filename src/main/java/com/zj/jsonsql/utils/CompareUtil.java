@@ -17,11 +17,8 @@ public class CompareUtil {
      * @return <0:var小 0:相同 >0:var1大
      */
     public static int compare(Object var1, Object var2) {
-        if (Objects.isNull(var1) && Objects.isNull(var2)) {
-            return 0;
-        }
         if (Objects.isNull(var1)) {
-            return -1;
+            return Objects.isNull(var2) ? 0 : -1;
         }
         if (Objects.isNull(var2)) {
             return 1;

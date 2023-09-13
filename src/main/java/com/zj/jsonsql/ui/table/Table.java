@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
+ * 表格
+ *
  * @author 19242
  */
 public class Table {
@@ -28,8 +30,8 @@ public class Table {
     /**
      * 插件表格
      *
-     * @param jsonInfo
-     * @return
+     * @param jsonInfo json信息
+     * @return 面板
      */
     public static JPanel create(@NotNull Project project, @NotNull JsonInfo jsonInfo) {
         // 创建表格模型
@@ -56,7 +58,7 @@ public class Table {
         AnActionButton editSql = new AnActionButton("SQL查询", AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                SqlDialog formTestDialog = new SqlDialog(project, jsonInfo);
+                SqlDialog formTestDialog = new SqlDialog(jsonInfo);
                 formTestDialog.show();
                 // 重新赋值
                 dataModel.setColumnInfos(jsonInfo.getFields());
@@ -94,7 +96,7 @@ public class Table {
     /**
      * 禁用自带的按钮
      *
-     * @param decorator
+     * @param decorator ToolbarDecorator
      */
     private static void disableButton(ToolbarDecorator decorator) {
         // 禁用新增删除移动按钮

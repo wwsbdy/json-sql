@@ -29,10 +29,9 @@ import java.util.*;
 /**
  * @author arthur_zhou
  */
-
 public class FormDialog extends DialogWrapper {
 
-    private Project project;
+    private final Project project;
 
     /**
      * swing样式类，定义在4.3.2

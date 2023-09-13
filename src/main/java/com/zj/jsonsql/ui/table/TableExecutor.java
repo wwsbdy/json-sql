@@ -25,12 +25,12 @@ public class TableExecutor extends Executor {
     }
 
     @Override
-    public String getToolWindowId() {
+    public @NotNull String getToolWindowId() {
         return TOOL_WINDOW_ID;
     }
 
     @Override
-    public Icon getToolWindowIcon() {
+    public @NotNull Icon getToolWindowIcon() {
         return AllIcons.FileTypes.Json;
     }
 

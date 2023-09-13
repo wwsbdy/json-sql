@@ -41,14 +41,14 @@ public abstract class BaseJsonInfo {
     /**
      * 获取字段数组
      *
-     * @return
+     * @return 表头
      */
     public abstract ColumnInfo<?, ?>[] getFields();
 
     /**
      * 获取行数据
      *
-     * @return
+     * @return 表数据
      */
     public abstract List<MyJson> getRows();
 }

@@ -50,26 +50,27 @@ public abstract class AbstractStrategy {
     }
 
     /**
-     * 判断
+     * 判断是否满足条件
      *
      * @param item 行值
-     * @return
+     * @return 是否满足条件
      */
     public abstract boolean apply(MyJson item);
 
     /**
-     * 获取值
-     * @param sqlNode
-     * @return
+     * 获取查询值
+     *
+     * @param sqlNode sql解析树
+     * @return 查询值
      */
     protected static Object getValue(SqlNode sqlNode) {
-        if (sqlNode instanceof SqlIdentifier){
+        if (Objects.isNull(sqlNode)) {
+            return null;
+        }
+        if (sqlNode instanceof SqlIdentifier) {
             return ((SqlIdentifier) sqlNode).getSimple();
         }
         SqlLiteral sqlLiteral = (SqlLiteral) sqlNode;
-        if (Objects.isNull(sqlLiteral)) {
-            return null;
-        }
         Object value = sqlLiteral.getValue();
         if (value instanceof NlsString) {
             value = ((NlsString) value).getValue().replaceAll("^'|'$", "");

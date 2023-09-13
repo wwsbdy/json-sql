@@ -18,8 +18,8 @@ import java.util.Objects;
  */
 public class RelationStrategy extends AbstractStrategy {
 
-    SqlKind sqlKind;
-    List<AbstractStrategy> strategyList;
+    private SqlKind sqlKind;
+    private List<AbstractStrategy> strategyList;
 
 
     public RelationStrategy(SqlKind sqlKind, List<SqlNode> operandList) {
