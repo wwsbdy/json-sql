@@ -160,7 +160,7 @@ public class SqlDialog extends DialogWrapper {
                 String word = text.substring(wordStart, wordEnd);
                 if (!word.isEmpty()) {
                     for (String keyword : keywords) {
-                        if (keyword.startsWith(word)) {
+                        if (!keyword.equals(word) && keyword.startsWith(word)) {
                             JMenuItem keywordItem = new JMenuItem(keyword);
                             int finalWordStart = wordStart;
                             int finalWordEnd = wordEnd;
