@@ -149,19 +149,24 @@ public class SqlDialog extends DialogWrapper {
                 String text = sqlContent.getText();
                 int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
                 int wordStart = caretPosition;
+                int wordEnd = caretPosition;
 
-                while (wordStart > 0 && Character.isLetterOrDigit(text.charAt(wordStart - 1))) {
+                while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
                     wordStart--;
                 }
-                String word = text.substring(wordStart, caretPosition);
+                while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
+                    wordEnd++;
+                }
+                String word = text.substring(wordStart, wordEnd);
                 if (!word.isEmpty()) {
                     for (String keyword : keywords) {
                         if (keyword.startsWith(word)) {
                             JMenuItem keywordItem = new JMenuItem(keyword);
                             int finalWordStart = wordStart;
+                            int finalWordEnd = wordEnd;
                             keywordItem.addActionListener(e -> {
                                 try {
-                                    document.remove(finalWordStart, caretPosition - finalWordStart);
+                                    document.remove(finalWordStart, finalWordEnd - finalWordStart);
                                     document.insertString(finalWordStart, keyword, null);
                                 } catch (BadLocationException badLocationException) {
                                     badLocationException.printStackTrace();
