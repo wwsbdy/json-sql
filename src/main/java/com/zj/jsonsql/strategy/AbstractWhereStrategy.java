@@ -10,9 +10,11 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
+ * where条件策略抽象类
+ *
  * @author 19242
  */
-public abstract class AbstractStrategy {
+public abstract class AbstractWhereStrategy {
     /**
      * 函数的operandList大小
      */
@@ -33,7 +35,7 @@ public abstract class AbstractStrategy {
     private String field;
 
 
-    public AbstractStrategy(boolean reverse) {
+    public AbstractWhereStrategy(boolean reverse) {
         this.reverse = reverse;
     }
 

@@ -1,7 +1,7 @@
 package com.zj.jsonsql.strategy.impl;
 
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.CompareUtil;
 import com.zj.jsonsql.utils.JsonUtil;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.Objects;
  *
  * @author arthur_zhou
  */
-public class RangeStrategy extends AbstractStrategy {
+public class RangeStrategy extends AbstractWhereStrategy {
 
     private Range range;
 
@@ -45,7 +45,7 @@ public class RangeStrategy extends AbstractStrategy {
 
     public RangeStrategy(SqlKind sqlKind, List<SqlNode> operandList) {
         super(false);
-        if (CollectionUtils.isEmpty(operandList) && operandList.size() < SIMPLE_SIZE) {
+        if (CollectionUtils.isEmpty(operandList) || operandList.size() < SIMPLE_SIZE) {
             return;
         }
         setField(operandList.get(0).toString());
@@ -98,6 +98,6 @@ public class RangeStrategy extends AbstractStrategy {
         } else {
             equals = range.compare(convert);
         }
-        return isReverse() != equals;
+        return equals;
     }
 }

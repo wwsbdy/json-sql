@@ -1,7 +1,7 @@
 package com.zj.jsonsql.strategy.impl;
 
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author arthur_zhou
  */
-public class LikeStrategy extends AbstractStrategy {
+public class LikeStrategy extends AbstractWhereStrategy {
 
     private String value;
 

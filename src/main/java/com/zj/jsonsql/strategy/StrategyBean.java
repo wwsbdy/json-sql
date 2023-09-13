@@ -7,27 +7,35 @@ import org.apache.calcite.sql.SqlBasicCall;
 import java.util.Objects;
 
 /**
+ * where条件解析
+ *
  * @author 19242
  */
 public class StrategyBean {
 
-    private static final AbstractStrategy ALWAYS_TURE_STRATEGY = new AbstractStrategy(false) {
+    private static final AbstractWhereStrategy ALWAYS_TRUE_STRATEGY = new AbstractWhereStrategy(false) {
         @Override
         public boolean apply(MyJson item) {
             return true;
         }
     };
 
-    private static final AbstractStrategy ALWAYS_FALSE_STRATEGY = new AbstractStrategy(false) {
+    private static final AbstractWhereStrategy ALWAYS_FALSE_STRATEGY = new AbstractWhereStrategy(false) {
         @Override
         public boolean apply(MyJson item) {
             return false;
         }
     };
 
-    public static AbstractStrategy getStrategy(SqlBasicCall where) {
+    /**
+     * 获取数据过滤策略
+     *
+     * @param where where条件
+     * @return 过滤策略
+     */
+    public static AbstractWhereStrategy getStrategy(SqlBasicCall where) {
         if (Objects.isNull(where)) {
-            return ALWAYS_TURE_STRATEGY;
+            return ALWAYS_TRUE_STRATEGY;
         }
         switch (where.getKind()) {
             case EQUALS:

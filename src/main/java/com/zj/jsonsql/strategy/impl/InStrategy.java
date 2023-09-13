@@ -1,7 +1,7 @@
 package com.zj.jsonsql.strategy.impl;
 
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * @author 19242
  */
-public class InStrategy extends AbstractStrategy {
+public class InStrategy extends AbstractWhereStrategy {
 
     private Set<String> value;
 

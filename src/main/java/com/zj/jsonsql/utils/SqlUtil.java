@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
 import org.apache.calcite.config.Lex;
@@ -50,7 +50,7 @@ public class SqlUtil {
         }
         // 过滤
         SqlNode where = sqlNode.getWhere();
-        AbstractStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
+        AbstractWhereStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
         Stream<MyJson> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
         List<Field> selectList = getSelectList(columns, sqlNode);

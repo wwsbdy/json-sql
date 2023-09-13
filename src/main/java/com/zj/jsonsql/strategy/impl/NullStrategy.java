@@ -1,7 +1,7 @@
 package com.zj.jsonsql.strategy.impl;
 
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author arthur_zhou
  */
-public class NullStrategy extends AbstractStrategy {
+public class NullStrategy extends AbstractWhereStrategy {
 
 
     public NullStrategy(boolean reverse, List<SqlNode> operandList) {

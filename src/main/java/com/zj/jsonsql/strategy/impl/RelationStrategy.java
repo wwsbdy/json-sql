@@ -1,7 +1,7 @@
 package com.zj.jsonsql.strategy.impl;
 
 import com.zj.jsonsql.entity.MyJson;
-import com.zj.jsonsql.strategy.AbstractStrategy;
+import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlKind;
@@ -16,10 +16,10 @@ import java.util.Objects;
  * and or
  * @author 19242
  */
-public class RelationStrategy extends AbstractStrategy {
+public class RelationStrategy extends AbstractWhereStrategy {
 
     private SqlKind sqlKind;
-    private List<AbstractStrategy> strategyList;
+    private List<AbstractWhereStrategy> strategyList;
 
 
     public RelationStrategy(SqlKind sqlKind, List<SqlNode> operandList) {
@@ -44,11 +44,11 @@ public class RelationStrategy extends AbstractStrategy {
         }
         // or:至少有一个满足 and:全部满足
         boolean isOr = SqlKind.OR == sqlKind;
-        for (AbstractStrategy strategy : strategyList) {
+        for (AbstractWhereStrategy strategy : strategyList) {
             if (isOr == strategy.apply(item)) {
                 return isOr;
             }
         }
-        return isOr;
+        return !isOr;
     }
 }

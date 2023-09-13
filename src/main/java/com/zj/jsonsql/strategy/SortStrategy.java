@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * 排序策略
+ *
  * @author arthur_zhou
  */
 public class SortStrategy {
