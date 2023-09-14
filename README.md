@@ -8,7 +8,8 @@ json-sql
 
 ## 1.位置
 
-再顶部Tools里的JsonSql
+再顶部Tools里的JsonSql  
+插件压缩包在build分支的buildzip里
 
 ## 2.操作步骤
 <ul>
