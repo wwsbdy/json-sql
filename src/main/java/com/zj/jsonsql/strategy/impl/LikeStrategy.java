@@ -30,6 +30,7 @@ public class LikeStrategy extends AbstractWhereStrategy {
         this.value = String.valueOf(getValue(operandList.get(1)))
                 .replaceAll("(?<!\\\\)_", ".")
                 .replaceAll("(?<!\\\\)%", ".*")
+                // \\%或\\_变成%或_
                 .replaceAll("\\\\\\\\(?=[_%])", "");
     }
 

@@ -48,9 +48,9 @@ public class StrategyBean {
                 return new InStrategy(true, where.getOperandList());
             case LIKE:
                 String operator = String.valueOf(where.getOperator());
-                if (LikeStrategy.LIKE.equals(operator)) {
+                if (LikeStrategy.LIKE.equalsIgnoreCase(operator)) {
                     return new LikeStrategy(false, where.getOperandList());
-                } else if (LikeStrategy.NOT_LIKE.equals(operator)) {
+                } else if (LikeStrategy.NOT_LIKE.equalsIgnoreCase(operator)) {
                     return new LikeStrategy(true, where.getOperandList());
                 }
                 return ALWAYS_FALSE_STRATEGY;

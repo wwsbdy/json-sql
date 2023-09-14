@@ -14,11 +14,18 @@ import java.util.Objects;
 
 /**
  * and or
+ *
  * @author 19242
  */
 public class RelationStrategy extends AbstractWhereStrategy {
 
+    /**
+     * 关系类型
+     */
     private SqlKind sqlKind;
+    /**
+     * 策略数组
+     */
     private List<AbstractWhereStrategy> strategyList;
 
 

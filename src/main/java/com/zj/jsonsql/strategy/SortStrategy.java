@@ -19,8 +19,13 @@ import java.util.Objects;
  */
 public class SortStrategy {
 
-
+    /**
+     * 排序信息数组
+     */
     private final List<Sort> sortList = new ArrayList<>();
+    /**
+     * 别名和真实名称map
+     */
     private final Map<String, String> nameMap;
 
     @Data
@@ -45,6 +50,7 @@ public class SortStrategy {
             if (sqlNode instanceof SqlIdentifier) {
                 SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
                 sortList.add(new Sort(sqlIdentifier.toString()));
+                continue;
             }
             if (sqlNode instanceof SqlBasicCall) {
                 SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;

@@ -19,6 +19,9 @@ import java.util.Objects;
  */
 public class RangeStrategy extends AbstractWhereStrategy {
 
+    /**
+     * 范围比较信息
+     */
     private Range range;
 
     @Data

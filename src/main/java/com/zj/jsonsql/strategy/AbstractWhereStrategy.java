@@ -24,14 +24,16 @@ public abstract class AbstractWhereStrategy {
      */
     protected static final int SIMPLE_SIZE = 2;
     /**
-     *
+     * between的operandList大小
      */
     protected static final int BETWEEN_SIZE = 3;
     /**
      * true,取反
      */
     private final boolean reverse;
-
+    /**
+     * 查询字段
+     */
     private String field;
 
 
