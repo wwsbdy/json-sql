@@ -6,7 +6,6 @@ import com.zj.jsonsql.entity.MyJson;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
@@ -24,11 +23,6 @@ public class IdColumnInfo extends ColumnInfo<MyJson, Integer> {
     @Override
     public Integer valueOf(MyJson myJson) {
         return myJson.getId();
-    }
-
-    @Override
-    public int getWidth(JTable table) {
-        return 40;
     }
 
     @Override

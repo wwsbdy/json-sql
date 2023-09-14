@@ -19,6 +19,7 @@ import com.zj.jsonsql.ui.dialog.sql.SqlDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 
 /**
  * 表格
@@ -41,6 +42,8 @@ public class Table {
         table.setColumnSelectionAllowed(true);
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
+        // 设置序号和选择表头不可改变大小
+        setIdAndSelectHeader(table);
         // 绑定结果
         dataModel.addRows(jsonInfo.getRows());
         // 创建装饰器实例
@@ -62,6 +65,8 @@ public class Table {
                 formTestDialog.show();
                 // 重新赋值
                 dataModel.setColumnInfos(jsonInfo.getFields());
+                // 设置序号和选择表头不可改变大小
+                setIdAndSelectHeader(table);
                 dataModel.setItems(jsonInfo.getRows());
             }
         };
@@ -71,6 +76,9 @@ public class Table {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 jsonInfo.resetSql();
                 dataModel.setColumnInfos(jsonInfo.getFields());
+                dataModel.setItems(jsonInfo.getRows());
+                // 设置序号和选择表头不可改变大小
+                setIdAndSelectHeader(table);
                 dataModel.setItems(jsonInfo.getRows());
             }
         };
@@ -91,6 +99,20 @@ public class Table {
         decorator.addExtraAction(reset);
         decorator.addExtraAction(export);
         return decorator.createPanel();
+    }
+
+    /**
+     * 设置序号和选择表头不可改变大小
+     *
+     * @param table
+     */
+    private static void setIdAndSelectHeader(TableView<MyJson> table) {
+        TableColumn column = table.getTableHeader().getColumnModel().getColumn(0);
+        column.setResizable(false);
+        column.setMaxWidth(40);
+        TableColumn column1 = table.getTableHeader().getColumnModel().getColumn(1);
+        column1.setResizable(false);
+        column1.setMaxWidth(40);
     }
 
     /**
