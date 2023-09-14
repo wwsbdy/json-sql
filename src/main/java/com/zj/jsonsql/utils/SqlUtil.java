@@ -87,7 +87,7 @@ public class SqlUtil {
         }
         AtomicInteger i = new AtomicInteger();
         return stream.peek(v -> {
-            v.setId(i.getAndIncrement());
+            v.setId(i.incrementAndGet());
             v.setSelected(false);
         }).collect(Collectors.toList());
     }
