@@ -104,7 +104,7 @@ public class Table {
     /**
      * 设置序号和选择表头不可改变大小
      *
-     * @param table
+     * @param table 表格视图
      */
     private static void setIdAndSelectHeader(TableView<MyJson> table) {
         TableColumn column = table.getTableHeader().getColumnModel().getColumn(0);
