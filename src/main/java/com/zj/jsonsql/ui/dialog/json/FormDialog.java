@@ -110,7 +110,7 @@ public class FormDialog extends DialogWrapper {
                 List<MyJson> objects = new ArrayList<>();
                 Set<Field> columns = new LinkedHashSet<>();
                 for (Object o : jsonArray) {
-                    if (!(o instanceof JSONObject)) {
+                    if (Objects.isNull(o) || !(o instanceof JSONObject)) {
                         continue;
                     }
                     MyJson object = new MyJson((JSONObject) o);

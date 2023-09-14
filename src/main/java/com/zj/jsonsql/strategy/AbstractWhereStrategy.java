@@ -30,7 +30,7 @@ public abstract class AbstractWhereStrategy {
     /**
      * true,取反
      */
-    boolean reverse;
+    private final boolean reverse;
 
     private String field;
 
