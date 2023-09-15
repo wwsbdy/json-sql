@@ -11,7 +11,6 @@ import org.apache.calcite.sql.SqlSelect;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * json信息
@@ -45,8 +44,7 @@ public class JsonInfo extends BaseJsonInfo {
 
     public void resetSql() {
         this.sql = "select * from arr";
-        sqlNode = null;
-        setSqlNode();
+        sqlNode = SqlUtil.toSqlSelect(sql);
     }
 
     public void setSql(String sql) {
@@ -72,15 +70,6 @@ public class JsonInfo extends BaseJsonInfo {
             columnInfos[i + 2] = new StrColumnInfo(field.getOriginalName(), field.getName(), field.getType());
         }
         return columnInfos;
-    }
-
-    private void setSqlNode() {
-        if (Objects.isNull(sqlNode)) {
-            sqlNode = SqlUtil.toSqlSelect(sql);
-        }
-        if (Objects.isNull(sqlNode)) {
-            throw new RuntimeException();
-        }
     }
 
     @Override

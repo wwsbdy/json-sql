@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 public class SqlUtil {
 
     private static final SqlParser.Config CONFIG;
+    private static final String SELECT_ALL = "*";
 
     static {
         CONFIG = SqlParser.config()
@@ -45,7 +46,9 @@ public class SqlUtil {
      * @return 过滤得到的数据
      */
     public static List<MyJson> getDataList(List<MyJson> dataList, List<Field> columns, SqlSelect sqlNode) {
-        Objects.requireNonNull(sqlNode);
+        if (Objects.isNull(sqlNode)) {
+            return dataList;
+        }
         if (CollectionUtils.isEmpty(dataList)) {
             return Collections.emptyList();
         }
@@ -100,7 +103,9 @@ public class SqlUtil {
      * @return 表头
      */
     public static List<Field> getFields(List<Field> columns, SqlSelect sqlNode) {
-        Objects.requireNonNull(sqlNode);
+        if (Objects.isNull(sqlNode)) {
+            return columns;
+        }
         if (CollectionUtils.isEmpty(columns)) {
             return Collections.emptyList();
         }
@@ -138,11 +143,8 @@ public class SqlUtil {
         for (SqlNode node : sqlNode.getSelectList()) {
             String name = node.toString();
             // 查全部
-            if ("*".equals(name)) {
-                for (Field field : columns) {
-                    String column = field.getOriginalName();
-                    select.add(new Field(column, column));
-                }
+            if (SELECT_ALL.equals(name)) {
+                select.addAll(columns);
                 continue;
             }
             switch (node.getKind()) {
