@@ -86,10 +86,7 @@ public class MyJson {
                 JSONArray array = (JSONArray) object;
                 JSONArray arr = new JSONArray();
                 for (Object item : array) {
-                    Object value = getObject(key, item);
-                    if (Objects.nonNull(value)) {
-                        arr.add(value);
-                    }
+                    arr.add(getObject(key, item));
                 }
                 result = CollectionUtils.isEmpty(arr) ? null : arr;
                 break;
