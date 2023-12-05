@@ -121,7 +121,7 @@ public class FormDialog extends DialogWrapper {
                         if (columnMap.containsKey(key)) {
                             columnMap.get(key).add(type);
                         } else {
-                            columnMap.put(key, Lists.newArrayList());
+                            columnMap.put(key, Lists.newArrayList(type));
                         }
                     }
                     objects.add(object);
