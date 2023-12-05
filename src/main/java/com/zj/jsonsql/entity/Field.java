@@ -1,6 +1,12 @@
 package com.zj.jsonsql.entity;
 
+import com.zj.jsonsql.enums.JsonEnum;
 import lombok.Data;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 列数据
@@ -32,5 +38,36 @@ public class Field {
         this.originalName = originalName;
         this.name = name;
         this.type = type;
+    }
+
+    /**
+     * 获取原始列
+     * 1.如果列的类型全部相等，直接返回
+     * 2.如果有不同类型，除开为NULL的，全部相等，直接返回
+     * 3.除开NULL还是有不一样的，返回未知
+     *
+     * @param columnMap
+     * @return
+     */
+    public static List<Field> getOriginalField(Map<String, List<String>> columnMap) {
+        if (MapUtils.isEmpty(columnMap)) {
+            return Collections.emptyList();
+        }
+        List<Field> fields = new ArrayList<>();
+        columnMap.forEach((k, v) -> {
+            if (CollectionUtils.isEmpty(v)) {
+                return;
+            }
+            List<String> typeList = v.stream()
+                    .distinct()
+                    .filter(var -> !JsonEnum.NULL.name().equalsIgnoreCase(var))
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(typeList) || typeList.size() == 1) {
+                fields.add(new Field(k, k, v.get(0)));
+            } else {
+                fields.add(new Field(k, k, JsonEnum.UNKNOWN.name().toLowerCase()));
+            }
+        });
+        return fields;
     }
 }

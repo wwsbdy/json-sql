@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.google.common.collect.Lists;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -108,22 +109,28 @@ public class FormDialog extends DialogWrapper {
                     return;
                 }
                 List<Row> objects = new ArrayList<>();
-                Set<Field> columns = new LinkedHashSet<>();
+                Map<String, List<String>> columnMap = new LinkedHashMap<>();
                 for (Object o : jsonArray) {
                     if (Objects.isNull(o) || !(o instanceof JSONObject)) {
                         continue;
                     }
                     Row object = new Row((JSONObject) o);
                     for (String key : object.keySet()) {
-                        columns.add(new Field(key, key, JsonUtil.getType(object.get(key)).name().toLowerCase()));
+                        // 可能会出现不同数据里同一个key，value不一样的情况。如：null和string。这时以不是null的为准，其他的情况以最后一个value类型为准
+                        String type = JsonUtil.getType(object.get(key)).name().toLowerCase();
+                        if (columnMap.containsKey(key)) {
+                            columnMap.get(key).add(type);
+                        } else {
+                            columnMap.put(key, Lists.newArrayList());
+                        }
                     }
                     objects.add(object);
                 }
-                if (columns.size() > Constant.COLUMNS_MAX) {
+                if (columnMap.size() > Constant.COLUMNS_MAX) {
                     Messages.showErrorDialog(project, NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
                     return;
                 }
-                JsonInfo jsonInfo = new JsonInfo(new ArrayList<>(columns), objects, jsonStr);
+                JsonInfo jsonInfo = new JsonInfo(Field.getOriginalField(columnMap), objects, jsonStr);
                 // 打开表格
                 new TableRunner(project).run(jsonInfo);
                 // 关闭窗口
