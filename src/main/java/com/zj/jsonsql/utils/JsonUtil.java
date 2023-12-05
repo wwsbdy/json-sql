@@ -138,9 +138,9 @@ public class JsonUtil {
         }
         // 是否美化
         if (realExportInfo.isBeautify()) {
-            return result.toString(SerializerFeature.PrettyFormat);
+            return result.toString(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue);
         }
-        return result.toString();
+        return result.toString(SerializerFeature.WriteMapNullValue);
     }
 
     /**
