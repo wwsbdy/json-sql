@@ -1,16 +1,18 @@
 package com.zj.jsonsql.entity.columninfo;
 
 import com.intellij.util.ui.ColumnInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * 普通列展示配置
+ *
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class StrColumnInfo extends ColumnInfo<MyJson, String> {
+public class StrColumnInfo extends ColumnInfo<Row, String> {
     /**
      * 原始名称
      */
@@ -26,8 +28,8 @@ public class StrColumnInfo extends ColumnInfo<MyJson, String> {
 
     @Nullable
     @Override
-    public String valueOf(MyJson myJson) {
-        return myJson == null ? "NULL" : getValue(myJson.get(originalName));
+    public String valueOf(Row row) {
+        return row == null ? "NULL" : getValue(row.get(originalName));
     }
 
     /**

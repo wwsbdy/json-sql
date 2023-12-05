@@ -3,6 +3,8 @@ package com.zj.jsonsql.entity;
 import lombok.Data;
 
 /**
+ * 导出配置信息
+ *
  * @author 19242
  */
 @Data

@@ -14,7 +14,7 @@ import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.edit.CustomEditorField;
 import com.zj.jsonsql.ui.table.TableRunner;
@@ -107,13 +107,13 @@ public class FormDialog extends DialogWrapper {
                     Messages.showErrorDialog(project, NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
                     return;
                 }
-                List<MyJson> objects = new ArrayList<>();
+                List<Row> objects = new ArrayList<>();
                 Set<Field> columns = new LinkedHashSet<>();
                 for (Object o : jsonArray) {
                     if (Objects.isNull(o) || !(o instanceof JSONObject)) {
                         continue;
                     }
-                    MyJson object = new MyJson((JSONObject) o);
+                    Row object = new Row((JSONObject) o);
                     for (String key : object.keySet()) {
                         columns.add(new Field(key, key, JsonUtil.getType(object.get(key)).name().toLowerCase()));
                     }

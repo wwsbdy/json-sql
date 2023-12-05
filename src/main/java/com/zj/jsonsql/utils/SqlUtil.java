@@ -3,7 +3,7 @@ package com.zj.jsonsql.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
@@ -45,7 +45,7 @@ public class SqlUtil {
      * @param sqlNode  sql解析树
      * @return 过滤得到的数据
      */
-    public static List<MyJson> getDataList(List<MyJson> dataList, List<Field> columns, SqlSelect sqlNode) {
+    public static List<Row> getDataList(List<Row> dataList, List<Field> columns, SqlSelect sqlNode) {
         if (Objects.isNull(sqlNode)) {
             return dataList;
         }
@@ -55,7 +55,7 @@ public class SqlUtil {
         // 过滤
         SqlNode where = sqlNode.getWhere();
         AbstractWhereStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
-        Stream<MyJson> stream = dataList.stream().filter(strategy::apply);
+        Stream<Row> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
         List<Field> selectList = getSelectList(columns, sqlNode);
         // 去重
@@ -202,12 +202,12 @@ public class SqlUtil {
      * @param row      0-SQL查询，1-勾选行，2-全部
      * @return 导出行
      */
-    public static List<MyJson> getRow(JsonInfo jsonInfo, int row) {
+    public static List<Row> getRow(JsonInfo jsonInfo, int row) {
         switch (row) {
             case 0:
                 return jsonInfo.getResult();
             case 1:
-                return jsonInfo.getResult().stream().filter(MyJson::isSelected).collect(Collectors.toList());
+                return jsonInfo.getResult().stream().filter(Row::isSelected).collect(Collectors.toList());
             case 2:
                 return jsonInfo.getList();
             default:

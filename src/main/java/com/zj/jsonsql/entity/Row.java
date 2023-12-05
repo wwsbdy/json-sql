@@ -12,17 +12,25 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * 行数据
+ *
  * @author arthur_zhou
  */
-public class MyJson {
-
+public class Row {
+    /**
+     * 序号
+     */
     private int id;
-
+    /**
+     * 是否选中
+     */
     private boolean selected;
-
+    /**
+     * 数据
+     */
     private final JSONObject jsonObject;
 
-    public MyJson(JSONObject jsonObject) {
+    public Row(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
     }
 

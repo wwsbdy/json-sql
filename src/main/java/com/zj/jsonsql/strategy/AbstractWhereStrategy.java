@@ -1,6 +1,6 @@
 package com.zj.jsonsql.strategy;
 
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
@@ -59,7 +59,7 @@ public abstract class AbstractWhereStrategy {
      * @param item 行值
      * @return 是否满足条件
      */
-    public abstract boolean apply(MyJson item);
+    public abstract boolean apply(Row item);
 
     /**
      * 获取查询值

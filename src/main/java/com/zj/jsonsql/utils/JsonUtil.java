@@ -7,7 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -116,7 +116,7 @@ public class JsonUtil {
             realExportInfo = new ExportInfo();
         }
         // 获取行
-        List<MyJson> rows = SqlUtil.getRow(jsonInfo, realExportInfo.getRow());
+        List<Row> rows = SqlUtil.getRow(jsonInfo, realExportInfo.getRow());
         if (CollectionUtils.isEmpty(rows)) {
             return EMPTY_JSON_ARRAY_STR;
         }
@@ -151,18 +151,18 @@ public class JsonUtil {
      * @param round   true且columns只有一个时，平铺
      * @return 组装好的JsonArray
      */
-    private static JSONArray getJsonArray(List<MyJson> rows, List<Field> columns, boolean round) {
+    private static JSONArray getJsonArray(List<Row> rows, List<Field> columns, boolean round) {
         JSONArray jsonArray = new JSONArray();
         if (round && CollectionUtils.isNotEmpty(columns) && columns.size() == 1) {
             String singleColumn = columns.get(0).getOriginalName();
-            for (MyJson row : rows) {
+            for (Row row : rows) {
                 if (StringUtils.isNotEmpty(singleColumn)) {
                     jsonArray.addAll(round(row.get(singleColumn)));
                 }
             }
             return jsonArray;
         }
-        for (MyJson row : rows) {
+        for (Row row : rows) {
             if (CollectionUtils.isEmpty(columns)) {
                 jsonArray.add(EMPTY_JSON_OBJECT);
                 continue;

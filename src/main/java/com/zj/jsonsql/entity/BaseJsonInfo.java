@@ -5,12 +5,15 @@ import com.intellij.util.ui.ColumnInfo;
 import java.util.List;
 
 /**
+ * 原始表格数据
+ *
  * @author arthur_zhou
  */
 public abstract class BaseJsonInfo {
-
+    /**
+     * 传入的原始json字符串
+     */
     private final String jsonContent;
-
     /**
      * 原始列
      */
@@ -18,13 +21,13 @@ public abstract class BaseJsonInfo {
     /**
      * 导入数据列表
      */
-    private final List<MyJson> list;
+    private final List<Row> list;
 
     public List<Field> getColumns() {
         return columns;
     }
 
-    public List<MyJson> getList() {
+    public List<Row> getList() {
         return list;
     }
 
@@ -32,7 +35,7 @@ public abstract class BaseJsonInfo {
         return jsonContent;
     }
 
-    public BaseJsonInfo(List<Field> columns, List<MyJson> list, String jsonContent) {
+    public BaseJsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
         this.columns = columns;
         this.list = list;
         this.jsonContent = jsonContent;
@@ -50,5 +53,5 @@ public abstract class BaseJsonInfo {
      *
      * @return 表数据
      */
-    public abstract List<MyJson> getRows();
+    public abstract List<Row> getRows();
 }

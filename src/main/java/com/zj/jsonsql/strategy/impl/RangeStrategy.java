@@ -1,6 +1,6 @@
 package com.zj.jsonsql.strategy.impl;
 
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.CompareUtil;
 import com.zj.jsonsql.utils.JsonUtil;
@@ -79,7 +79,7 @@ public class RangeStrategy extends AbstractWhereStrategy {
     }
 
     @Override
-    public boolean apply(MyJson item) {
+    public boolean apply(Row item) {
         if (Objects.isNull(range)) {
             return false;
         }

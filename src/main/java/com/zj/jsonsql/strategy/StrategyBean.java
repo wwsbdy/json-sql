@@ -1,6 +1,6 @@
 package com.zj.jsonsql.strategy;
 
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.impl.*;
 import org.apache.calcite.sql.SqlBasicCall;
 
@@ -15,14 +15,14 @@ public class StrategyBean {
 
     private static final AbstractWhereStrategy ALWAYS_TRUE_STRATEGY = new AbstractWhereStrategy(false) {
         @Override
-        public boolean apply(MyJson item) {
+        public boolean apply(Row item) {
             return true;
         }
     };
 
     private static final AbstractWhereStrategy ALWAYS_FALSE_STRATEGY = new AbstractWhereStrategy(false) {
         @Override
-        public boolean apply(MyJson item) {
+        public boolean apply(Row item) {
             return false;
         }
     };

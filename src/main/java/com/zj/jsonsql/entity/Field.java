@@ -3,6 +3,8 @@ package com.zj.jsonsql.entity;
 import lombok.Data;
 
 /**
+ * 列数据
+ *
  * @author arthur_zhou
  */
 @Data

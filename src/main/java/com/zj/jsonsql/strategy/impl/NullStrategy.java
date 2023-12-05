@@ -1,6 +1,6 @@
 package com.zj.jsonsql.strategy.impl;
 
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
@@ -26,7 +26,7 @@ public class NullStrategy extends AbstractWhereStrategy {
     }
 
     @Override
-    public boolean apply(MyJson item) {
+    public boolean apply(Row item) {
         if (StringUtils.isEmpty(getField())) {
             return false;
         }

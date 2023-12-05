@@ -10,7 +10,7 @@ import com.intellij.ui.wizard.WizardModel;
 import com.intellij.util.ui.ListTableModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.JsonInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.MyWizardDialog;
 import com.zj.jsonsql.ui.dialog.export.Setting;
@@ -36,9 +36,9 @@ public class Table {
      */
     public static JPanel create(@NotNull Project project, @NotNull JsonInfo jsonInfo) {
         // 创建表格模型
-        ListTableModel<MyJson> dataModel = new ListTableModel<>(jsonInfo.getFields());
+        ListTableModel<Row> dataModel = new ListTableModel<>(jsonInfo.getFields());
         // 创建JTable表格组件
-        TableView<MyJson> table = new TableView<>(dataModel);
+        TableView<Row> table = new TableView<>(dataModel);
         table.setColumnSelectionAllowed(true);
         // 固定表头不可移动
         table.getTableHeader().setReorderingAllowed(false);
@@ -106,7 +106,7 @@ public class Table {
      *
      * @param table 表格视图
      */
-    private static void setIdAndSelectHeader(TableView<MyJson> table) {
+    private static void setIdAndSelectHeader(TableView<Row> table) {
         TableColumn column = table.getTableHeader().getColumnModel().getColumn(0);
         column.setResizable(false);
         column.setMaxWidth(40);

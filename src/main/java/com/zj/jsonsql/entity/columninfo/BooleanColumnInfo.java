@@ -1,16 +1,18 @@
 package com.zj.jsonsql.entity.columninfo;
 
 import com.intellij.util.ui.ColumnInfo;
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * 选择列格式信息
+ *
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class BooleanColumnInfo extends ColumnInfo<MyJson, Boolean> {
+public class BooleanColumnInfo extends ColumnInfo<Row, Boolean> {
 
     public BooleanColumnInfo(@Nls(capitalization = Nls.Capitalization.Title) String name) {
         super(name);
@@ -18,8 +20,8 @@ public class BooleanColumnInfo extends ColumnInfo<MyJson, Boolean> {
 
     @Nullable
     @Override
-    public Boolean valueOf(MyJson myJson) {
-        return myJson.isSelected();
+    public Boolean valueOf(Row row) {
+        return row.isSelected();
     }
 
     @Override
@@ -28,12 +30,12 @@ public class BooleanColumnInfo extends ColumnInfo<MyJson, Boolean> {
     }
 
     @Override
-    public void setValue(MyJson myJson, Boolean value) {
-        myJson.setSelected(value);
+    public void setValue(Row row, Boolean value) {
+        row.setSelected(value);
     }
 
     @Override
-    public boolean isCellEditable(MyJson myJson) {
+    public boolean isCellEditable(Row row) {
         return true;
     }
 }

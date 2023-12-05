@@ -1,6 +1,6 @@
 package com.zj.jsonsql.strategy;
 
-import com.zj.jsonsql.entity.MyJson;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.utils.CompareUtil;
 import lombok.Data;
 import org.apache.calcite.sql.*;
@@ -68,7 +68,7 @@ public class SortStrategy {
      * @param var2 排序json2
      * @return 顺序倒序还是不变
      */
-    public int orderBy(MyJson var1, MyJson var2) {
+    public int orderBy(Row var1, Row var2) {
         if (CollectionUtils.isEmpty(sortList)) {
             return 0;
         }
@@ -91,7 +91,7 @@ public class SortStrategy {
      * @param column key
      * @return value
      */
-    Object get(MyJson var, String column) {
+    Object get(Row var, String column) {
         if (Objects.isNull(var) || StringUtils.isEmpty(column)) {
             return null;
         }

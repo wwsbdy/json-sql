@@ -13,7 +13,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.List;
 
 /**
- * json信息
+ * 展示的表格数据存放对象
  *
  * @author arthur_zhou
  */
@@ -35,9 +35,9 @@ public class JsonInfo extends BaseJsonInfo {
     /**
      * 查询结果
      */
-    private List<MyJson> result;
+    private List<Row> result;
 
-    public JsonInfo(List<Field> columns, List<MyJson> list, String jsonContent) {
+    public JsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
         super(columns, list, jsonContent);
         resetSql();
     }
@@ -73,7 +73,7 @@ public class JsonInfo extends BaseJsonInfo {
     }
 
     @Override
-    public List<MyJson> getRows() {
+    public List<Row> getRows() {
         return result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
     }
 }
