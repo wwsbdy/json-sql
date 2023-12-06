@@ -62,8 +62,10 @@ public class Field {
                     .distinct()
                     .filter(var -> !JsonEnum.NULL.name().equalsIgnoreCase(var))
                     .collect(Collectors.toList());
-            if (typeList.size() <= 1) {
-                fields.add(new Field(k, k, v.get(0)));
+            if (typeList.size() == 0) {
+                fields.add(new Field(k, k, JsonEnum.NULL.name().toLowerCase()));
+            } else if (typeList.size() == 1) {
+                fields.add(new Field(k, k, typeList.get(0)));
             } else {
                 fields.add(new Field(k, k, JsonEnum.UNKNOWN.name().toLowerCase()));
             }
