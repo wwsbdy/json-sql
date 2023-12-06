@@ -183,9 +183,6 @@ public class JsonUtil {
      * @return 平铺的数据
      */
     private static List<?> round(Object o) {
-        if (Objects.isNull(o)) {
-            return Collections.emptyList();
-        }
         JsonEnum type = getType(o);
         switch (type) {
             case OBJECT:
