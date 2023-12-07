@@ -24,6 +24,10 @@ public enum NoticeEnum {
      * SQL过长
      */
     SQL_TOO_LONG("SQL过长", "SQL过于复杂"),
+    /**
+     * 输入json为空
+     */
+    JSON_EMPTY("Json为空", "输入Json为空"),
     ;
 
     private final String warn;

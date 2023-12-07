@@ -18,4 +18,8 @@ public interface Constant {
      * 最大SQL长度
      */
     int SQL_MAX = 500;
+    /**
+     * 自定义的唯一列
+     */
+    String ONLY_FILED = "only_filed_";
 }
