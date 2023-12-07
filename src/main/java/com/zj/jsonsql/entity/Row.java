@@ -94,7 +94,13 @@ public class Row {
                 JSONArray array = (JSONArray) object;
                 JSONArray arr = new JSONArray();
                 for (Object item : array) {
-                    arr.add(getObject(key, item));
+                    Object childObject = getObject(key, item);
+                    // 如果是数组套数组，直接平铺好了
+                    if (childObject instanceof JSONArray) {
+                        arr.addAll((JSONArray) childObject);
+                    } else {
+                        arr.add(childObject);
+                    }
                 }
                 result = CollectionUtils.isEmpty(arr) ? null : arr;
                 break;
