@@ -2,6 +2,7 @@ package com.zj.jsonsql.entity.columninfo;
 
 import com.intellij.util.ui.ColumnInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.JsonEnum;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
@@ -20,10 +21,10 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
 
     private final String text;
 
-    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name, String text) {
+    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name, JsonEnum type) {
         super(name);
         this.originalName = originalName;
-        this.text = text;
+        this.text = type.name().toLowerCase();
     }
 
     @Nullable

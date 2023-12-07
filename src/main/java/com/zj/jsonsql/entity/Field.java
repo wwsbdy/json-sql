@@ -27,14 +27,14 @@ public class Field {
     /**
      * 类型
      */
-    private String type;
+    private JsonEnum type;
 
     public Field(String originalName, String name) {
         this.originalName = originalName;
         this.name = name;
     }
 
-    public Field(String originalName, String name, String type) {
+    public Field(String originalName, String name, JsonEnum type) {
         this.originalName = originalName;
         this.name = name;
         this.type = type;
@@ -49,7 +49,7 @@ public class Field {
      * @param columnMap
      * @return
      */
-    public static List<Field> getOriginalField(Map<String, List<String>> columnMap) {
+    public static List<Field> getOriginalField(Map<String, List<JsonEnum>> columnMap) {
         if (MapUtils.isEmpty(columnMap)) {
             return Collections.emptyList();
         }
@@ -58,16 +58,16 @@ public class Field {
             if (CollectionUtils.isEmpty(v)) {
                 return;
             }
-            List<String> typeList = v.stream()
+            List<JsonEnum> typeList = v.stream()
                     .distinct()
-                    .filter(var -> !JsonEnum.NULL.name().equalsIgnoreCase(var))
+                    .filter(var -> JsonEnum.NULL != var)
                     .collect(Collectors.toList());
             if (typeList.size() == 0) {
-                fields.add(new Field(k, k, JsonEnum.NULL.name().toLowerCase()));
+                fields.add(new Field(k, k, JsonEnum.NULL));
             } else if (typeList.size() == 1) {
                 fields.add(new Field(k, k, typeList.get(0)));
             } else {
-                fields.add(new Field(k, k, JsonEnum.UNKNOWN.name().toLowerCase()));
+                fields.add(new Field(k, k, JsonEnum.UNKNOWN));
             }
         });
         return fields;

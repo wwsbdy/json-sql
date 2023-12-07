@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
@@ -110,21 +111,25 @@ public class SqlUtil {
             return Collections.emptyList();
         }
         List<Field> select = getSelectList(columns, sqlNode);
-        Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
+        Map<String, JsonEnum> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
         // 取交集
         select.removeIf(v -> {
             if (StringUtils.isEmpty(v.getOriginalName())) {
                 return true;
             }
+            if (typeMap.containsKey(v.getOriginalName())) {
+                v.setType(typeMap.get(v.getOriginalName()));
+                return false;
+            }
             String[] keys = v.getOriginalName().split("\\.");
             if (keys.length == 0) {
                 return true;
             }
-            String type = typeMap.get(keys[0]);
-            if (StringUtils.isEmpty(type)) {
+            JsonEnum type = typeMap.get(keys[0]);
+            if (Objects.isNull(type)) {
                 return true;
             }
-            v.setType(type);
+            v.setType(JsonEnum.INNER);
             return false;
         });
         return select;

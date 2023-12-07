@@ -16,6 +16,7 @@ import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.edit.CustomEditorField;
 import com.zj.jsonsql.ui.table.TableRunner;
@@ -111,7 +112,7 @@ public class FormDialog extends DialogWrapper {
                     return;
                 }
                 List<Row> rowList = new ArrayList<>();
-                Map<String, List<String>> columnMap = new LinkedHashMap<>();
+                Map<String, List<JsonEnum>> columnMap = new LinkedHashMap<>();
                 String onlyFiled = null;
                 for (Object o : jsonArray) {
                     Row row;
@@ -126,7 +127,7 @@ public class FormDialog extends DialogWrapper {
                     }
                     for (String key : row.keySet()) {
                         // 可能会出现不同数据里同一个key，value不一样的情况。如：null和string。这时以不是null的为准，其他的情况以最后一个value类型为准
-                        String type = JsonUtil.getType(row.get(key)).name().toLowerCase();
+                        JsonEnum type = JsonUtil.getType(row.get(key));
                         if (columnMap.containsKey(key)) {
                             columnMap.get(key).add(type);
                         } else {
