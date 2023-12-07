@@ -13,10 +13,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -169,7 +166,7 @@ public class JsonUtil {
             }
             JSONObject jsonObject = new JSONObject(true);
             for (Field column : columns) {
-                jsonObject.put(column.getName(), row.get(column.getOriginalName()));
+                jsonObject.put(column.getName().replaceAll("_NaN_", "."), row.get(column.getOriginalName()));
             }
             jsonArray.add(jsonObject);
         }
@@ -201,5 +198,26 @@ public class JsonUtil {
             default:
                 return Collections.singletonList(o);
         }
+    }
+
+    /**
+     * 替换key值
+     *
+     * @param jsonObject
+     * @param regex
+     * @param replacement
+     * @return
+     */
+    public static JSONObject replaceAllKey(JSONObject jsonObject, String regex, String replacement) {
+        if (Objects.isNull(jsonObject)) {
+            return null;
+        }
+        return jsonObject.entrySet().stream().map(entry -> {
+            String key = entry.getKey();
+            if (StringUtils.isNotEmpty(key)) {
+                return Map.entry(key.replaceAll(regex, replacement), entry.getValue());
+            }
+            return entry;
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v2, JSONObject::new));
     }
 }

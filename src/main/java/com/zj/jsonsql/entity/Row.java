@@ -31,7 +31,7 @@ public class Row {
     private final JSONObject jsonObject;
 
     public Row(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
+        this.jsonObject = JsonUtil.replaceAllKey(jsonObject, "\\.", "_NaN_");
     }
 
     public int getId() {

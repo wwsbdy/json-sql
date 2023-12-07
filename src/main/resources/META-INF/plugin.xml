@@ -29,6 +29,7 @@
         <li>连表</li>
         <li>union</li>
         <li>特殊的关键词如：result、date（要带上``）</li>
+        <li>json里的key不能含有'.'，有则会转成_NaN_（仅sql查询）</li>
     </ul>
     一些例子：
     <ul>
