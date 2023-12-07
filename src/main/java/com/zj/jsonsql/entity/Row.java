@@ -60,6 +60,9 @@ public class Row {
         if (StringUtils.isEmpty(key)) {
             return null;
         }
+        if (jsonObject.containsKey(key)) {
+            return jsonObject.get(key);
+        }
         String[] keys = key.split("\\.");
         return get(keys);
     }
@@ -102,7 +105,7 @@ public class Row {
                         arr.add(childObject);
                     }
                 }
-                result = CollectionUtils.isEmpty(arr) ? null : arr;
+                result = CollectionUtils.isEmpty(arr) || arr.stream().noneMatch(Objects::nonNull) ? null : arr;
                 break;
             default:
                 return null;

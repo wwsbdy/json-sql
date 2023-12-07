@@ -212,12 +212,8 @@ public class JsonUtil {
         if (Objects.isNull(jsonObject)) {
             return null;
         }
-        return jsonObject.entrySet().stream().map(entry -> {
-            String key = entry.getKey();
-            if (StringUtils.isNotEmpty(key)) {
-                return Map.entry(key.replaceAll(regex, replacement), entry.getValue());
-            }
-            return entry;
-        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v2, JSONObject::new));
+        JSONObject resultJsonObject = new JSONObject(true);
+        jsonObject.forEach((k, v) -> resultJsonObject.put(k.replaceAll(regex, replacement), v));
+        return resultJsonObject;
     }
 }
