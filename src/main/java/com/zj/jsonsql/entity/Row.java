@@ -31,7 +31,7 @@ public class Row {
     private final JSONObject jsonObject;
 
     public Row(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
+        this.jsonObject = JsonUtil.replaceAllKey(jsonObject, "\\.", "_NaN_");
     }
 
     public int getId() {
@@ -59,6 +59,9 @@ public class Row {
     public Object get(String key) {
         if (StringUtils.isEmpty(key)) {
             return null;
+        }
+        if (jsonObject.containsKey(key)) {
+            return jsonObject.get(key);
         }
         String[] keys = key.split("\\.");
         return get(keys);
@@ -94,9 +97,15 @@ public class Row {
                 JSONArray array = (JSONArray) object;
                 JSONArray arr = new JSONArray();
                 for (Object item : array) {
-                    arr.add(getObject(key, item));
+                    Object childObject = getObject(key, item);
+                    // 如果是数组套数组，直接平铺好了
+                    if (childObject instanceof JSONArray) {
+                        arr.addAll((JSONArray) childObject);
+                    } else {
+                        arr.add(childObject);
+                    }
                 }
-                result = CollectionUtils.isEmpty(arr) ? null : arr;
+                result = CollectionUtils.isEmpty(arr) || arr.stream().noneMatch(Objects::nonNull) ? null : arr;
                 break;
             default:
                 return null;

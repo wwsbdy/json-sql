@@ -1,9 +1,12 @@
 package com.zj.jsonsql.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.JsonEnum;
+import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
@@ -110,21 +113,25 @@ public class SqlUtil {
             return Collections.emptyList();
         }
         List<Field> select = getSelectList(columns, sqlNode);
-        Map<String, String> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
+        Map<String, JsonEnum> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
         // 取交集
         select.removeIf(v -> {
             if (StringUtils.isEmpty(v.getOriginalName())) {
                 return true;
             }
+            if (typeMap.containsKey(v.getOriginalName())) {
+                v.setType(typeMap.get(v.getOriginalName()));
+                return false;
+            }
             String[] keys = v.getOriginalName().split("\\.");
             if (keys.length == 0) {
                 return true;
             }
-            String type = typeMap.get(keys[0]);
-            if (StringUtils.isEmpty(type)) {
+            JsonEnum type = typeMap.get(keys[0]);
+            if (Objects.isNull(type)) {
                 return true;
             }
-            v.setType(type);
+            v.setType(JsonEnum.INNER);
             return false;
         });
         return select;
@@ -170,29 +177,25 @@ public class SqlUtil {
      * @param sql sql语句
      * @return sql解析树
      */
-    public static SqlSelect toSqlSelect(String sql) {
+    public static SqlSelect toSqlSelect(String sql) throws SqlParseException {
         if (StringUtils.isEmpty(sql)) {
             return null;
         }
-        try {
-            SqlParser parser = SqlParser.create(sql, CONFIG);
-            SqlNode node = parser.parseStmt();
-            SqlKind kind = node.getKind();
-            if (SqlKind.SELECT == kind) {
-                return (SqlSelect) node;
-            }
-            if (SqlKind.ORDER_BY == kind) {
-                SqlOrderBy orderBy = (SqlOrderBy) node;
-                SqlSelect query = (SqlSelect) orderBy.query;
-                query.setOrderBy(orderBy.orderList);
-                query.setOffset(orderBy.offset);
-                query.setFetch(orderBy.fetch);
-                return query;
-            }
-            return null;
-        } catch (SqlParseException e) {
-            return null;
+        SqlParser parser = SqlParser.create(sql, CONFIG);
+        SqlNode node = parser.parseStmt();
+        SqlKind kind = node.getKind();
+        if (SqlKind.SELECT == kind) {
+            return (SqlSelect) node;
         }
+        if (SqlKind.ORDER_BY == kind) {
+            SqlOrderBy orderBy = (SqlOrderBy) node;
+            SqlSelect query = (SqlSelect) orderBy.query;
+            query.setOrderBy(orderBy.orderList);
+            query.setOffset(orderBy.offset);
+            query.setFetch(orderBy.fetch);
+            return query;
+        }
+        return null;
     }
 
     /**
@@ -231,5 +234,24 @@ public class SqlUtil {
             default:
                 return Collections.emptyList();
         }
+    }
+
+    /**
+     * 获取错误信息
+     *
+     * @param e
+     * @return
+     */
+    public static String getErrorMessage(SqlParseException e) {
+        String message = e.getMessage();
+        if (StringUtils.isEmpty(message)) {
+            return NoticeEnum.SQL_ERROR.getMessage();
+        }
+        String[] split = message.split("\r\n");
+        if (split.length == 0) {
+            return NoticeEnum.SQL_ERROR.getMessage();
+        }
+        String result = split[0];
+        return result.length() > Constant.MESSAGE_MAX ? result.substring(0, Constant.MESSAGE_MAX) : result;
     }
 }

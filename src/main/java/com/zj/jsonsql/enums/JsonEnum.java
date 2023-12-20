@@ -32,6 +32,9 @@ public enum JsonEnum {
     /**
      * null
      */
-    NULL;
-    ;
+    NULL,
+    /**
+     * 嵌套，无法直接获取类型
+     */
+    INNER;
 }

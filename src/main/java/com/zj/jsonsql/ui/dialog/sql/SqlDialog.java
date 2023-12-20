@@ -13,6 +13,7 @@ import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
+import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -76,7 +77,14 @@ public class SqlDialog extends DialogWrapper {
                     Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
                     return;
                 }
-                SqlSelect sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                SqlSelect sqlSelect;
+                try {
+                    sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                } catch (SqlParseException e) {
+                    e.printStackTrace();
+                    Messages.showErrorDialog(SqlUtil.getErrorMessage(e), NoticeEnum.SQL_ERROR.getWarn());
+                    return;
+                }
                 if (Objects.isNull(sqlSelect)) {
                     Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
                     return;

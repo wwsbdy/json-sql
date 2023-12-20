@@ -16,10 +16,13 @@ import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.edit.CustomEditorField;
 import com.zj.jsonsql.ui.table.TableRunner;
 import com.zj.jsonsql.utils.JsonUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -108,29 +111,40 @@ public class FormDialog extends DialogWrapper {
                     Messages.showErrorDialog(project, NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
                     return;
                 }
-                List<Row> objects = new ArrayList<>();
-                Map<String, List<String>> columnMap = new LinkedHashMap<>();
+                List<Row> rowList = new ArrayList<>();
+                Map<String, List<JsonEnum>> columnMap = new LinkedHashMap<>();
+                String onlyFiled = null;
                 for (Object o : jsonArray) {
+                    Row row;
                     if (Objects.isNull(o) || !(o instanceof JSONObject)) {
-                        continue;
+                        // 不是JSONObject, 新定义一个JSONObject放入
+                        if (Objects.isNull(onlyFiled)) {
+                            onlyFiled = Constant.ONLY_FILED + System.currentTimeMillis() / 1000L;
+                        }
+                        row = new Row(new JSONObject().fluentPut(onlyFiled, o));
+                    } else {
+                        row = new Row((JSONObject) o);
                     }
-                    Row object = new Row((JSONObject) o);
-                    for (String key : object.keySet()) {
+                    for (String key : row.keySet()) {
                         // 可能会出现不同数据里同一个key，value不一样的情况。如：null和string。这时以不是null的为准，其他的情况以最后一个value类型为准
-                        String type = JsonUtil.getType(object.get(key)).name().toLowerCase();
+                        JsonEnum type = JsonUtil.getType(row.get(key));
                         if (columnMap.containsKey(key)) {
                             columnMap.get(key).add(type);
                         } else {
                             columnMap.put(key, Lists.newArrayList(type));
                         }
                     }
-                    objects.add(object);
+                    rowList.add(row);
+                }
+                if (MapUtils.isEmpty(columnMap) || CollectionUtils.isEmpty(rowList)) {
+                    Messages.showErrorDialog(project, NoticeEnum.JSON_EMPTY.getMessage(), NoticeEnum.JSON_EMPTY.getWarn());
+                    return;
                 }
                 if (columnMap.size() > Constant.COLUMNS_MAX) {
                     Messages.showErrorDialog(project, NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
                     return;
                 }
-                JsonInfo jsonInfo = new JsonInfo(Field.getOriginalField(columnMap), objects, jsonStr);
+                JsonInfo jsonInfo = new JsonInfo(Field.getOriginalField(columnMap), rowList, jsonStr);
                 // 打开表格
                 new TableRunner(project).run(jsonInfo);
                 // 关闭窗口

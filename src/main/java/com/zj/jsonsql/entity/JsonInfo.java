@@ -8,6 +8,7 @@ import com.zj.jsonsql.utils.SqlUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.calcite.sql.SqlSelect;
+import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
@@ -44,7 +45,11 @@ public class JsonInfo extends BaseJsonInfo {
 
     public void resetSql() {
         this.sql = "select * from arr";
-        sqlNode = SqlUtil.toSqlSelect(sql);
+        try {
+            sqlNode = SqlUtil.toSqlSelect(sql);
+        } catch (SqlParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setSql(String sql) {
