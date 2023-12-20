@@ -13,13 +13,17 @@ public interface Constant {
     /**
      * 最大列数
      */
-    int COLUMNS_MAX = 30;
+    int COLUMNS_MAX = 50;
     /**
      * 最大SQL长度
      */
-    int SQL_MAX = 500;
+    int SQL_MAX = 800;
     /**
      * 自定义的唯一列
      */
     String ONLY_FILED = "only_filed_";
+    /**
+     * 最大消息长度
+     */
+    int MESSAGE_MAX = 20;
 }
