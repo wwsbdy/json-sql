@@ -11,6 +11,7 @@ import com.intellij.util.ui.ListTableModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.ui.dialog.export.Export;
 import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.MyWizardDialog;
 import com.zj.jsonsql.ui.dialog.export.Setting;
@@ -90,6 +91,7 @@ public class Table {
                 ExportInfo exportInfo = new ExportInfo();
                 wizardModel.add(new Setting(exportInfo));
                 wizardModel.add(new Json(exportInfo, project));
+                wizardModel.add(new Export(exportInfo, project));
                 MyWizardDialog wizardDialog = new MyWizardDialog(exportInfo, jsonInfo, project, true, wizardModel);
                 wizardDialog.show();
             }
