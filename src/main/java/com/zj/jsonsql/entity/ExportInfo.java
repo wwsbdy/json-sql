@@ -1,6 +1,9 @@
 package com.zj.jsonsql.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 /**
  * 导出配置信息
@@ -8,6 +11,7 @@ import lombok.Data;
  * @author 19242
  */
 @Data
+@NoArgsConstructor
 public class ExportInfo {
     /**
      * 导出行：0-SQL查询，1-勾选行，2-全部
@@ -34,4 +38,15 @@ public class ExportInfo {
      */
     private String jsonArrayStr = "";
 
+    public ExportInfo(ExportInfo exportInfo) {
+        if (Objects.isNull(exportInfo)) {
+            return;
+        }
+        row = exportInfo.row;
+        column = exportInfo.column;
+        round = exportInfo.round;
+        beautify = exportInfo.beautify;
+        distinct = exportInfo.distinct;
+        jsonArrayStr = exportInfo.jsonArrayStr;
+    }
 }

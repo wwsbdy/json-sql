@@ -1,6 +1,7 @@
 package com.zj.jsonsql.utils;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -36,11 +37,22 @@ public class EasyExcelUtil {
      * @param out          输出流
      */
     public static void write(String jsonArrayStr, OutputStream out) {
+        write(jsonArrayStr, out, ExcelTypeEnum.XLSX);
+    }
+
+    /**
+     * 写入数据
+     *
+     * @param jsonArrayStr jsonArray字符串
+     * @param out          输出流
+     */
+    public static void write(String jsonArrayStr, OutputStream out, ExcelTypeEnum excelType) {
         JSONArray jsonArray = parseArrayOrderly(jsonArrayStr);
         List<List<String>> headerList = getHeaderList(jsonArray);
         List<List<String>> dataList = getDataList(headerList, jsonArray);
 
         EasyExcel.write(out)
+                .excelType(excelType)
                 // 这里放入动态头
                 .head(headerList).sheet("Sheet1")
                 .doWrite(dataList);
