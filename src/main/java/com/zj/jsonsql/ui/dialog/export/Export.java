@@ -1,8 +1,6 @@
 package com.zj.jsonsql.ui.dialog.export;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
@@ -90,11 +88,8 @@ public class Export extends WizardStep<WizardModel> {
             // 不平铺数组
             ExportInfo exportInfo = new ExportInfo(this.exportInfo);
             exportInfo.setRound(false);
+            exportInfo.setOnlyOne(false);
             String jsonArrayStr = JsonUtil.getJsonStr(jsonInfo, exportInfo);
-            Object parse = JSON.parse(jsonArrayStr);
-            if (parse instanceof JSONObject) {
-                jsonArrayStr = "[" + jsonArrayStr + "]";
-            }
             // 超链接
             String hyperlink = "<html>导出成功：<a href=\"" + fileUrl + "\">点击打开</a></html>";
             try {

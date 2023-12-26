@@ -22,7 +22,7 @@ public class ExportInfo {
      */
     private int column;
     /**
-     * true 平铺数组
+     * true 平铺数组 [{"a":"1"},{"a":"2"}] -> ["1","2"]
      */
     private boolean round;
     /**
@@ -33,6 +33,10 @@ public class ExportInfo {
      * true 去重
      */
     private boolean distinct;
+    /**
+     * 只有一个元素时，去除数组 [{"a":"1"}] -> {"a":"1"}
+     */
+    private boolean onlyOne = true;
     /**
      * 展示的json字符串
      */
@@ -47,6 +51,7 @@ public class ExportInfo {
         round = exportInfo.round;
         beautify = exportInfo.beautify;
         distinct = exportInfo.distinct;
+        onlyOne = exportInfo.onlyOne;
         jsonArrayStr = exportInfo.jsonArrayStr;
     }
 }
