@@ -28,6 +28,22 @@ public enum NoticeEnum {
      * 输入json为空
      */
     JSON_EMPTY("Json为空", "输入Json为空"),
+    /**
+     * 文件夹路径为空
+     */
+    FOLDER_EMPTY("文件夹路径为空", "文件夹路径为空"),
+    /**
+     * 文件类型错误
+     */
+    FILE_TYPE_ERROR("文件类型错误", "文件类型错误"),
+    /**
+     * 文件名错误
+     */
+    FILE_NAME_ERROR("文件名错误", "文件名错误"),
+    /**
+     * 文件导出失败
+     */
+    FILE_EXPORT_FAIL("文件导出失败", "请检查文件夹、文件名或json"),
     ;
 
     private final String warn;

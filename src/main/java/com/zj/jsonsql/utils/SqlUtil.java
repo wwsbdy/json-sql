@@ -239,8 +239,8 @@ public class SqlUtil {
     /**
      * 获取错误信息
      *
-     * @param e
-     * @return
+     * @param e 异常
+     * @return 异常信息的第一行
      */
     public static String getErrorMessage(SqlParseException e) {
         String message = e.getMessage();

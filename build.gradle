@@ -24,6 +24,9 @@ dependencies {
     implementation("org.apache.calcite:calcite-core:1.35.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
+    implementation("com.alibaba:easyexcel:3.3.3") {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/

@@ -2,6 +2,7 @@ package com.zj.jsonsql.ui.dialog.export;
 
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.components.JBCheckBox;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
 import com.intellij.ui.wizard.WizardStep;
@@ -38,7 +39,7 @@ public class Setting extends WizardStep<WizardModel> {
             }
         });
 
-        jPanel.add(new JLabel("导出行"));
+        jPanel.add(new JBLabel("导出行"));
         jPanel.add(rowComboBox);
 
         ComboBox<Object> columnComboBox = new ComboBox<>();
@@ -51,7 +52,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setColumn(columnComboBox.getSelectedIndex());
             }
         });
-        jPanel.add(new JLabel("导出列"));
+        jPanel.add(new JBLabel("导出列"));
         jPanel.add(columnComboBox);
 
         JBCheckBox roundCheckBox = new JBCheckBox();
@@ -62,7 +63,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setRound(roundCheckBox.isSelected());
             }
         });
-        JLabel label = new JLabel("平铺数组");
+        JBLabel label = new JBLabel("平铺数组");
         label.setToolTipText("<html>仅有一个字段导出时，会把对象平铺成基础值</html>");
         jPanel.add(label);
         jPanel.add(roundCheckBox);
@@ -74,7 +75,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setBeautify(beautifyCheckBox.isSelected());
             }
         });
-        jPanel.add(new JLabel("美化Json"));
+        jPanel.add(new JBLabel("美化Json"));
         jPanel.add(beautifyCheckBox);
         JBCheckBox distinctCheckBox = new JBCheckBox();
         distinctCheckBox.setSelected(exportInfo.isDistinct());
@@ -84,7 +85,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setDistinct(beautifyCheckBox.isSelected());
             }
         });
-        jPanel.add(new JLabel("数据去重"));
+        jPanel.add(new JBLabel("数据去重"));
         jPanel.add(distinctCheckBox);
         JPanel resultPanel = new JPanel(new GridLayout(4, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));

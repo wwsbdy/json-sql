@@ -46,8 +46,8 @@ public class Field {
      * 2.如果有不同类型，除开为NULL的，全部相等，直接返回
      * 3.除开NULL还是有不一样的，返回未知
      *
-     * @param columnMap
-     * @return
+     * @param columnMap key：json的key，value：json的key的所有类型
+     * @return 处理好的列信息
      */
     public static List<Field> getOriginalField(Map<String, List<JsonEnum>> columnMap) {
         if (MapUtils.isEmpty(columnMap)) {

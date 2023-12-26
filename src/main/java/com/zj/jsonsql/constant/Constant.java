@@ -25,5 +25,5 @@ public interface Constant {
     /**
      * 最大消息长度
      */
-    int MESSAGE_MAX = 20;
+    int MESSAGE_MAX = 60;
 }
