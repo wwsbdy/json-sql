@@ -127,7 +127,7 @@ public class JsonUtil {
         }
         JSON result = jsonArray;
         // 当只有一个元素时，只要不要[]
-        if (CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
+        if (exportInfo.isOnlyOne() && CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
             Object o = jsonArray.get(0);
             if (o instanceof JSON) {
                 result = (JSON) o;
