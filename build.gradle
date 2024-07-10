@@ -40,7 +40,7 @@ patchPluginXml {
     // 前两位代表主版本的后两位【2020中20】， 最后一位是副版本 也就是2020.1
     sinceBuild = "201"
     // 最高支持版本
-    untilBuild = '233.*'
+    untilBuild = '999.*'
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
