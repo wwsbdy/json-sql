@@ -18,10 +18,12 @@ import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.EasyExcelUtil;
 import com.zj.jsonsql.utils.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Objects;
@@ -30,6 +32,7 @@ import java.util.Objects;
  * @author arthur_zhou
  * @date 2023/12/22 17:50
  */
+@Slf4j
 public class Export extends WizardStep<WizardModel> {
 
     private final ExportInfo exportInfo;
@@ -90,17 +93,18 @@ public class Export extends WizardStep<WizardModel> {
             exportInfo.setRound(false);
             exportInfo.setOnlyOne(false);
             String jsonArrayStr = JsonUtil.getJsonStr(jsonInfo, exportInfo);
-            // 超链接
-            String hyperlink = "<html>导出成功：<a href=\"" + fileUrl + "\">点击打开</a></html>";
             try {
                 FileOutputStream out = new FileOutputStream(fileUrl);
                 EasyExcelUtil.write(jsonArrayStr, out, excelTypeEnum);
-                Messages.showMessageDialog(hyperlink, "导出成功", AllIcons.Actions.Commit);
+                int i = Messages.showYesNoDialog("是否打开文件", "导出成功", AllIcons.Actions.Commit);
+                if (i == Messages.YES) {
+                    Desktop.getDesktop().open(new File(fileUrl));
+                }
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                log.error("FileNotFoundException：", e);
                 Messages.showErrorDialog(project, e.getMessage(), NoticeEnum.FILE_EXPORT_FAIL.getWarn());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Exception：", e);
                 Messages.showErrorDialog(project, NoticeEnum.FILE_EXPORT_FAIL.getMessage(), NoticeEnum.FILE_EXPORT_FAIL.getWarn());
             }
         });
