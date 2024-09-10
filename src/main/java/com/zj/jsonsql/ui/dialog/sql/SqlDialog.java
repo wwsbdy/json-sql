@@ -12,10 +12,12 @@ import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -28,14 +30,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * @author arthur_zhou
  */
 @Slf4j
+@Getter
 public class SqlDialog extends DialogWrapper {
 
     /**
@@ -44,6 +47,8 @@ public class SqlDialog extends DialogWrapper {
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
     private int currentIndex = -1;
+    private final List<String> sqlKeywords = Arrays.asList("select", "as", "where", "not", "in", "like", "null", "between",
+            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit");
 
     public SqlDialog(JsonInfo jsonInfo) {
         super(true);
@@ -135,123 +140,166 @@ public class SqlDialog extends DialogWrapper {
         Document document = sqlContent.getDocument();
         JBPopupMenu keywordPopup = new JBPopupMenu();
         keywordPopup.setFocusable(false);
-        document.addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                showKeywordPopup();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                showKeywordPopup();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                showKeywordPopup();
-            }
-
-            private void showKeywordPopup() {
-                keywordPopup.setVisible(false);
-                keywordPopup.removeAll();
-                String text = sqlContent.getText();
-                int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
-                int wordStart = caretPosition;
-                int wordEnd = caretPosition;
-
-                while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
-                    wordStart--;
-                }
-                while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
-                    wordEnd++;
-                }
-                String word = text.substring(wordStart, wordEnd);
-                if (!word.isEmpty()) {
-                    for (String keyword : keywords) {
-                        if (!keyword.equals(word) && keyword.startsWith(word)) {
-                            JMenuItem keywordItem = new JMenuItem(keyword);
-                            int finalWordStart = wordStart;
-                            int finalWordEnd = wordEnd;
-                            keywordItem.addActionListener(e -> {
-                                try {
-                                    document.remove(finalWordStart, finalWordEnd - finalWordStart);
-                                    document.insertString(finalWordStart, keyword, null);
-                                } catch (BadLocationException badLocationException) {
-                                    log.error("Error removing text: ", badLocationException);
-                                }
-                            });
-                            keywordPopup.add(keywordItem);
-                        }
-                    }
-                }
-
-                if (keywordPopup.getComponentCount() > 0) {
-                    try {
-                        currentIndex = -1;
-                        Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordStart, Position.Bias.Backward);
-                        keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
-                    } catch (Exception ex) {
-                        log.error("Error showing keyword popup: ", ex);
-                    }
-                } else {
-                    keywordPopup.setVisible(false);
-                }
-            }
-        });
+        // 模糊匹配关键词，添加到提示列表里
+        document.addDocumentListener(new MyDocumentListener(keywordPopup, keywords, document));
         // 添加键盘监听器，处理箭头和回车键选择
-        sqlContent.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (keywordPopup.isVisible()) {
-                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        currentIndex = (currentIndex + 1) % keywordPopup.getComponentCount();
-                        highlightSuggestion();
-                        e.consume();
-                    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        currentIndex = (currentIndex - 1 + keywordPopup.getComponentCount()) % keywordPopup.getComponentCount();
-                        highlightSuggestion();
-                        e.consume();
-                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        insertSuggestion();
-                        e.consume();
-                    }
-                }
-            }
-            // 高亮当前选择的建议
-            private void highlightSuggestion() {
-                for (int i = 0; i < keywordPopup.getComponentCount(); i++) {
-                    JMenuItem item = (JMenuItem) keywordPopup.getComponent(i);
-                    item.setArmed(i == currentIndex);
-                }
-            }
-            // 插入选中的建议
-            private void insertSuggestion() {
-                String text = sqlContent.getText();
-                int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
-                int wordStart = caretPosition;
-                int wordEnd = caretPosition;
-
-                while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
-                    wordStart--;
-                }
-                while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
-                    wordEnd++;
-                }
-                if (currentIndex < keywordPopup.getComponentCount()) {
-                    JMenuItem selectedItem = (JMenuItem) keywordPopup.getComponent(Math.max(0, currentIndex));
-                    String keyword = selectedItem.getText();
-                    try {
-                        document.remove(wordStart, wordEnd - wordStart);
-                        document.insertString(wordStart, keyword, null);
-                        keywordPopup.setVisible(false);
-                    } catch (BadLocationException e) {
-                        log.error("BadLocationException：", e);
-                    }
-                }
-            }
-
-        });
+        sqlContent.addKeyListener(new MyKeyAdapter(keywordPopup, document));
     }
 
+    private class MyKeyAdapter extends KeyAdapter {
+        private final JBPopupMenu keywordPopup;
+        private final Document document;
+
+        public MyKeyAdapter(JBPopupMenu keywordPopup, Document document) {
+            this.keywordPopup = keywordPopup;
+            this.document = document;
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (keywordPopup.isVisible()) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    currentIndex = (currentIndex + 1) % keywordPopup.getComponentCount();
+                    highlightSuggestion();
+                    e.consume();
+                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    currentIndex = (currentIndex - 1 + keywordPopup.getComponentCount()) % keywordPopup.getComponentCount();
+                    highlightSuggestion();
+                    e.consume();
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    insertSuggestion();
+                    e.consume();
+                }
+            }
+        }
+
+        // 高亮当前选择的建议
+        private void highlightSuggestion() {
+            for (int i = 0; i < keywordPopup.getComponentCount(); i++) {
+                JMenuItem item = (JMenuItem) keywordPopup.getComponent(i);
+                item.setArmed(i == currentIndex);
+            }
+        }
+
+        // 插入选中的建议
+        private void insertSuggestion() {
+            String text = sqlContent.getText();
+            int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
+            int wordStart = caretPosition;
+            int wordEnd = caretPosition;
+
+            while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
+                wordStart--;
+            }
+            while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
+                wordEnd++;
+            }
+            if (currentIndex < keywordPopup.getComponentCount()) {
+                JMenuItem selectedItem = (JMenuItem) keywordPopup.getComponent(Math.max(0, currentIndex));
+                String keyword = selectedItem.getText();
+                try {
+                    document.remove(wordStart, wordEnd - wordStart);
+                    document.insertString(wordStart, keyword, null);
+                    keywordPopup.setVisible(false);
+                } catch (BadLocationException e) {
+                    log.error("BadLocationException：", e);
+                }
+            }
+        }
+
+    }
+
+    private class MyDocumentListener implements DocumentListener {
+        private final JBPopupMenu keywordPopup;
+        private final List<String> keywords;
+        private final Document document;
+
+        public MyDocumentListener(JBPopupMenu keywordPopup, List<String> keywords, Document document) {
+            this.keywordPopup = keywordPopup;
+            this.keywords = keywords;
+            this.document = document;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            showKeywordPopup();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            showKeywordPopup();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            showKeywordPopup();
+        }
+
+        private void showKeywordPopup() {
+            keywordPopup.setVisible(false);
+            keywordPopup.removeAll();
+            String text = sqlContent.getText();
+            int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
+            int wordStart = caretPosition;
+            int wordEnd = caretPosition;
+
+            while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
+                wordStart--;
+            }
+            while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
+                wordEnd++;
+            }
+            String word = text.substring(wordStart, wordEnd);
+            if (StringUtils.isEmpty(word)) {
+                return;
+            }
+            Set<String> keywordSet = getStrings(word);
+            for (String keyword : keywordSet) {
+                JMenuItem keywordItem = getMenuItem(keyword, wordStart, wordEnd);
+                keywordPopup.add(keywordItem);
+            }
+            if (keywordPopup.getComponentCount() > 0) {
+                try {
+                    currentIndex = -1;
+                    Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordStart, Position.Bias.Backward);
+                    keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
+                } catch (Exception ex) {
+                    log.error("Error showing keyword popup: ", ex);
+                }
+            } else {
+                keywordPopup.setVisible(false);
+            }
+        }
+
+        private @NotNull Set<String> getStrings(String word) {
+            Set<String> keywordSet = new LinkedHashSet<>();
+            for (String keyword : keywords) {
+                if (!keyword.equals(word) && keyword.startsWith(word)) {
+                    keywordSet.add(keyword);
+                }
+            }
+            // 添加sql关键字
+            String wordLowerCase = word.toLowerCase();
+            for (String keyword : sqlKeywords) {
+                if (!keyword.equals(wordLowerCase) && keyword.startsWith(wordLowerCase)) {
+                    keywordSet.add(keyword);
+                }
+            }
+            return keywordSet;
+        }
+
+        private @NotNull JMenuItem getMenuItem(String keyword, int wordStart, int wordEnd) {
+            JMenuItem keywordItem = new JMenuItem(keyword);
+            keywordItem.addActionListener(e -> {
+                try {
+                    document.remove(wordStart, wordEnd - wordStart);
+                    document.insertString(wordStart, keyword, null);
+                } catch (BadLocationException badLocationException) {
+                    log.error("Error removing text: ", badLocationException);
+                }
+            });
+            return keywordItem;
+        }
+    }
 }
 
