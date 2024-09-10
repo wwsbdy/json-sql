@@ -12,6 +12,7 @@ import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,8 @@ import javax.swing.text.Document;
 import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 /**
  * @author arthur_zhou
  */
+@Slf4j
 public class SqlDialog extends DialogWrapper {
 
     /**
@@ -39,6 +43,7 @@ public class SqlDialog extends DialogWrapper {
      */
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
+    private int currentIndex = -1;
 
     public SqlDialog(JsonInfo jsonInfo) {
         super(true);
@@ -81,7 +86,7 @@ public class SqlDialog extends DialogWrapper {
                 try {
                     sqlSelect = SqlUtil.toSqlSelect(sqlStr);
                 } catch (SqlParseException e) {
-                    e.printStackTrace();
+                    log.error("SqlParseException：", e);
                     Messages.showErrorDialog(SqlUtil.getErrorMessage(e), NoticeEnum.SQL_ERROR.getWarn());
                     return;
                 }
@@ -172,7 +177,7 @@ public class SqlDialog extends DialogWrapper {
                                     document.remove(finalWordStart, finalWordEnd - finalWordStart);
                                     document.insertString(finalWordStart, keyword, null);
                                 } catch (BadLocationException badLocationException) {
-                                    badLocationException.printStackTrace();
+                                    log.error("Error removing text: ", badLocationException);
                                 }
                             });
                             keywordPopup.add(keywordItem);
@@ -182,16 +187,71 @@ public class SqlDialog extends DialogWrapper {
 
                 if (keywordPopup.getComponentCount() > 0) {
                     try {
+                        currentIndex = -1;
                         Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordStart, Position.Bias.Backward);
                         keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        log.error("Error showing keyword popup: ", ex);
                     }
                 } else {
                     keywordPopup.setVisible(false);
                 }
             }
         });
+        // 添加键盘监听器，处理箭头和回车键选择
+        sqlContent.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (keywordPopup.isVisible()) {
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        currentIndex = (currentIndex + 1) % keywordPopup.getComponentCount();
+                        highlightSuggestion();
+                        e.consume();
+                    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        currentIndex = (currentIndex - 1 + keywordPopup.getComponentCount()) % keywordPopup.getComponentCount();
+                        highlightSuggestion();
+                        e.consume();
+                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        insertSuggestion();
+                        e.consume();
+                    }
+                }
+            }
+            // 高亮当前选择的建议
+            private void highlightSuggestion() {
+                for (int i = 0; i < keywordPopup.getComponentCount(); i++) {
+                    JMenuItem item = (JMenuItem) keywordPopup.getComponent(i);
+                    item.setArmed(i == currentIndex);
+                }
+            }
+            // 插入选中的建议
+            private void insertSuggestion() {
+                String text = sqlContent.getText();
+                int caretPosition = Math.min(sqlContent.getCaretPosition(), text.length());
+                int wordStart = caretPosition;
+                int wordEnd = caretPosition;
+
+                while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
+                    wordStart--;
+                }
+                while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
+                    wordEnd++;
+                }
+                if (currentIndex < keywordPopup.getComponentCount()) {
+                    JMenuItem selectedItem = (JMenuItem) keywordPopup.getComponent(Math.max(0, currentIndex));
+                    String keyword = selectedItem.getText();
+                    try {
+                        document.remove(wordStart, wordEnd - wordStart);
+                        document.insertString(wordStart, keyword, null);
+                        keywordPopup.setVisible(false);
+                    } catch (BadLocationException e) {
+                        log.error("BadLocationException：", e);
+                    }
+                }
+            }
+
+        });
     }
+
 }
 
