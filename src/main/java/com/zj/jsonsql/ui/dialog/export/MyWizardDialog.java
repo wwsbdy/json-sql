@@ -46,9 +46,4 @@ public class MyWizardDialog extends WizardDialog<WizardModel> {
         southPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         return southPanel;
     }
-//    @Override
-//    protected Dimension getWindowPreferredSize() {
-//        // 设置首选大小
-//        return new Dimension(400, 300);
-//    }
 }

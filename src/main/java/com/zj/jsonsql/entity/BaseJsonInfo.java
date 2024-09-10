@@ -1,6 +1,7 @@
 package com.zj.jsonsql.entity;
 
 import com.intellij.util.ui.ColumnInfo;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  *
  * @author arthur_zhou
  */
+@Getter
 public abstract class BaseJsonInfo {
     /**
      * 传入的原始json字符串
@@ -22,18 +24,6 @@ public abstract class BaseJsonInfo {
      * 导入数据列表
      */
     private final List<Row> list;
-
-    public List<Field> getColumns() {
-        return columns;
-    }
-
-    public List<Row> getList() {
-        return list;
-    }
-
-    public String getJsonContent() {
-        return jsonContent;
-    }
 
     public BaseJsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
         this.columns = columns;

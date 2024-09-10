@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.utils.JsonUtil;
+import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ import java.util.Set;
  *
  * @author arthur_zhou
  */
+@Data
 public class Row {
     /**
      * 序号
@@ -32,22 +34,6 @@ public class Row {
 
     public Row(JSONObject jsonObject) {
         this.jsonObject = JsonUtil.replaceAllKey(jsonObject, "\\.", "_NaN_");
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     /**

@@ -12,8 +12,8 @@ public class CompareUtil {
     /**
      * 比较两个对象,如果都是Number，就用数字比较，否则用字符串比较
      *
-     * @param var1
-     * @param var2
+     * @param var1 值1
+     * @param var2 值2
      * @return <0:var小 0:相同 >0:var1大
      */
     public static int compare(Object var1, Object var2) {

@@ -1,8 +1,11 @@
 package com.zj.jsonsql.enums;
 
+import lombok.Getter;
+
 /**
  * @author 19242
  */
+@Getter
 public enum NoticeEnum {
     /**
      * json错误
@@ -54,11 +57,4 @@ public enum NoticeEnum {
         this.message = message;
     }
 
-    public String getWarn() {
-        return warn;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

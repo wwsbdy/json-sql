@@ -62,7 +62,7 @@ public class Field {
                     .distinct()
                     .filter(var -> JsonEnum.NULL != var)
                     .collect(Collectors.toList());
-            if (typeList.size() == 0) {
+            if (CollectionUtils.isEmpty(typeList)) {
                 fields.add(new Field(k, k, JsonEnum.NULL));
             } else if (typeList.size() == 1) {
                 fields.add(new Field(k, k, typeList.get(0)));

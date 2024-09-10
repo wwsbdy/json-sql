@@ -203,10 +203,10 @@ public class JsonUtil {
     /**
      * 替换key值
      *
-     * @param jsonObject
-     * @param regex
-     * @param replacement
-     * @return
+     * @param jsonObject  json数据
+     * @param regex       正则
+     * @param replacement 替换为
+     * @return 替换后的json数据
      */
     public static JSONObject replaceAllKey(JSONObject jsonObject, String regex, String replacement) {
         if (Objects.isNull(jsonObject)) {

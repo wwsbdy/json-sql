@@ -7,6 +7,8 @@ import com.zj.jsonsql.entity.columninfo.StrColumnInfo;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,15 +21,18 @@ import java.util.List;
  * @author arthur_zhou
  */
 @Getter
+@Slf4j
 @EqualsAndHashCode(callSuper = true)
 public class JsonInfo extends BaseJsonInfo {
     /**
      * sql语句
      */
+    @Setter
     private String sql;
     /**
      * sql解析树
      */
+    @Setter
     private SqlSelect sqlNode;
     /**
      * 查询列
@@ -48,16 +53,8 @@ public class JsonInfo extends BaseJsonInfo {
         try {
             sqlNode = SqlUtil.toSqlSelect(sql);
         } catch (SqlParseException e) {
-            e.printStackTrace();
+            log.error("SqlParseException：", e);
         }
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
-
-    public void setSqlNode(SqlSelect sqlNode) {
-        this.sqlNode = sqlNode;
     }
 
     @Override

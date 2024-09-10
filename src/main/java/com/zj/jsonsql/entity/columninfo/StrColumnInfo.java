@@ -56,8 +56,8 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
     /**
      * 单元格字体颜色
      *
-     * @param myRow
-     * @return
+     * @param myRow 当前行
+     * @return TableCellRenderer
      */
     @Override
     public @Nullable TableCellRenderer getRenderer(Row myRow) {
