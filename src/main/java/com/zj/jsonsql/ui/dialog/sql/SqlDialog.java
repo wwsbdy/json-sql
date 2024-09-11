@@ -30,8 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -261,7 +261,7 @@ public class SqlDialog extends DialogWrapper {
             if (keywordPopup.getComponentCount() > 0) {
                 try {
                     currentIndex = -1;
-                    Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordStart, Position.Bias.Backward);
+                    Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordEnd, Position.Bias.Forward);
                     keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
                 } catch (Exception ex) {
                     log.error("Error showing keyword popup: ", ex);
