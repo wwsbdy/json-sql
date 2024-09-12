@@ -47,7 +47,7 @@ public class SqlDialog extends DialogWrapper {
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
     private int currentIndex = -1;
-    private final List<String> sqlKeywords = Arrays.asList("select", "as", "where", "not", "in", "like", "null", "between",
+    private final List<String> sqlKeywords = Arrays.asList("select", "as", "from", "where", "not", "in", "like", "null", "between",
             "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit");
 
     public SqlDialog(JsonInfo jsonInfo) {
