@@ -122,3 +122,36 @@ sql查询时无法区分 a.b是查的哪一个
 }
 ```
 
+### 11.无法下载插件 Could not find org.jetbrains.intellij.plugins:structure-base:3.139.
+
+structure-base-3.139依赖找不到了，提高版本
+```
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.0'
+}
+```
+提高gradle版本 修改gradle/wrapper/gradle-wrapper.properties
+```properties
+distributionUrl=file\:///D:/BaiduNetdiskDownload/gradle-6.5-bin.zip
+```
+用=代替空格
+```yaml
+intellij {
+    plugins = ['com.intellij.java']
+    version = '2020.1.2'
+}
+patchPluginXml {
+    //最低支持的版本
+    //版本参考：https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html?from=jetbrains.org#intellij-platform-based-products-of-recent-ide-versions
+    sinceBuild = '201'
+    //最高支持的版本，不能不设置，不设置是默认为 project.version
+    untilBuild = ''
+    changeNotes = """
+      2.0版本.<br>
+      针对2020版本的更新，主要修复了2020版本及更高版本报explicitly marked as incompatible的问题.<br>
+      使用了新的gradle来创建插件.<br>
+      """
+}
+```
+
