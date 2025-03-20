@@ -155,3 +155,17 @@ patchPluginXml {
 }
 ```
 
+### 12.build时找不到符号
+
+```
+/Users/jie.zhou/IdeaProjects/json-sql/src/main/java/com/zj/jsonsql/ui/dialog/sql/SqlDialog.java:264: 错误: 找不到符号
+Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordEnd, Position.Bias.Forward);
+^
+符号:   方法 modelToView2D(JTextPane,int,Bias)
+位置: 类 TextUI
+```
+在设置里，把gradle的build jdk版本改成项目对应的
+```
+Settings->Build,Execution,Deployment->Build Tools->Gradle->Gradle JVM->Project SDK
+```
+
