@@ -1,6 +1,5 @@
 package com.zj.jsonsql.ui.dialog.export;
 
-import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AncestorListenerAdapter;
 import com.intellij.ui.wizard.WizardModel;
@@ -10,6 +9,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.ExportInfo;
+import com.zj.jsonsql.ui.dialog.json.JsonLanguage;
 import com.zj.jsonsql.ui.edit.CustomEditorField;
 
 import javax.swing.*;

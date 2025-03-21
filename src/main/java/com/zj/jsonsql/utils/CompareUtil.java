@@ -1,6 +1,6 @@
 package com.zj.jsonsql.utils;
 
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class CompareUtil {
         }
         String str1 = var1.toString();
         String str2 = var2.toString();
-        if (NumberUtils.isNumber(str1) && NumberUtils.isNumber(str2)) {
+        if (NumberUtils.isCreatable(str1) && NumberUtils.isCreatable(str2)) {
             return new BigDecimal(str1).compareTo(new BigDecimal(str2));
         }
         return str1.compareTo(str2);

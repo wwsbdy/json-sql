@@ -1,6 +1,5 @@
 package com.zj.jsonsql.ui.dialog.json;
 
-import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.uiDesigner.core.GridConstraints;

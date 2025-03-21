@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.0'
+    id 'org.jetbrains.intellij' version '1.14.0'
 }
 
 group 'com.zj'
-version '1.0'
+version '2024.3.4'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
@@ -18,8 +18,8 @@ repositories {
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
     implementation("org.apache.calcite:calcite-core:1.35.0") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'commons-io', module: 'commons-io'
@@ -33,13 +33,14 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
+    // jdk 升到17
     plugins = ['com.intellij.java']
-    version = '2020.1.2'
+    version = '2024.3.4'
 }
 patchPluginXml {
     //最低支持的版本
     //版本参考：https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html?from=jetbrains.org#intellij-platform-based-products-of-recent-ide-versions
-    sinceBuild = '201'
+    sinceBuild = '243'
     //最高支持的版本，不能不设置，不设置是默认为 project.version
     untilBuild = ''
     changeNotes = """
