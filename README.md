@@ -3,7 +3,11 @@
 json-sql  
 将JsonArray转成数据列表，通过sql来查询数据  
 还可以把查出的数据再传成Json
-
+配置环境：
+jdk： 17
+gradle：8.1
+org.jetbrains.intellij：1.14.0
+idea： 2024.3
 # 2.使用
 
 ## 1.位置
