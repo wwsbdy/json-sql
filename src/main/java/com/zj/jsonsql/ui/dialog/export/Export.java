@@ -26,6 +26,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -52,7 +53,7 @@ public class Export extends WizardStep<WizardModel> {
         FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, false);
         TextFieldWithBrowseButton textFieldWithBrowseButton = new TextFieldWithBrowseButton();
         textFieldWithBrowseButton.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
-        textFieldWithBrowseButton.setText(System.getProperty("user.home") + "\\Desktop");
+        textFieldWithBrowseButton.setText(Paths.get(System.getProperty("user.home"), "Desktop").toString());
         jPanel.add(new JBLabel("文件路径"));
         jPanel.add(textFieldWithBrowseButton);
 
@@ -87,7 +88,7 @@ public class Export extends WizardStep<WizardModel> {
                 Messages.showErrorDialog(project, NoticeEnum.FILE_TYPE_ERROR.getMessage(), NoticeEnum.FILE_TYPE_ERROR.getWarn());
                 return;
             }
-            String fileUrl = path + "/" + fileName + excelTypeEnum.getValue().toLowerCase();
+            String fileUrl = path + File.separator + fileName + excelTypeEnum.getValue().toLowerCase();
             // 不平铺数组
             ExportInfo exportInfo = new ExportInfo(this.exportInfo);
             exportInfo.setRound(false);
