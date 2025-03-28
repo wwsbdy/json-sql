@@ -70,7 +70,7 @@ public abstract class AbstractWhereStrategy {
     protected static Object getValue(SqlNode sqlNode) {
         if (Objects.isNull(sqlNode)) {
             return null;
-        }
+        } // SqlBasicCall
         if (sqlNode instanceof SqlIdentifier) {
             return ((SqlIdentifier) sqlNode).getSimple();
         }

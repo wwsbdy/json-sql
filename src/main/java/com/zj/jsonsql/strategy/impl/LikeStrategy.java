@@ -3,6 +3,7 @@ package com.zj.jsonsql.strategy.impl;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
+import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -32,6 +33,10 @@ public class LikeStrategy extends AbstractWhereStrategy {
                 .replaceAll("(?<!\\\\)%", ".*")
                 // \\%或\\_变成%或_
                 .replaceAll("\\\\\\\\(?=[_%])", "");
+    }
+
+    public LikeStrategy(SqlBasicCall where) {
+        this(LikeStrategy.NOT_LIKE.equalsIgnoreCase(String.valueOf(where.getOperator())), where.getOperandList());
     }
 
     @Override

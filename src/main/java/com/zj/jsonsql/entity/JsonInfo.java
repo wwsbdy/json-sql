@@ -58,12 +58,12 @@ public class JsonInfo extends BaseJsonInfo {
     }
 
     @Override
-    public ColumnInfo<?, ?>[] getFields() {
+    public ColumnInfo<Row, ?>[] getFields() {
         select = SqlUtil.getFields(super.getColumns(), sqlNode);
         if (CollectionUtils.isEmpty(select)) {
             return new ColumnInfo[0];
         }
-        ColumnInfo<?, ?>[] columnInfos = new ColumnInfo[select.size() + 2];
+        ColumnInfo<Row, ?>[] columnInfos = new ColumnInfo[select.size() + 2];
         // 首位添加序号和选择框
         columnInfos[0] = new IdColumnInfo();
         columnInfos[1] = new BooleanColumnInfo("选择");
