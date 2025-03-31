@@ -31,4 +31,9 @@ public class SqlTest {
         SqlTestUtil.out("select *  from t_user where name like concat('__','市')");
     }
 
+    @Test
+    public void orderTest() {
+        SqlTestUtil.out("select left(right(left(id,3),2), 1) b, right(left(id,3),2) a from t_user order by left(a, 1) asc, a ");
+    }
+
 }

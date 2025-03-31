@@ -7,16 +7,13 @@ import com.zj.jsonsql.strategy.StrategyBean;
 import com.zj.jsonsql.utils.JsonUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Data;
-import org.apache.calcite.sql.SqlBasicCall;
-import org.apache.calcite.sql.SqlKind;
-import org.apache.calcite.sql.SqlLiteral;
-import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 行数据
@@ -49,26 +46,7 @@ public class Row {
      * @return value
      */
     public Object get(SqlNode key) {
-        if (Objects.isNull(key)) {
-            return null;
-        }
-        SqlKind kind = key.getKind();
-        switch (kind) {
-            case IDENTIFIER:
-                return get(key.toString());
-            case OTHER_FUNCTION:
-                return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
-                        .get(this, ((SqlBasicCall) key).getOperandList());
-        }
-        // where条件
-        if (key instanceof SqlBasicCall) {
-            return StrategyBean.getStrategy((SqlBasicCall) key).apply(this);
-        }
-        // 常量
-        if (key instanceof SqlLiteral) {
-            return SqlUtil.toString(key);
-        }
-        return get(key.toString());
+        return get(key, Collections.emptyMap());
     }
 
     /**
@@ -137,5 +115,64 @@ public class Row {
 
     public Set<String> keySet() {
         return jsonObject.keySet();
+    }
+
+    /**
+     * 获取对应列值
+     *
+     * @param key     SqlNode 列信息
+     * @param nameMap nameMap 可能有别名存在，优先用这里的
+     * @return value
+     */
+    public Object get(SqlNode key, Map<String, SqlNode> nameMap) {
+        if (Objects.isNull(key)) {
+            return null;
+        }
+        key = replaceAlias(key, nameMap);
+        SqlKind kind = key.getKind();
+        switch (kind) {
+            case IDENTIFIER:
+                return get(key.toString());
+            case OTHER_FUNCTION:
+                return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
+                        .get(this, ((SqlBasicCall) key).getOperandList());
+        }
+        // where条件
+        if (key instanceof SqlBasicCall) {
+            return StrategyBean.getStrategy((SqlBasicCall) key).apply(this);
+        }
+        // 常量
+        if (key instanceof SqlLiteral) {
+            return SqlUtil.toString(key);
+        }
+        return get(key.toString());
+    }
+
+    /**
+     * 替换别名
+     *
+     * @param key     SqlNode
+     * @param nameMap nameMap
+     * @return SqlNode
+     */
+    private SqlNode replaceAlias(SqlNode key, Map<String, SqlNode> nameMap) {
+        if (MapUtils.isEmpty(nameMap)) {
+            return key;
+        }
+        if (key instanceof SqlIdentifier) {
+            if (nameMap.containsKey(key.toString())) {
+                return nameMap.get(key.toString());
+            }
+            SqlIdentifier key1 = (SqlIdentifier) key;
+        }
+        if (key instanceof SqlBasicCall) {
+            SqlBasicCall sqlBasicCall = (SqlBasicCall) key;
+            List<SqlNode> operandList = sqlBasicCall.getOperandList();
+            for (int i = 0; i < operandList.size(); i++) {
+                SqlNode sqlNode = operandList.get(i);
+                sqlBasicCall.setOperand(i, replaceAlias(sqlNode, nameMap));
+            }
+        }
+        return key;
     }
 }

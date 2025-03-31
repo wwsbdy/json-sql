@@ -3,10 +3,7 @@ package com.zj.jsonsql.strategy;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.utils.CompareUtil;
 import lombok.Data;
-import org.apache.calcite.sql.SqlBasicCall;
-import org.apache.calcite.sql.SqlIdentifier;
-import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -50,14 +47,15 @@ public class SortStrategy {
         this.nameMap = nameMap;
         for (SqlNode sqlNode : orderList) {
             if (sqlNode instanceof SqlIdentifier) {
-                SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
-                sortList.add(new Sort(sqlIdentifier));
+                sortList.add(new Sort(sqlNode));
                 continue;
             }
             if (sqlNode instanceof SqlBasicCall) {
                 SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
                 if (sqlBasicCall.getOperator().isName("desc", false)) {
                     sortList.add(new Sort(sqlBasicCall.getOperandList().get(0), false));
+                } else if (sqlBasicCall.getKind() == SqlKind.OTHER_FUNCTION) {
+                    sortList.add(new Sort(sqlNode));
                 }
             }
         }
@@ -97,7 +95,6 @@ public class SortStrategy {
         if (Objects.isNull(var)) {
             return null;
         }
-        // TODO 可能存在别名
-        return var.get(column);
+        return var.get(column, nameMap);
     }
 }
