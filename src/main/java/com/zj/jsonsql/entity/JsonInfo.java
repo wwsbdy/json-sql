@@ -69,7 +69,7 @@ public class JsonInfo extends BaseJsonInfo {
         columnInfos[1] = new BooleanColumnInfo("选择");
         for (int i = 0; i < select.size(); i++) {
             Field field = select.get(i);
-            columnInfos[i + 2] = new StrColumnInfo(field.getOriginalName(), field.getName(), field.getType());
+            columnInfos[i + 2] = new StrColumnInfo(field.getOriginalFiled(), field.getName(), field.getType());
         }
         return columnInfos;
     }

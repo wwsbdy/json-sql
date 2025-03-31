@@ -14,6 +14,7 @@ import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.lang3.StringUtils;
@@ -135,7 +136,8 @@ public class SqlDialog extends DialogWrapper {
         sqlContent.setText(jsonInfo.getSql());
         // 创建关键字提示框
         List<String> keywords = jsonInfo.getColumns().stream()
-                .map(Field::getOriginalName)
+                .map(Field::getOriginalFiled)
+                .map(SqlNode::toString)
                 .collect(Collectors.toList());
         Document document = sqlContent.getDocument();
         JBPopupMenu keywordPopup = new JBPopupMenu();

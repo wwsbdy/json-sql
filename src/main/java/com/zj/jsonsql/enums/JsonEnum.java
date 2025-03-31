@@ -36,5 +36,10 @@ public enum JsonEnum {
     /**
      * 嵌套，无法直接获取类型
      */
-    INNER;
+    INNER,
+    /**
+     * 函数
+     */
+    FUNC,
+    ;
 }

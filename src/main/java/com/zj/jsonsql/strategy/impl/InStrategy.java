@@ -26,7 +26,7 @@ public class InStrategy extends AbstractWhereStrategy {
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != SIMPLE_SIZE) {
             return;
         }
-        setField(operandList.get(0).toString());
+        setField(operandList.get(0));
         SqlNodeList param2 = (SqlNodeList) operandList.get(1);
         this.value = new HashSet<>();
         for (SqlNode sqlNode : param2) {

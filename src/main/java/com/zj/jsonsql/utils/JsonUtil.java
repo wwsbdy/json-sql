@@ -9,11 +9,14 @@ import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -151,11 +154,9 @@ public class JsonUtil {
     private static JSONArray getJsonArray(List<Row> rows, List<Field> columns, boolean round) {
         JSONArray jsonArray = new JSONArray();
         if (round && CollectionUtils.isNotEmpty(columns) && columns.size() == 1) {
-            String singleColumn = columns.get(0).getOriginalName();
+            SqlNode singleColumn = columns.get(0).getOriginalFiled();
             for (Row row : rows) {
-                if (StringUtils.isNotEmpty(singleColumn)) {
-                    jsonArray.addAll(round(row.get(singleColumn)));
-                }
+                jsonArray.addAll(round(row.get(singleColumn)));
             }
             return jsonArray;
         }
@@ -166,7 +167,7 @@ public class JsonUtil {
             }
             JSONObject jsonObject = new JSONObject(true);
             for (Field column : columns) {
-                jsonObject.put(column.getName().replaceAll("_NaN_", "."), row.get(column.getOriginalName()));
+                jsonObject.put(column.getName().replaceAll("_NaN_", "."), row.get(column.getOriginalFiled()));
             }
             jsonArray.add(jsonObject);
         }

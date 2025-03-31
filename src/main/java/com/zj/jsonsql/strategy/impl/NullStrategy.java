@@ -22,12 +22,12 @@ public class NullStrategy extends AbstractWhereStrategy {
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != FUNC_SIZE) {
             return;
         }
-        setField(operandList.get(0).toString());
+        setField(operandList.get(0));
     }
 
     @Override
     public boolean apply(Row item) {
-        if (StringUtils.isEmpty(getField())) {
+        if (Objects.isNull(getField())) {
             return false;
         }
         return isReverse() != Objects.isNull(item.get(getField()));

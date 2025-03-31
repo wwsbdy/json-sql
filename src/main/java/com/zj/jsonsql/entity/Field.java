@@ -2,10 +2,16 @@ package com.zj.jsonsql.entity;
 
 import com.zj.jsonsql.enums.JsonEnum;
 import lombok.Data;
+import org.apache.calcite.sql.SqlIdentifier;
+import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -16,9 +22,9 @@ import java.util.stream.Collectors;
 @Data
 public class Field {
     /**
-     * 原始名称
+     * 原始字段信息
      */
-    private String originalName;
+    private SqlNode originalFiled;
     /**
      * 展示名称
      */
@@ -29,13 +35,13 @@ public class Field {
      */
     private JsonEnum type;
 
-    public Field(String originalName, String name) {
-        this.originalName = originalName;
+    public Field(SqlNode originalFiled, String name) {
+        this.originalFiled = originalFiled;
         this.name = name;
     }
 
-    public Field(String originalName, String name, JsonEnum type) {
-        this.originalName = originalName;
+    public Field(SqlNode originalFiled, String name, JsonEnum type) {
+        this.originalFiled = originalFiled;
         this.name = name;
         this.type = type;
     }
@@ -62,12 +68,13 @@ public class Field {
                     .distinct()
                     .filter(var -> JsonEnum.NULL != var)
                     .collect(Collectors.toList());
+            SqlIdentifier sqlIdentifier = new SqlIdentifier(k, SqlParserPos.ZERO);
             if (CollectionUtils.isEmpty(typeList)) {
-                fields.add(new Field(k, k, JsonEnum.NULL));
+                fields.add(new Field(sqlIdentifier, k, JsonEnum.NULL));
             } else if (typeList.size() == 1) {
-                fields.add(new Field(k, k, typeList.get(0)));
+                fields.add(new Field(sqlIdentifier, k, typeList.get(0)));
             } else {
-                fields.add(new Field(k, k, JsonEnum.UNKNOWN));
+                fields.add(new Field(sqlIdentifier, k, JsonEnum.UNKNOWN));
             }
         });
         return fields;

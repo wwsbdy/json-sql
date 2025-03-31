@@ -15,10 +15,12 @@ import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
+import org.apache.calcite.util.NlsString;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -66,7 +68,7 @@ public class SqlUtil {
             stream = stream.collect(Collectors.toMap(myJson -> {
                 JSONObject jsonObject = new JSONObject();
                 for (Field select : selectList) {
-                    jsonObject.put(select.getName(), myJson.get(select.getOriginalName()));
+                    jsonObject.put(select.getName(), myJson.get(select.getOriginalFiled()));
                 }
                 return jsonObject;
             }, v -> v, (v1, v2) -> v1, LinkedHashMap::new)).values().stream();
@@ -77,8 +79,8 @@ public class SqlUtil {
             // 追加表字段
             selectList.addAll(columns);
             // 获取别名和原始名
-            Map<String, String> nameMap = selectList.stream()
-                    .collect(Collectors.toMap(Field::getName, Field::getOriginalName, (v1, v2) -> v2));
+            Map<String, SqlNode> nameMap = selectList.stream()
+                    .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2));
             SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
             stream = stream.sorted(sortStrategy::orderBy);
         }
@@ -113,27 +115,40 @@ public class SqlUtil {
             return Collections.emptyList();
         }
         List<Field> select = getSelectList(columns, sqlNode);
-        Map<String, JsonEnum> typeMap = columns.stream().collect(Collectors.toMap(Field::getOriginalName, Field::getType, (v1, v2) -> v2));
+        Map<String, JsonEnum> typeMap = columns.stream()
+                .collect(Collectors.toMap(v -> v.getOriginalFiled().toString(), Field::getType, (v1, v2) -> v2));
         // 取交集
-        select.removeIf(v -> {
-            if (StringUtils.isEmpty(v.getOriginalName())) {
-                return true;
+        for (Field field : select) {
+            SqlNode originalFiled = field.getOriginalFiled();
+            if (originalFiled.getKind() == SqlKind.IDENTIFIER) {
+                String originalName = originalFiled.toString();
+                if (typeMap.containsKey(originalName)) {
+                    field.setType(typeMap.get(originalName));
+                    continue;
+                }
+                String[] keys = originalName.split("\\.");
+                if (keys.length == 0) {
+                    field.setType(JsonEnum.UNKNOWN);
+                }
+                JsonEnum type = typeMap.get(keys[0]);
+                if (Objects.isNull(type)) {
+                    field.setType(JsonEnum.UNKNOWN);
+                    continue;
+                }
+                field.setType(JsonEnum.INNER);
+                continue;
             }
-            if (typeMap.containsKey(v.getOriginalName())) {
-                v.setType(typeMap.get(v.getOriginalName()));
-                return false;
+            if (originalFiled.getKind() == SqlKind.LITERAL) {
+                SqlLiteral sqlLiteral = (SqlLiteral) originalFiled;
+                Object value = sqlLiteral.getValue();
+                if (value instanceof NlsString) {
+                    value = ((NlsString) value).getValue().replaceAll("^'|'$", "");
+                }
+                field.setType(JsonUtil.getType(value));
+                continue;
             }
-            String[] keys = v.getOriginalName().split("\\.");
-            if (keys.length == 0) {
-                return true;
-            }
-            JsonEnum type = typeMap.get(keys[0]);
-            if (Objects.isNull(type)) {
-                return true;
-            }
-            v.setType(JsonEnum.INNER);
-            return false;
-        });
+            field.setType(JsonEnum.FUNC);
+        }
         return select;
     }
 
@@ -156,12 +171,13 @@ public class SqlUtil {
             }
             switch (node.getKind()) {
                 case IDENTIFIER:
-                    select.add(new Field(name, name));
+                case OTHER_FUNCTION:
+                    select.add(new Field(node, name));
                     break;
                 case AS:
                     List<SqlNode> operandList = ((SqlBasicCall) node).getOperandList();
                     if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
-                        select.add(new Field(String.valueOf(operandList.get(0)), String.valueOf(operandList.get(1))));
+                        select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
                     }
                     break;
                 default:
@@ -253,5 +269,29 @@ public class SqlUtil {
         }
         String result = split[0];
         return result.length() > Constant.MESSAGE_MAX ? result.substring(0, Constant.MESSAGE_MAX) : result;
+    }
+
+    /**
+     * 获取值
+     *
+     * @param sqlNode sql解析树
+     * @return 查询值
+     */
+    public static Object toString(SqlNode sqlNode) {
+        if (Objects.isNull(sqlNode)) {
+            return null;
+        }
+        if (sqlNode instanceof SqlIdentifier) {
+            return ((SqlIdentifier) sqlNode).getSimple();
+        }
+        SqlLiteral sqlLiteral = (SqlLiteral) sqlNode;
+        Object value = sqlLiteral.getValue();
+        if (value instanceof NlsString) {
+            value = ((NlsString) value).getValue().replaceAll("^'|'$", "");
+        }
+        if (value instanceof Number) {
+            return new BigDecimal(String.valueOf(value));
+        }
+        return String.valueOf(value);
     }
 }

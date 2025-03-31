@@ -3,9 +3,11 @@ package com.zj.jsonsql.strategy;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.utils.CompareUtil;
 import lombok.Data;
-import org.apache.calcite.sql.*;
+import org.apache.calcite.sql.SqlBasicCall;
+import org.apache.calcite.sql.SqlIdentifier;
+import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.SqlNodeList;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,36 +28,36 @@ public class SortStrategy {
     /**
      * 别名和真实名称map
      */
-    private final Map<String, String> nameMap;
+    private final Map<String, SqlNode> nameMap;
 
     @Data
     private static class Sort {
-        private String column;
+        private SqlNode column;
         private boolean asc;
 
-        public Sort(String column) {
+        public Sort(SqlNode column) {
             this(column, true);
         }
 
-        public Sort(String column, boolean asc) {
+        public Sort(SqlNode column, boolean asc) {
             this.column = column;
             this.asc = asc;
         }
     }
 
 
-    public SortStrategy(SqlNodeList orderList, Map<String, String> nameMap) {
+    public SortStrategy(SqlNodeList orderList, Map<String, SqlNode> nameMap) {
         this.nameMap = nameMap;
         for (SqlNode sqlNode : orderList) {
             if (sqlNode instanceof SqlIdentifier) {
                 SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
-                sortList.add(new Sort(sqlIdentifier.toString()));
+                sortList.add(new Sort(sqlIdentifier));
                 continue;
             }
             if (sqlNode instanceof SqlBasicCall) {
                 SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
                 if (sqlBasicCall.getOperator().isName("desc", false)) {
-                    sortList.add(new Sort(sqlBasicCall.getOperandList().get(0).toString(), false));
+                    sortList.add(new Sort(sqlBasicCall.getOperandList().get(0), false));
                 }
             }
         }
@@ -91,20 +93,11 @@ public class SortStrategy {
      * @param column key
      * @return value
      */
-    Object get(Row var, String column) {
-        if (Objects.isNull(var) || StringUtils.isEmpty(column)) {
+    Object get(Row var, SqlNode column) {
+        if (Objects.isNull(var)) {
             return null;
         }
-        String[] split = column.split("\\.");
-        if (split.length == 0) {
-            return null;
-        }
-        String realColumn = nameMap.get(split[0]);
-        if (StringUtils.isEmpty(realColumn)) {
-            return null;
-        }
-        split[0] = realColumn;
-        String join = String.join(".", split);
-        return var.get(join);
+        // TODO 可能存在别名
+        return var.get(column);
     }
 }

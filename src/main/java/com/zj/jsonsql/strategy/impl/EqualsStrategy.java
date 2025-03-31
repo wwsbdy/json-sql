@@ -23,7 +23,7 @@ public class EqualsStrategy extends AbstractWhereStrategy {
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != SIMPLE_SIZE) {
             return;
         }
-        setField(operandList.get(0).toString());
+        setField(operandList.get(0));
         this.value = String.valueOf(getValue(operandList.get(1)));
     }
 

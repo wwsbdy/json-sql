@@ -3,8 +3,14 @@ package com.zj.jsonsql.entity;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.enums.JsonEnum;
+import com.zj.jsonsql.strategy.StrategyBean;
 import com.zj.jsonsql.utils.JsonUtil;
+import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Data;
+import org.apache.calcite.sql.SqlBasicCall;
+import org.apache.calcite.sql.SqlKind;
+import org.apache.calcite.sql.SqlLiteral;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +40,35 @@ public class Row {
 
     public Row(JSONObject jsonObject) {
         this.jsonObject = JsonUtil.replaceAllKey(jsonObject, "\\.", "_NaN_");
+    }
+
+    /**
+     * 获取value
+     *
+     * @param key SqlNode
+     * @return value
+     */
+    public Object get(SqlNode key) {
+        if (Objects.isNull(key)) {
+            return null;
+        }
+        SqlKind kind = key.getKind();
+        switch (kind) {
+            case IDENTIFIER:
+                return get(key.toString());
+            case OTHER_FUNCTION:
+                return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
+                        .get(this, ((SqlBasicCall) key).getOperandList());
+        }
+        // where条件
+        if (key instanceof SqlBasicCall) {
+            return StrategyBean.getStrategy((SqlBasicCall) key).apply(this);
+        }
+        // 常量
+        if (key instanceof SqlLiteral) {
+            return SqlUtil.toString(key);
+        }
+        return get(key.toString());
     }
 
     /**

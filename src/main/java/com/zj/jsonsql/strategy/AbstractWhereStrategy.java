@@ -34,7 +34,7 @@ public abstract class AbstractWhereStrategy {
     /**
      * 查询字段
      */
-    private String field;
+    private SqlNode field;
 
 
     public AbstractWhereStrategy(boolean reverse) {
@@ -45,11 +45,11 @@ public abstract class AbstractWhereStrategy {
         return reverse;
     }
 
-    protected String getField() {
+    protected SqlNode getField() {
         return field;
     }
 
-    protected void setField(String field) {
+    protected void setField(SqlNode field) {
         this.field = field;
     }
 
@@ -70,7 +70,7 @@ public abstract class AbstractWhereStrategy {
     protected static Object getValue(SqlNode sqlNode) {
         if (Objects.isNull(sqlNode)) {
             return null;
-        } // SqlBasicCall
+        }
         if (sqlNode instanceof SqlIdentifier) {
             return ((SqlIdentifier) sqlNode).getSimple();
         }

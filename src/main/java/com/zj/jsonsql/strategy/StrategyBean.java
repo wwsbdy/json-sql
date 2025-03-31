@@ -1,10 +1,19 @@
 package com.zj.jsonsql.strategy;
 
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.strategy.impl.*;
+import com.zj.jsonsql.strategy.impl.func.*;
 import org.apache.calcite.sql.SqlBasicCall;
+import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.SqlOperator;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * where条件解析
@@ -26,6 +35,26 @@ public class StrategyBean {
             return false;
         }
     };
+
+    private static final IFunctionStrategy EMPTY_FUNCTION_STRATEGY = new IFunctionStrategy() {
+        @Override
+        public Object get(Row row, List<SqlNode> params) {
+            return null;
+        }
+
+        @Override
+        public FuncEnum getType() {
+            return null;
+        }
+    };
+
+    private static final Map<FuncEnum, IFunctionStrategy> FUNCTION_STRATEGY_MAP = Stream.of(
+            new LeftStrategy(),
+            new ConcatStrategy(),
+            new LengthStrategy(),
+            new RightStrategy(),
+            new IfStrategy()
+    ).collect(Collectors.toMap(IFunctionStrategy::getType, Function.identity(), (v1, v2) -> v2));
 
     /**
      * 获取数据过滤策略
@@ -64,6 +93,10 @@ public class StrategyBean {
             default:
                 return ALWAYS_FALSE_STRATEGY;
         }
+    }
+
+    public static IFunctionStrategy getFuncStrategy(SqlOperator operator) {
+        return FUNCTION_STRATEGY_MAP.getOrDefault(FuncEnum.getByName(operator.getName()), EMPTY_FUNCTION_STRATEGY);
     }
 
 }

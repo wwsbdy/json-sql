@@ -7,6 +7,7 @@ import com.intellij.util.ui.ColumnInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
 import lombok.EqualsAndHashCode;
+import org.apache.calcite.sql.SqlNode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,20 +26,20 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
     /**
      * 原始名称
      */
-    private final String originalName;
+    private final SqlNode originalFiled;
 
     private final String text;
 
-    public StrColumnInfo(String originalName, @Nls(capitalization = Nls.Capitalization.Title) String name, JsonEnum type) {
+    public StrColumnInfo(SqlNode originalFiled, @Nls(capitalization = Nls.Capitalization.Title) String name, JsonEnum type) {
         super(name);
-        this.originalName = originalName;
+        this.originalFiled = originalFiled;
         this.text = type.name().toLowerCase();
     }
 
     @Nullable
     @Override
     public String valueOf(Row row) {
-        Object value = row.get(originalName);
+        Object value = row.get(originalFiled);
         return Objects.isNull(value) ? "NULL" : value.toString();
     }
 
@@ -65,7 +66,7 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
             @Override
             protected void customizeCellRenderer(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
                 // NULL的颜色
-                if (Objects.isNull(myRow.get(originalName))) {
+                if (Objects.isNull(myRow.get(originalFiled))) {
                     append((String) value, new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, new JBColor(new Color(255, 153, 0, 168), new Color(255, 153, 0, 168))));
                 } else {
                     append((String) value, SimpleTextAttributes.REGULAR_ATTRIBUTES);

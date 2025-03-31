@@ -51,7 +51,7 @@ public class RangeStrategy extends AbstractWhereStrategy {
         if (CollectionUtils.isEmpty(operandList) || operandList.size() < SIMPLE_SIZE) {
             return;
         }
-        setField(operandList.get(0).toString());
+        setField(operandList.get(0));
         range = new Range();
         switch (sqlKind) {
             case GREATER_THAN:
