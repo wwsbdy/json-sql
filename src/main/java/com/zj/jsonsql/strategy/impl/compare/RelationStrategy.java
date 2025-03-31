@@ -1,4 +1,4 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;

@@ -1,30 +1,35 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
 import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.SqlNodeList;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * 等于
+ * in
  *
  * @author 19242
  */
-public class EqualsStrategy extends AbstractWhereStrategy {
+public class InStrategy extends AbstractWhereStrategy {
 
-    private String value;
+    private Set<SqlNode> value;
 
-    public EqualsStrategy(boolean reverse, List<SqlNode> operandList) {
+    public InStrategy(boolean reverse, List<SqlNode> operandList) {
         super(reverse);
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != SIMPLE_SIZE) {
             return;
         }
         setField(operandList.get(0));
-        this.value = String.valueOf(getValue(operandList.get(1)));
+        SqlNodeList param2 = (SqlNodeList) operandList.get(1);
+        this.value = new HashSet<>(param2);
     }
 
     @Override
@@ -35,17 +40,18 @@ public class EqualsStrategy extends AbstractWhereStrategy {
         boolean equals = false;
         Object o = item.get(getField());
         Object convert = JsonUtil.convert(o);
+        Set<String> compareValues = value.stream().map(item::get).map(String::valueOf).collect(Collectors.toSet());
         // 如果是数组，只要有一个满足就行
         if (convert instanceof List) {
             List<?> list = (List<?>) convert;
             for (Object o1 : list) {
-                if (value.equals(String.valueOf(o1))) {
+                if (compareValues.contains(String.valueOf(o1))) {
                     equals = true;
                     break;
                 }
             }
         } else {
-            equals = value.equals(String.valueOf(convert));
+            equals = compareValues.contains(String.valueOf(convert));
         }
         return isReverse() != equals;
     }

@@ -2,7 +2,7 @@ package com.zj.jsonsql.strategy;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
-import com.zj.jsonsql.strategy.impl.*;
+import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.func.*;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;

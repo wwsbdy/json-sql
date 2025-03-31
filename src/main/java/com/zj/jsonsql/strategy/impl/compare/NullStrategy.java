@@ -1,10 +1,9 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;

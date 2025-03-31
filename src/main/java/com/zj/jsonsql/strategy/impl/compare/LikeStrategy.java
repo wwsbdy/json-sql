@@ -1,40 +1,38 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
+import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.SqlNodeList;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
- * in
+ * 模糊查询
  *
- * @author 19242
+ * @author arthur_zhou
  */
-public class InStrategy extends AbstractWhereStrategy {
+public class LikeStrategy extends AbstractWhereStrategy {
 
-    private Set<String> value;
+    private SqlNode value;
 
-    public InStrategy(boolean reverse, List<SqlNode> operandList) {
+    public static final String LIKE = "LIKE";
+    public static final String NOT_LIKE = "NOT LIKE";
+
+    public LikeStrategy(boolean reverse, List<SqlNode> operandList) {
         super(reverse);
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != SIMPLE_SIZE) {
             return;
         }
         setField(operandList.get(0));
-        SqlNodeList param2 = (SqlNodeList) operandList.get(1);
-        this.value = new HashSet<>();
-        for (SqlNode sqlNode : param2) {
-            Object value = getValue(sqlNode);
-            if (Objects.nonNull(value)) {
-                this.value.add(value.toString());
-            }
-        }
+        this.value = operandList.get(1);
+    }
+
+    public LikeStrategy(SqlBasicCall where) {
+        this(LikeStrategy.NOT_LIKE.equalsIgnoreCase(String.valueOf(where.getOperator())), where.getOperandList());
     }
 
     @Override
@@ -45,17 +43,22 @@ public class InStrategy extends AbstractWhereStrategy {
         boolean equals = false;
         Object o = item.get(getField());
         Object convert = JsonUtil.convert(o);
+        String compareValue = String.valueOf(item.get(value))
+                .replaceAll("(?<!\\\\)_", ".")
+                .replaceAll("(?<!\\\\)%", ".*")
+                // \\%或\\_变成%或_
+                .replaceAll("\\\\\\\\(?=[_%])", "");
         // 如果是数组，只要有一个满足就行
         if (convert instanceof List) {
             List<?> list = (List<?>) convert;
             for (Object o1 : list) {
-                if (value.contains(String.valueOf(o1))) {
+                if (String.valueOf(o1).matches(compareValue)) {
                     equals = true;
                     break;
                 }
             }
         } else {
-            equals = value.contains(String.valueOf(convert));
+            equals = String.valueOf(convert).matches(compareValue);
         }
         return isReverse() != equals;
     }

@@ -1,4 +1,4 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
@@ -26,22 +26,22 @@ public class RangeStrategy extends AbstractWhereStrategy {
 
     @Data
     private static class Range {
-        private Object gt;
-        private Object ge;
-        private Object lt;
-        private Object le;
+        private SqlNode gt;
+        private SqlNode ge;
+        private SqlNode lt;
+        private SqlNode le;
 
-        private boolean compare(Object var1) {
-            if (Objects.nonNull(gt) && CompareUtil.compare(var1, gt) <= 0) {
+        private boolean compare(Row item, Object var1) {
+            if (Objects.nonNull(gt) && CompareUtil.compare(var1, item.get(gt)) <= 0) {
                 return false;
             }
-            if (Objects.nonNull(ge) && CompareUtil.compare(var1, ge) < 0) {
+            if (Objects.nonNull(ge) && CompareUtil.compare(var1, item.get(ge)) < 0) {
                 return false;
             }
-            if (Objects.nonNull(lt) && CompareUtil.compare(var1, lt) >= 0) {
+            if (Objects.nonNull(lt) && CompareUtil.compare(var1, item.get(lt)) >= 0) {
                 return false;
             }
-            return !Objects.nonNull(le) || CompareUtil.compare(var1, le) <= 0;
+            return Objects.isNull(le) || CompareUtil.compare(var1, item.get(le)) <= 0;
         }
     }
 
@@ -55,23 +55,23 @@ public class RangeStrategy extends AbstractWhereStrategy {
         range = new Range();
         switch (sqlKind) {
             case GREATER_THAN:
-                range.setGt(getValue(operandList.get(1)));
+                range.setGt(operandList.get(1));
                 break;
             case GREATER_THAN_OR_EQUAL:
-                range.setGe(getValue(operandList.get(1)));
+                range.setGe(operandList.get(1));
                 break;
             case LESS_THAN:
-                range.setLt(getValue(operandList.get(1)));
+                range.setLt(operandList.get(1));
                 break;
             case LESS_THAN_OR_EQUAL:
-                range.setLe(getValue(operandList.get(1)));
+                range.setLe(operandList.get(1));
                 break;
             case BETWEEN:
                 if (operandList.size() != BETWEEN_SIZE) {
                     break;
                 }
-                range.setGe(getValue(operandList.get(1)));
-                range.setLe(getValue(operandList.get(2)));
+                range.setGe(operandList.get(1));
+                range.setLe(operandList.get(2));
                 break;
             default:
                 break;
@@ -93,13 +93,13 @@ public class RangeStrategy extends AbstractWhereStrategy {
         if (convert instanceof List) {
             List<?> list = (List<?>) convert;
             for (Object o1 : list) {
-                if (range.compare(o1)) {
+                if (range.compare(item, o1)) {
                     equals = true;
                     break;
                 }
             }
         } else {
-            equals = range.compare(convert);
+            equals = range.compare(item, convert);
         }
         return equals;
     }

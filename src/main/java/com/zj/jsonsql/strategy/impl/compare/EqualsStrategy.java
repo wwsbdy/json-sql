@@ -1,9 +1,8 @@
-package com.zj.jsonsql.strategy.impl;
+package com.zj.jsonsql.strategy.impl.compare;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.utils.JsonUtil;
-import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -11,32 +10,21 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 模糊查询
+ * 等于
  *
- * @author arthur_zhou
+ * @author 19242
  */
-public class LikeStrategy extends AbstractWhereStrategy {
+public class EqualsStrategy extends AbstractWhereStrategy {
 
-    private String value;
+    private SqlNode value;
 
-    public static final String LIKE = "LIKE";
-    public static final String NOT_LIKE = "NOT LIKE";
-
-    public LikeStrategy(boolean reverse, List<SqlNode> operandList) {
+    public EqualsStrategy(boolean reverse, List<SqlNode> operandList) {
         super(reverse);
         if (CollectionUtils.isEmpty(operandList) || operandList.size() != SIMPLE_SIZE) {
             return;
         }
         setField(operandList.get(0));
-        this.value = String.valueOf(getValue(operandList.get(1)))
-                .replaceAll("(?<!\\\\)_", ".")
-                .replaceAll("(?<!\\\\)%", ".*")
-                // \\%或\\_变成%或_
-                .replaceAll("\\\\\\\\(?=[_%])", "");
-    }
-
-    public LikeStrategy(SqlBasicCall where) {
-        this(LikeStrategy.NOT_LIKE.equalsIgnoreCase(String.valueOf(where.getOperator())), where.getOperandList());
+        this.value = operandList.get(1);
     }
 
     @Override
@@ -47,17 +35,18 @@ public class LikeStrategy extends AbstractWhereStrategy {
         boolean equals = false;
         Object o = item.get(getField());
         Object convert = JsonUtil.convert(o);
+        Object compareValue = String.valueOf(item.get(value));
         // 如果是数组，只要有一个满足就行
         if (convert instanceof List) {
             List<?> list = (List<?>) convert;
             for (Object o1 : list) {
-                if (String.valueOf(o1).matches(value)) {
+                if (compareValue.equals(String.valueOf(o1))) {
                     equals = true;
                     break;
                 }
             }
         } else {
-            equals = String.valueOf(convert).matches(value);
+            equals = compareValue.equals(String.valueOf(convert));
         }
         return isReverse() != equals;
     }
