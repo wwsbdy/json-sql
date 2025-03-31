@@ -13,8 +13,11 @@ public enum FuncEnum {
     CONCAT,
     IF,
     IFNULL,
-    NULLIF
-    ;
+    NULLIF,
+    SUBSTR,
+    SUBSTRING,
+
+    UPPER, LOWER;
 
     public static FuncEnum getByName(String name) {
         if (StringUtils.isEmpty(name)) {

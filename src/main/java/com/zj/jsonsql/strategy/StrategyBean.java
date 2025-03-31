@@ -53,7 +53,14 @@ public class StrategyBean {
             new ConcatStrategy(),
             new LengthStrategy(),
             new RightStrategy(),
-            new IfStrategy()
+            new IfStrategy(),
+            new IfNullStrategy(),
+            new LowerStrategy(),
+            new NullIfStrategy(),
+            new RoundStrategy(),
+            new SubstringStrategy(),
+            new SubstrStrategy(),
+            new UpperStrategy()
     ).collect(Collectors.toMap(IFunctionStrategy::getType, Function.identity(), (v1, v2) -> v2));
 
     /**

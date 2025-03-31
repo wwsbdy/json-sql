@@ -10,6 +10,7 @@ import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
+import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
@@ -34,6 +35,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author arthur_zhou
@@ -48,11 +50,13 @@ public class SqlDialog extends DialogWrapper {
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
     private int currentIndex = -1;
-    private final List<String> sqlKeywords = Arrays.asList("select", "as", "from", "where", "not", "in", "like", "null", "between",
-            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit");
+    private final List<String> sqlKeywords = Stream.of("select", "as", "from", "where", "not", "in", "like", "null", "between",
+            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit").collect(Collectors.toList());
 
     public SqlDialog(JsonInfo jsonInfo) {
         super(true);
+        // 添加函数提示词
+        sqlKeywords.addAll(Stream.of(FuncEnum.values()).map(v -> v.name().toLowerCase()).collect(Collectors.toList()));
         this.jsonInfo = jsonInfo;
         // 设置会话框标题
         setTitle("输入sql");
