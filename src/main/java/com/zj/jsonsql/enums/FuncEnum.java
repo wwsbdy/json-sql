@@ -24,6 +24,8 @@ public enum FuncEnum {
     MAX,
     MIN,
     COUNT,
+//    GROUP_CONCAT,
+
     ;
 
     public static FuncEnum getByName(String name) {
@@ -37,5 +39,22 @@ public enum FuncEnum {
             }
         }
         return null;
+    }
+
+    public static boolean isAggregateFunc(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return false;
+        }
+        name = name.toUpperCase();
+        switch (name) {
+            case "SUM":
+            case "AVG":
+            case "MAX":
+            case "MIN":
+            case "COUNT":
+                return true;
+            default:
+                return false;
+        }
     }
 }

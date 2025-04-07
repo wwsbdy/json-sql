@@ -1,5 +1,6 @@
 package com.zj.jsonsql;
 
+import com.zj.jsonsql.utils.SqlTestUtil;
 import org.junit.Test;
 
 public class SqlTest {
@@ -44,6 +45,11 @@ public class SqlTest {
     @Test
     public void groupTest() {
         SqlTestUtil.out("select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a ");
+    }
+
+    @Test
+    public void groupTest1() {
+        SqlTestUtil.out("select max(id),left(min(id), 1) from t_user");
     }
 
 }

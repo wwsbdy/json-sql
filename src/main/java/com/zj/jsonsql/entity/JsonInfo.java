@@ -14,6 +14,7 @@ import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 展示的表格数据存放对象
@@ -59,7 +60,9 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public ColumnInfo<Row, ?>[] getFields() {
-        select = SqlUtil.getFields(super.getColumns(), sqlNode);
+        if (Objects.isNull(select)) {
+            select = SqlUtil.getFields(super.getColumns(), sqlNode);
+        }
         if (CollectionUtils.isEmpty(select)) {
             return new ColumnInfo[0];
         }

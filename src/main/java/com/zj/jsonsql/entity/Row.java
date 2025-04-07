@@ -36,7 +36,7 @@ public class Row {
     private final JSONObject jsonObject;
 
     /**
-     * 所有行
+     * 所有行；有group by 的情况，此为满足条件的行
      */
     private final List<Row> rows;
 

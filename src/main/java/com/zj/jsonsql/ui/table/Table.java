@@ -3,6 +3,7 @@ package com.zj.jsonsql.ui.table;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.TableView;
@@ -11,6 +12,7 @@ import com.intellij.util.ui.ListTableModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.ui.dialog.export.Export;
 import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.MyWizardDialog;
@@ -68,7 +70,12 @@ public class Table {
                 dataModel.setColumnInfos(jsonInfo.getFields());
                 // 设置序号和选择表头不可改变大小
                 setIdAndSelectHeader(table);
-                dataModel.setItems(jsonInfo.getRows());
+                try {
+                    dataModel.setItems(jsonInfo.getRows());
+                } catch (SqlException sqlException) {
+                    Messages.showErrorDialog(sqlException.getMessage(), "SQL错误");
+
+                }
             }
         };
         // 重置按钮
@@ -77,7 +84,6 @@ public class Table {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 jsonInfo.resetSql();
                 dataModel.setColumnInfos(jsonInfo.getFields());
-                dataModel.setItems(jsonInfo.getRows());
                 // 设置序号和选择表头不可改变大小
                 setIdAndSelectHeader(table);
                 dataModel.setItems(jsonInfo.getRows());

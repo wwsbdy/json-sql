@@ -5,8 +5,10 @@ import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
+import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
@@ -74,11 +76,12 @@ public class SqlUtil {
             }, v -> v, (v1, v2) -> v1, LinkedHashMap::new)).values().stream();
         }
         // 追加表字段
+        List<Field> selectAndColumnList = new ArrayList<>(selectList);
         if (CollectionUtils.isNotEmpty(columns)) {
-            selectList.addAll(columns);
+            selectAndColumnList.addAll(columns);
         }
         // 获取别名和原始名
-        Map<String, SqlNode> nameMap = selectList.stream()
+        Map<String, SqlNode> nameMap = selectAndColumnList.stream()
                 .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2));
         // group
         SqlNodeList groupList = sqlNode.getGroup();
@@ -98,6 +101,15 @@ public class SqlUtil {
                                 .orElse(new JSONObject());
                         return new Row(jsonObject, rows);
                     });
+        } else {
+            // 只有两种情况，要不全部是聚合函数，要不全部不是聚合函数
+            if (selectList.stream().map(Field::getOriginalFiled).allMatch(SqlUtil::existAggregateFunc)) {
+                stream = stream.collect(Collectors.collectingAndThen(Collectors.toList(),
+                        rows -> Collections.singletonList(new Row(rows.get(0).getJsonObject(), rows))
+                )).stream();
+            } else if (selectList.stream().map(Field::getOriginalFiled).anyMatch(SqlUtil::existAggregateFunc)) {
+                throw new SqlException("不能有聚合函数");
+            }
         }
         // 排序
         SqlNodeList orderList = sqlNode.getOrderList();
@@ -190,19 +202,13 @@ public class SqlUtil {
                 select.addAll(columns);
                 continue;
             }
-            switch (node.getKind()) {
-                case IDENTIFIER:
-                case OTHER_FUNCTION:
-                    select.add(new Field(node, name));
-                    break;
-                case AS:
-                    List<SqlNode> operandList = ((SqlBasicCall) node).getOperandList();
-                    if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
-                        select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
-                    }
-                    break;
-                default:
-                    break;
+            if (Objects.requireNonNull(node.getKind()) == SqlKind.AS) {
+                List<SqlNode> operandList = ((SqlBasicCall) node).getOperandList();
+                if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
+                    select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
+                }
+            } else {
+                select.add(new Field(node, name));
             }
         }
         return select;
@@ -314,5 +320,26 @@ public class SqlUtil {
             return new BigDecimal(String.valueOf(value));
         }
         return String.valueOf(value);
+    }
+
+    /**
+     * 是否存在聚合函数
+     *
+     * @param sqlNode sql解析树
+     * @return 是否存在聚合函数
+     */
+    private static boolean existAggregateFunc(SqlNode sqlNode) {
+        if (sqlNode instanceof SqlBasicCall) {
+            SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
+            if (FuncEnum.isAggregateFunc(sqlBasicCall.getOperator().getName())) {
+                return true;
+            }
+            for (SqlNode node : sqlBasicCall.getOperandList()) {
+                if (existAggregateFunc(node)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

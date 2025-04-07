@@ -1,4 +1,4 @@
-package com.zj.jsonsql;
+package com.zj.jsonsql.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -10,8 +10,6 @@ import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
-import com.zj.jsonsql.utils.JsonUtil;
-import com.zj.jsonsql.utils.SqlUtil;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 
