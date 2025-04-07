@@ -104,6 +104,7 @@ public class SqlDialog extends DialogWrapper {
                     Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
                     return;
                 }
+                jsonInfo.resetSql();
                 jsonInfo.setSql(sqlStr);
                 jsonInfo.setSqlNode(sqlSelect);
                 // 关闭窗口

@@ -56,6 +56,8 @@ public class JsonInfo extends BaseJsonInfo {
         } catch (SqlParseException e) {
             log.error("SqlParseException：", e);
         }
+        select = null;
+        result = null;
     }
 
     @Override
@@ -79,6 +81,9 @@ public class JsonInfo extends BaseJsonInfo {
 
     @Override
     public List<Row> getRows() {
+        if (Objects.nonNull(result)) {
+            return result;
+        }
         return result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
     }
 }

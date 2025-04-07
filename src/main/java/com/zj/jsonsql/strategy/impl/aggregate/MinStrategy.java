@@ -35,8 +35,8 @@ public class MinStrategy implements IFunctionStrategy {
         SqlNode param = params.get(0);
         Stream<Object> stream = rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull);
         // 全部是数字，用数字；是集合，用长度；否则用字符串
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof BigDecimal)) {
-            return stream.map(v -> (BigDecimal) v)
+        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
+            return stream.map(v -> new BigDecimal(v.toString()))
                     .min(BigDecimal::compareTo)
                     .orElse(null);
         } else if (rows.stream().map(v -> getValue(v, param)).allMatch(v -> v instanceof Collection)) {

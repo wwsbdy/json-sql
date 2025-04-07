@@ -39,8 +39,8 @@ public class SumStrategy implements IFunctionStrategy {
             stream = stream.distinct();
         }
         // 要求全部是数字
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof BigDecimal)) {
-            return stream.map(v -> (BigDecimal) v).reduce(BigDecimal::add);
+        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
+            return stream.map(v -> new BigDecimal(v.toString())).reduce(BigDecimal::add).orElse(null);
         }
         return null;
     }
