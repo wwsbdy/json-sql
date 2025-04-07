@@ -10,8 +10,10 @@ import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
+import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
+import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,7 @@ public class SqlDialog extends DialogWrapper {
      */
     private final JTextPane sqlContent = new JTextPane();
     private final JsonInfo jsonInfo;
+    private final String originalSql;
     private int currentIndex = -1;
     private final List<String> sqlKeywords = Stream.of("select", "as", "from", "where", "not", "in", "like", "null", "between",
             "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit", "group").collect(Collectors.toList());
@@ -58,6 +61,7 @@ public class SqlDialog extends DialogWrapper {
         // 添加函数提示词
         sqlKeywords.addAll(Stream.of(FuncEnum.values()).map(v -> v.name().toLowerCase()).collect(Collectors.toList()));
         this.jsonInfo = jsonInfo;
+        this.originalSql = jsonInfo.getSql();
         // 设置会话框标题
         setTitle("输入sql");
         // 获取到当前项目的名称
@@ -104,7 +108,13 @@ public class SqlDialog extends DialogWrapper {
                     Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
                     return;
                 }
-                jsonInfo.resetSql();
+                try {
+                    List<Row> result = SqlUtil.getDataList(jsonInfo.getList(), jsonInfo.getColumns(), sqlSelect);
+                    jsonInfo.setResult(result);
+                } catch (SqlException sqlException) {
+                    Messages.showErrorDialog(sqlException.getMessage(), "SQL错误");
+                    return;
+                }
                 jsonInfo.setSql(sqlStr);
                 jsonInfo.setSqlNode(sqlSelect);
                 // 关闭窗口

@@ -19,13 +19,15 @@ public enum FuncEnum {
     UPPER,
     LOWER,
     ISNULL,
+
     SUM,
     AVG,
     MAX,
     MIN,
     COUNT,
 //    GROUP_CONCAT,
-
+//    ANY_VALUE,
+//    GROUP_ARRAY,
     ;
 
     public static FuncEnum getByName(String name) {

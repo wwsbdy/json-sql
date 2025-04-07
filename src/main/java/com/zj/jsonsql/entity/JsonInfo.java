@@ -42,6 +42,7 @@ public class JsonInfo extends BaseJsonInfo {
     /**
      * 查询结果
      */
+    @Setter
     private List<Row> result;
 
     public JsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
