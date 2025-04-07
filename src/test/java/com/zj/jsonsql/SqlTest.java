@@ -26,6 +26,11 @@ public class SqlTest {
     }
 
     @Test
+    public void isNullTest() {
+        SqlTestUtil.out("select * from t_user where isnull(`children`)");
+    }
+
+    @Test
     public void funcTest11111() {
         SqlTestUtil.out("select *  from t_user where right(left(id,3),1) = right(left(parentId,3),1)");
         SqlTestUtil.out("select *  from t_user where name like concat('__','市')");
@@ -34,6 +39,11 @@ public class SqlTest {
     @Test
     public void orderTest() {
         SqlTestUtil.out("select left(right(left(id,3),2), 1) b, right(left(id,3),2) a from t_user order by left(a, 1) asc, a ");
+    }
+
+    @Test
+    public void groupTest() {
+        SqlTestUtil.out("select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a ");
     }
 
 }

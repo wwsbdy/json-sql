@@ -2,6 +2,7 @@ package com.zj.jsonsql.strategy;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
+import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.func.*;
 import org.apache.calcite.sql.SqlBasicCall;
@@ -60,7 +61,13 @@ public class StrategyBean {
             new RoundStrategy(),
             new SubstringStrategy(),
             new SubstrStrategy(),
-            new UpperStrategy()
+            new UpperStrategy(),
+            new CountStrategy(),
+            new IsNullStrategy(),
+            new SumStrategy(),
+            new MaxStrategy(),
+            new MinStrategy(),
+            new AvgStrategy()
     ).collect(Collectors.toMap(IFunctionStrategy::getType, Function.identity(), (v1, v2) -> v2));
 
     /**
@@ -97,6 +104,14 @@ public class StrategyBean {
             case OR:
             case AND:
                 return new RelationStrategy(where.getKind(), where.getOperandList());
+            case OTHER_FUNCTION:
+                return new AbstractWhereStrategy(false) {
+                    @Override
+                    public boolean apply(Row item) {
+                        Object flag = getFuncStrategy(where.getOperator()).get(item, where);
+                        return Objects.nonNull(flag) && (!(flag instanceof Boolean) || (Boolean) flag);
+                    }
+                };
             default:
                 return ALWAYS_FALSE_STRATEGY;
         }

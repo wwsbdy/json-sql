@@ -35,8 +35,14 @@ public class Row {
      */
     private final JSONObject jsonObject;
 
-    public Row(JSONObject jsonObject) {
+    /**
+     * 所有行
+     */
+    private final List<Row> rows;
+
+    public Row(JSONObject jsonObject, List<Row> rows) {
         this.jsonObject = JsonUtil.replaceAllKey(jsonObject, "\\.", "_NaN_");
+        this.rows = rows;
     }
 
     /**
@@ -135,7 +141,7 @@ public class Row {
                 return get(key.toString());
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
-                        .get(this, ((SqlBasicCall) key).getOperandList());
+                        .get(this, ((SqlBasicCall) key));
         }
         // where条件
         if (key instanceof SqlBasicCall) {

@@ -70,9 +70,9 @@ public class ButtonAction extends AbstractAction {
                 if (Objects.isNull(onlyFiled)) {
                     onlyFiled = Constant.ONLY_FILED + System.currentTimeMillis() / 1000L;
                 }
-                row = new Row(new JSONObject().fluentPut(onlyFiled, o));
+                row = new Row(new JSONObject().fluentPut(onlyFiled, o), rowList);
             } else {
-                row = new Row((JSONObject) o);
+                row = new Row((JSONObject) o, rowList);
             }
             for (String key : row.keySet()) {
                 // 可能会出现不同数据里同一个key，value不一样的情况。如：null和string。这时以不是null的为准，其他的情况以最后一个value类型为准

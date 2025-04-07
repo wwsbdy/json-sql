@@ -73,14 +73,35 @@ public class SqlUtil {
                 return jsonObject;
             }, v -> v, (v1, v2) -> v1, LinkedHashMap::new)).values().stream();
         }
+        // 追加表字段
+        if (CollectionUtils.isNotEmpty(columns)) {
+            selectList.addAll(columns);
+        }
+        // 获取别名和原始名
+        Map<String, SqlNode> nameMap = selectList.stream()
+                .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2));
+        // group
+        SqlNodeList groupList = sqlNode.getGroup();
+        if (CollectionUtils.isNotEmpty(groupList)) {
+            stream = stream.collect(Collectors.groupingBy(row -> {
+                        JSONObject jsonObject = new JSONObject();
+                        for (SqlNode group : groupList) {
+                            jsonObject.put(nameMap.getOrDefault(group.toString(), group).toString(), row.get(group, nameMap));
+                        }
+                        return jsonObject;
+                    })).values().stream()
+                    .map(rows -> {
+                        JSONObject jsonObject = Optional.of(rows)
+                                .filter(CollectionUtils::isNotEmpty)
+                                .map(v -> v.get(0))
+                                .map(Row::getJsonObject)
+                                .orElse(new JSONObject());
+                        return new Row(jsonObject, rows);
+                    });
+        }
         // 排序
         SqlNodeList orderList = sqlNode.getOrderList();
         if (CollectionUtils.isNotEmpty(orderList)) {
-            // 追加表字段
-            selectList.addAll(columns);
-            // 获取别名和原始名
-            Map<String, SqlNode> nameMap = selectList.stream()
-                    .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2));
             SortStrategy sortStrategy = new SortStrategy(orderList, nameMap);
             stream = stream.sorted(sortStrategy::orderBy);
         }

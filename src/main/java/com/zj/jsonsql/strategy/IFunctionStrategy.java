@@ -7,6 +7,7 @@ import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.util.NlsString;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,10 +20,14 @@ public interface IFunctionStrategy {
 
     Object get(Row row, List<SqlNode> params);
 
+    default Object get(Row row, SqlBasicCall sqlBasicCall) {
+        return get(row, sqlBasicCall.getOperandList());
+    }
+
     FuncEnum getType();
 
     default boolean isSupport(List<SqlNode> params) {
-        return true;
+        return CollectionUtils.isNotEmpty(params);
     }
 
     default Object getValue(Row row, SqlNode sqlNode) {

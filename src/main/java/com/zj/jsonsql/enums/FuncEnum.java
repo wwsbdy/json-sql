@@ -16,8 +16,15 @@ public enum FuncEnum {
     NULLIF,
     SUBSTR,
     SUBSTRING,
-
-    UPPER, LOWER;
+    UPPER,
+    LOWER,
+    ISNULL,
+    SUM,
+    AVG,
+    MAX,
+    MIN,
+    COUNT,
+    ;
 
     public static FuncEnum getByName(String name) {
         if (StringUtils.isEmpty(name)) {

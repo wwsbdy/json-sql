@@ -51,7 +51,7 @@ public class SqlDialog extends DialogWrapper {
     private final JsonInfo jsonInfo;
     private int currentIndex = -1;
     private final List<String> sqlKeywords = Stream.of("select", "as", "from", "where", "not", "in", "like", "null", "between",
-            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit").collect(Collectors.toList());
+            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit", "group").collect(Collectors.toList());
 
     public SqlDialog(JsonInfo jsonInfo) {
         super(true);
