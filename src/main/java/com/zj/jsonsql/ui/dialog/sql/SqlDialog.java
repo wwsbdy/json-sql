@@ -179,24 +179,16 @@ public class SqlDialog extends DialogWrapper {
             if (keywordPopup.isVisible()) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     currentIndex = (currentIndex + 1) % keywordPopup.getComponentCount();
-                    highlightSuggestion();
+                    highlightSuggestion(keywordPopup);
                     e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_UP) {
                     currentIndex = (currentIndex - 1 + keywordPopup.getComponentCount()) % keywordPopup.getComponentCount();
-                    highlightSuggestion();
+                    highlightSuggestion(keywordPopup);
                     e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     insertSuggestion();
                     e.consume();
                 }
-            }
-        }
-
-        // 高亮当前选择的建议
-        private void highlightSuggestion() {
-            for (int i = 0; i < keywordPopup.getComponentCount(); i++) {
-                JMenuItem item = (JMenuItem) keywordPopup.getComponent(i);
-                item.setArmed(i == currentIndex);
             }
         }
 
@@ -279,8 +271,9 @@ public class SqlDialog extends DialogWrapper {
             }
             if (keywordPopup.getComponentCount() > 0) {
                 try {
-                    currentIndex = -1;
+                    currentIndex = 0;
                     Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordEnd, Position.Bias.Forward);
+                    highlightSuggestion(keywordPopup);
                     keywordPopup.show(sqlContent, (int) rectangle2D.getX(), (int) (rectangle2D.getY() + rectangle2D.getHeight()));
                 } catch (Exception ex) {
                     log.error("Error showing keyword popup: ", ex);
@@ -318,6 +311,18 @@ public class SqlDialog extends DialogWrapper {
                 }
             });
             return keywordItem;
+        }
+    }
+
+    /**
+     * 高亮当前选择的建议
+     *
+     * @param keywordPopup JBPopupMenu
+     */
+    public void highlightSuggestion(JBPopupMenu keywordPopup) {
+        for (int i = 0; i < keywordPopup.getComponentCount(); i++) {
+            JMenuItem item = (JMenuItem) keywordPopup.getComponent(i);
+            item.setArmed(i == currentIndex);
         }
     }
 }
