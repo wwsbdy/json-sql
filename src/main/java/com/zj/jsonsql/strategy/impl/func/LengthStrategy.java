@@ -7,7 +7,9 @@ import com.zj.jsonsql.strategy.IFunctionStrategy;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,6 +26,12 @@ public class LengthStrategy implements IFunctionStrategy {
         Object value = getValue(row, params.get(0));
         if (Objects.isNull(value)) {
             return null;
+        }
+        // 如果是集合，用集合长度
+        if (value instanceof Collection) {
+            return ((Collection<?>) value).size();
+        } else if (value instanceof Map) {
+            return ((Map<?, ?>) value).size();
         }
         return value.toString().length();
     }
