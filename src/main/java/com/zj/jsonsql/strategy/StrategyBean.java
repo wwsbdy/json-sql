@@ -6,10 +6,8 @@ import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.func.*;
 import org.apache.calcite.sql.SqlBasicCall;
-import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlOperator;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -38,8 +36,9 @@ public class StrategyBean {
     };
 
     private static final IFunctionStrategy EMPTY_FUNCTION_STRATEGY = new IFunctionStrategy() {
+
         @Override
-        public Object get(Row row, List<SqlNode> params) {
+        public Object get(Row row, SqlBasicCall sqlBasicCall) {
             return null;
         }
 
@@ -67,7 +66,10 @@ public class StrategyBean {
             new SumStrategy(),
             new MaxStrategy(),
             new MinStrategy(),
-            new AvgStrategy()
+            new AvgStrategy(),
+            new AnyValueStrategy(),
+            new GroupArrayStrategy(),
+            new GroupConcatStrategy()
     ).collect(Collectors.toMap(IFunctionStrategy::getType, Function.identity(), (v1, v2) -> v2));
 
     /**

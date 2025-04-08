@@ -3,6 +3,7 @@ package com.zj.jsonsql.entity;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zj.jsonsql.enums.JsonEnum;
+import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.StrategyBean;
 import com.zj.jsonsql.utils.JsonUtil;
 import com.zj.jsonsql.utils.SqlUtil;
@@ -138,6 +139,9 @@ public class Row {
         SqlKind kind = key.getKind();
         switch (kind) {
             case IDENTIFIER:
+                if (MapUtils.isNotEmpty(nameMap) && !nameMap.containsKey(key.toString())) {
+                    throw new SqlException(key + "字段不存在");
+                }
                 return get(key.toString());
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())

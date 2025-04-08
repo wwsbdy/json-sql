@@ -18,11 +18,7 @@ import java.util.Objects;
  */
 public interface IFunctionStrategy {
 
-    Object get(Row row, List<SqlNode> params);
-
-    default Object get(Row row, SqlBasicCall sqlBasicCall) {
-        return get(row, sqlBasicCall.getOperandList());
-    }
+    Object get(Row row, SqlBasicCall sqlBasicCall);
 
     FuncEnum getType();
 
@@ -45,6 +41,6 @@ public interface IFunctionStrategy {
         if (value instanceof Number) {
             return new BigDecimal(String.valueOf(value));
         }
-        return String.valueOf(value);
+        return Objects.isNull(value) ? null : String.valueOf(value);
     }
 }

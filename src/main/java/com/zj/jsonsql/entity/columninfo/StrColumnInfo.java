@@ -1,5 +1,6 @@
 package com.zj.jsonsql.entity.columninfo;
 
+import com.alibaba.fastjson.JSON;
 import com.intellij.ui.ColoredTableCellRenderer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
@@ -40,7 +41,19 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
     @Override
     public String valueOf(Row row) {
         Object value = row.get(originalFiled);
-        return Objects.isNull(value) ? "NULL" : value.toString();
+        if (Objects.isNull(value)) {
+            return "NULL";
+        }
+        if (value instanceof String) {
+            return (String) value;
+        }
+        if (value instanceof Boolean) {
+            return String.valueOf(value);
+        }
+        if (value instanceof Number) {
+            return String.valueOf(value);
+        }
+        return JSON.toJSONString(value);
     }
 
     /**

@@ -109,6 +109,8 @@ public class SqlDialog extends DialogWrapper {
                     return;
                 }
                 try {
+                    List<Field> fields = SqlUtil.getFields(jsonInfo.getColumns(), sqlSelect);
+                    jsonInfo.setSelect(fields);
                     List<Row> result = SqlUtil.getDataList(jsonInfo.getList(), jsonInfo.getColumns(), sqlSelect);
                     jsonInfo.setResult(result);
                 } catch (SqlException sqlException) {

@@ -10,17 +10,16 @@ import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlSelectKeyword;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * @author : jie.zhou
  * @date : 2025/3/31
  */
-public class SumStrategy implements IFunctionStrategy {
-
+public class GroupArrayStrategy implements IFunctionStrategy {
 
     @Override
     public Object get(Row row, SqlBasicCall sqlBasicCall) {
@@ -33,21 +32,19 @@ public class SumStrategy implements IFunctionStrategy {
             return null;
         }
         SqlNode param = params.get(0);
-        Stream<Object> stream = rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull);
+        Stream<String> stream = rows.stream().map(v -> getValue(v, param))
+                .filter(Objects::nonNull)
+                .map(Object::toString);
         SqlLiteral functionQuantifier = sqlBasicCall.getFunctionQuantifier();
         if (Objects.nonNull(functionQuantifier) && SqlSelectKeyword.DISTINCT.equals(functionQuantifier.getValue())) {
             stream = stream.distinct();
         }
-        // 要求全部是数字
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
-            return stream.map(v -> new BigDecimal(v.toString())).reduce(BigDecimal::add).orElse(null);
-        }
-        return null;
+        return stream.collect(Collectors.toList());
     }
 
     @Override
     public FuncEnum getType() {
-        return FuncEnum.SUM;
+        return FuncEnum.GROUP_ARRAY;
     }
 
     @Override

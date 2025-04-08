@@ -161,12 +161,11 @@ public class SqlUtil {
                 }
                 String[] keys = originalName.split("\\.");
                 if (keys.length == 0) {
-                    field.setType(JsonEnum.UNKNOWN);
+                    throw new SqlException(originalName + "字段错误");
                 }
                 JsonEnum type = typeMap.get(keys[0]);
                 if (Objects.isNull(type)) {
-                    field.setType(JsonEnum.UNKNOWN);
-                    continue;
+                    throw new SqlException(originalName + "字段不存在");
                 }
                 field.setType(JsonEnum.INNER);
                 continue;
@@ -180,7 +179,17 @@ public class SqlUtil {
                 field.setType(JsonUtil.getType(value));
                 continue;
             }
-            field.setType(JsonEnum.FUNC);
+            if (originalFiled instanceof SqlBasicCall) {
+                SqlBasicCall sqlBasicCall = (SqlBasicCall) originalFiled;
+                JsonEnum jsonEnum = Optional.ofNullable(sqlBasicCall.getOperator())
+                        .map(SqlOperator::getName)
+                        .map(FuncEnum::getByName)
+                        .map(FuncEnum::getJsonEnum)
+                        .orElse(JsonEnum.FUNC);
+                field.setType(jsonEnum);
+                continue;
+            }
+            field.setType(JsonEnum.UNKNOWN);
         }
         return select;
     }
@@ -195,6 +204,7 @@ public class SqlUtil {
     @NotNull
     public static List<Field> getSelectList(List<Field> columns, SqlSelect sqlNode) {
         List<Field> select = new ArrayList<>();
+        Set<String> columnSet = columns.stream().map(Field::getName).collect(Collectors.toSet());
         for (SqlNode node : sqlNode.getSelectList()) {
             String name = node.toString();
             // 查全部
@@ -202,12 +212,20 @@ public class SqlUtil {
                 select.addAll(columns);
                 continue;
             }
-            if (Objects.requireNonNull(node.getKind()) == SqlKind.AS) {
+            if (node.getKind() == SqlKind.AS) {
                 List<SqlNode> operandList = ((SqlBasicCall) node).getOperandList();
                 if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
+                    SqlNode notExistFiled = findNotExistFiled(operandList.get(0), columnSet);
+                    if (Objects.nonNull(notExistFiled)) {
+                        throw new SqlException(notExistFiled + "字段不存在");
+                    }
                     select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
                 }
             } else {
+                SqlNode notExistFiled = findNotExistFiled(node, columnSet);
+                if (Objects.nonNull(notExistFiled)) {
+                    throw new SqlException(notExistFiled + "字段不存在");
+                }
                 select.add(new Field(node, name));
             }
         }
@@ -341,5 +359,33 @@ public class SqlUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 是否存在不存在的字段
+     *
+     * @param sqlNode   sql解析树
+     * @param columnSet 原始表字段
+     * @return 是否存在聚合函数
+     */
+    private static SqlNode findNotExistFiled(SqlNode sqlNode, Set<String> columnSet) {
+        if (CollectionUtils.isEmpty(columnSet)) {
+            return sqlNode;
+        }
+        if (sqlNode instanceof SqlIdentifier
+                && !"*".equals(sqlNode.toString())
+                && !columnSet.contains(((SqlIdentifier) sqlNode).getSimple())) {
+            return sqlNode;
+        }
+        if (sqlNode instanceof SqlBasicCall) {
+            SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
+            for (SqlNode node : sqlBasicCall.getOperandList()) {
+                SqlNode notExistFiled = findNotExistFiled(node, columnSet);
+                if (Objects.nonNull(notExistFiled)) {
+                    return notExistFiled;
+                }
+            }
+        }
+        return null;
     }
 }

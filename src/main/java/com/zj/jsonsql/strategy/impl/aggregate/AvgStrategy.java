@@ -52,11 +52,6 @@ public class AvgStrategy implements IFunctionStrategy {
     }
 
     @Override
-    public Object get(Row row, List<SqlNode> params) {
-        return 0;
-    }
-
-    @Override
     public FuncEnum getType() {
         return FuncEnum.AVG;
     }

@@ -38,6 +38,7 @@ public class JsonInfo extends BaseJsonInfo {
     /**
      * 查询列
      */
+    @Setter
     private List<Field> select;
     /**
      * 查询结果

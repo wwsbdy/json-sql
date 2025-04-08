@@ -7,28 +7,45 @@ import org.apache.commons.lang3.StringUtils;
  */
 
 public enum FuncEnum {
-    LEFT,
-    RIGHT,
-    LENGTH,
-    CONCAT,
-    IF,
-    IFNULL,
-    NULLIF,
-    SUBSTR,
-    SUBSTRING,
-    UPPER,
-    LOWER,
-    ISNULL,
+    LEFT(0, JsonEnum.FUNC),
+    RIGHT(0, JsonEnum.FUNC),
+    LENGTH(0, JsonEnum.NUMBER),
+    CONCAT(0, JsonEnum.STRING),
+    IF(0, JsonEnum.FUNC),
+    IFNULL(0, JsonEnum.FUNC),
+    NULLIF(0, JsonEnum.FUNC),
+    SUBSTR(0, JsonEnum.STRING),
+    SUBSTRING(0, JsonEnum.STRING),
+    UPPER(0, JsonEnum.STRING),
+    LOWER(0, JsonEnum.STRING),
+    ISNULL(0, JsonEnum.BOOLEAN),
 
-    SUM,
-    AVG,
-    MAX,
-    MIN,
-    COUNT,
-//    GROUP_CONCAT,
-//    ANY_VALUE,
-//    GROUP_ARRAY,
+    SUM(1, JsonEnum.NUMBER),
+    AVG(1, JsonEnum.NUMBER),
+    MAX(1, JsonEnum.FUNC),
+    MIN(1, JsonEnum.FUNC),
+    COUNT(1, JsonEnum.NUMBER),
+    GROUP_CONCAT(1, JsonEnum.NUMBER),
+    ANY_VALUE(1, JsonEnum.FUNC),
+    GROUP_ARRAY(1, JsonEnum.ARRAY),
     ;
+
+    /**
+     * 0: 函数
+     * 1: 聚合函数
+     */
+    private final int type;
+
+    public JsonEnum getJsonEnum() {
+        return jsonEnum;
+    }
+
+    private final JsonEnum jsonEnum;
+
+    FuncEnum(int type, JsonEnum jsonEnum) {
+        this.type = type;
+        this.jsonEnum = jsonEnum;
+    }
 
     public static FuncEnum getByName(String name) {
         if (StringUtils.isEmpty(name)) {
@@ -48,15 +65,11 @@ public enum FuncEnum {
             return false;
         }
         name = name.toUpperCase();
-        switch (name) {
-            case "SUM":
-            case "AVG":
-            case "MAX":
-            case "MIN":
-            case "COUNT":
+        for (FuncEnum funcEnum : values()) {
+            if (funcEnum.type == 1 && funcEnum.name().equals(name)) {
                 return true;
-            default:
-                return false;
+            }
         }
+        return false;
     }
 }

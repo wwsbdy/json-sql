@@ -13,7 +13,7 @@ public class SqlTest {
      */
     @Test
     public void test() {
-        SqlTestUtil.out("select left(code, 4) a,count(*) b,right(123,2) n,if(right(123,2),code,null) from t_user where left(code, 4) = '5101'");
+        SqlTestUtil.out("select left(code, 4) a,right(123,2) n,if(right(123,2),code,null) from t_user where left(code, 4) = '5101'");
     }
 
     @Test
