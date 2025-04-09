@@ -30,7 +30,6 @@ public class AnyValueStrategy implements IFunctionStrategy {
         SqlNode param = params.get(0);
         return rows.stream().map(v -> getValue(v, param))
                 .filter(Objects::nonNull)
-                .map(Object::toString)
                 .findAny()
                 .orElse(null);
     }
