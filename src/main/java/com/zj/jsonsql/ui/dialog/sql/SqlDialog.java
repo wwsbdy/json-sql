@@ -7,7 +7,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
-import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
@@ -34,8 +33,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,10 +93,10 @@ public class SqlDialog extends DialogWrapper {
             public void actionPerformed(ActionEvent actionEvent) {
                 //获取到name和age
                 String sqlStr = sqlContent.getText();
-                if (StringUtils.isNotEmpty(sqlStr) && sqlStr.length() > Constant.SQL_MAX) {
-                    Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
-                    return;
-                }
+//                if (StringUtils.isNotEmpty(sqlStr) && sqlStr.length() > Constant.SQL_MAX) {
+//                    Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
+//                    return;
+//                }
                 SqlSelect sqlSelect;
                 try {
                     sqlSelect = SqlUtil.toSqlSelect(sqlStr);

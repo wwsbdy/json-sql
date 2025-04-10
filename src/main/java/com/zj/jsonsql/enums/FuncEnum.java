@@ -19,6 +19,7 @@ public enum FuncEnum {
     UPPER(0, JsonEnum.STRING),
     LOWER(0, JsonEnum.STRING),
     ISNULL(0, JsonEnum.BOOLEAN),
+    ROUND(0, JsonEnum.NUMBER),
 
     SUM(1, JsonEnum.NUMBER),
     AVG(1, JsonEnum.NUMBER),

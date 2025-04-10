@@ -18,14 +18,14 @@
         <li>where =、!=、in、not in、&gt;、&gt;=、&lt;、&lt;=、between</li>
         <li>like（_和%转义用\\_和\\%）、not like、is null、is not null</li>
         <li>and、or、嵌套and和or</li>
+        <li>left、right、length、concat、if、ifnull、nullif、substr、substring、upper、lower、isnull、round等函数</li>
+        <li>group by；sum、avg、max、min、count、group_concat、any_value、group_array 等函数</li>
         <li>order by asc、desc、distinct</li>
         <li>limit 1,2</li>
     </ul>
     不支持的sql语句有：
     <ul>
         <li>update、insert、delete</li>
-        <li>group by</li>
-        <li>函数</li>
         <li>连表</li>
         <li>union</li>
         <li>特殊的关键词如：result、date（要带上``）</li>
@@ -35,6 +35,7 @@
     <ul>
         <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
         <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%\\%lin%')</li>
+        <li>select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a</li>
     </ul>
     ]]></description>
 

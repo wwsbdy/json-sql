@@ -35,7 +35,7 @@ public class RoundStrategy implements IFunctionStrategy {
 
     @Override
     public FuncEnum getType() {
-        return null;
+        return FuncEnum.ROUND;
     }
 
     @Override
