@@ -1,6 +1,7 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AnActionButton;
@@ -55,7 +56,9 @@ public class Table {
         AnActionButton modifyJson = new AnActionButton("编辑json", AllIcons.Actions.Edit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                new FormDialog(project, jsonInfo.getJsonContent()).show();
+                FormDialog formDialog = new FormDialog(project, jsonInfo);
+                formDialog.show();
+                refresh(dataModel, jsonInfo, table);
             }
         };
         // 编辑sql按钮
@@ -64,11 +67,7 @@ public class Table {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(jsonInfo);
                 formTestDialog.show();
-                // 重新赋值
-                dataModel.setColumnInfos(jsonInfo.getFields());
-                // 设置序号和选择表头不可改变大小
-                setIdAndSelectHeader(table);
-                dataModel.setItems(jsonInfo.getRows());
+                refresh(dataModel, jsonInfo, table);
             }
         };
         // 重置按钮
@@ -76,10 +75,7 @@ public class Table {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 jsonInfo.resetSql();
-                dataModel.setColumnInfos(jsonInfo.getFields());
-                // 设置序号和选择表头不可改变大小
-                setIdAndSelectHeader(table);
-                dataModel.setItems(jsonInfo.getRows());
+                refresh(dataModel, jsonInfo, table);
             }
         };
         // 导出按钮
@@ -95,11 +91,16 @@ public class Table {
                 wizardDialog.show();
             }
         };
-        decorator.addExtraAction(modifyJson);
-        decorator.addExtraAction(editSql);
-        decorator.addExtraAction(reset);
-        decorator.addExtraAction(export);
+        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export);
         return decorator.createPanel();
+    }
+
+    private static void refresh(ListTableModel<Row> dataModel, @NotNull JsonInfo jsonInfo, TableView<Row> table) {
+        // 重新赋值
+        dataModel.setColumnInfos(jsonInfo.getFields());
+        // 设置序号和选择表头不可改变大小
+        setIdAndSelectHeader(table);
+        dataModel.setItems(jsonInfo.getRows());
     }
 
     /**

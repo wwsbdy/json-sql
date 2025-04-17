@@ -5,14 +5,14 @@ import com.zj.jsonsql.entity.columninfo.BooleanColumnInfo;
 import com.zj.jsonsql.entity.columninfo.IdColumnInfo;
 import com.zj.jsonsql.entity.columninfo.StrColumnInfo;
 import com.zj.jsonsql.utils.SqlUtil;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,33 +21,39 @@ import java.util.Objects;
  *
  * @author arthur_zhou
  */
-@Getter
+@Data
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 public class JsonInfo extends BaseJsonInfo {
     /**
      * sql语句
      */
-    @Setter
     private String sql;
     /**
      * sql解析树
      */
-    @Setter
     private SqlSelect sqlNode;
     /**
      * 查询列
      */
-    @Setter
     private List<Field> select;
     /**
      * 查询结果
      */
-    @Setter
     private List<Row> result;
 
     public JsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
         super(columns, list, jsonContent);
+        resetSql();
+    }
+
+    public JsonInfo() {
+        super(Collections.emptyList(), Collections.emptyList(), "");
+        resetSql();
+    }
+
+    public JsonInfo(String jsonContent) {
+        super(Collections.emptyList(), Collections.emptyList(), jsonContent);
         resetSql();
     }
 
@@ -68,7 +74,7 @@ public class JsonInfo extends BaseJsonInfo {
             select = SqlUtil.getFields(super.getColumns(), sqlNode);
         }
         if (CollectionUtils.isEmpty(select)) {
-            return new ColumnInfo[0];
+            select = Collections.emptyList();
         }
         ColumnInfo<Row, ?>[] columnInfos = new ColumnInfo[select.size() + 2];
         // 首位添加序号和选择框

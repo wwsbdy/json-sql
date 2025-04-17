@@ -5,8 +5,10 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
+import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.ui.edit.CustomEditorField;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +17,7 @@ import java.util.Objects;
 /**
  * @author arthur_zhou
  */
+@Setter
 @Getter
 public class FormDialog extends DialogWrapper {
 
@@ -25,8 +28,14 @@ public class FormDialog extends DialogWrapper {
      */
     private final CustomEditorField jsonContent;
 
-    public FormDialog(Project project, String content) {
+    private JsonInfo jsonInfo;
+
+    public FormDialog(Project project, JsonInfo jsonInfo) {
         super(true);
+        // 是否允许拖拽的方式扩大或缩小
+        setResizable(true);
+        this.jsonInfo = jsonInfo;
+        String content = jsonInfo.getJsonContent();
         if (Objects.isNull(content)) {
             content = "";
         }
@@ -38,6 +47,11 @@ public class FormDialog extends DialogWrapper {
         jsonContent.setPreferredSize(new Dimension(500, 700));
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();
+    }
+
+    @Deprecated
+    public FormDialog(Project project, String content) {
+        this(project, new JsonInfo(content));
     }
 
     @Override

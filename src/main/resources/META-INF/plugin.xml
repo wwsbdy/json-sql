@@ -44,13 +44,14 @@
         <!-- 自定义 底部view -->
         <executor id="JsonSql" order="last"
                   implementation="com.zj.jsonsql.ui.table.TableExecutor"/>
+        <toolWindow id="JsonSql" factoryClass="com.zj.jsonsql.ui.JsonSqlToolWindowFactory" anchor="bottom" canCloseContents="true" />
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
     <idea-version since-build="243" until-build="999.*"/>
 
     <actions>
-        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.dialog.json.FromAction"
+        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.FromAction"
                 text="JsonSql" description="JsonArray解析" icon="AllIcons.FileTypes.JsonSchema">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>

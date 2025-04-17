@@ -21,6 +21,7 @@ import javax.swing.*;
 /**
  * @author arthur_zhou
  */
+@Deprecated
 public class TableRunner {
 
     /**

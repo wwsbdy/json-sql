@@ -9,12 +9,13 @@ import javax.swing.Icon;
 /**
  * @author arthur_zhou
  */
+@Deprecated
 public class TableExecutor extends Executor {
 
 
-    public static final String PLUGIN_ID = "JsonSql";
+    public static final String PLUGIN_ID = "JsonSqlOld";
 
-    public static final String TOOL_WINDOW_ID = "JsonSql";
+    public static final String TOOL_WINDOW_ID = "JsonSqlOld";
 
     public static final String CONTEXT_ACTION_ID = "2222";
 

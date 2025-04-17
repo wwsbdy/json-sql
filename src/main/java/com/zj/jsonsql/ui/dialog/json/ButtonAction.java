@@ -12,7 +12,6 @@ import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
-import com.zj.jsonsql.ui.table.TableRunner;
 import com.zj.jsonsql.utils.JsonUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -93,9 +92,11 @@ public class ButtonAction extends AbstractAction {
             Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
             return;
         }
-        JsonInfo jsonInfo = new JsonInfo(Field.getOriginalField(columnMap), rowList, jsonStr);
-        // 打开表格
-        new TableRunner(formDialog.getProject()).run(jsonInfo);
+        JsonInfo jsonInfo = formDialog.getJsonInfo();
+        jsonInfo.setColumns(Field.getOriginalField(columnMap));
+        jsonInfo.setList(rowList);
+        jsonInfo.setJsonContent(jsonStr);
+        jsonInfo.resetSql();
         // 关闭窗口
         formDialog.doCancelAction();
     }
