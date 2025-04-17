@@ -1,5 +1,6 @@
 package com.zj.jsonsql.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -37,10 +38,7 @@ public enum FuncEnum {
      */
     private final int type;
 
-    public JsonEnum getJsonEnum() {
-        return jsonEnum;
-    }
-
+    @Getter
     private final JsonEnum jsonEnum;
 
     FuncEnum(int type, JsonEnum jsonEnum) {

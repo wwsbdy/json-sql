@@ -44,7 +44,7 @@
         <!-- 自定义 底部view -->
         <executor id="JsonSql" order="last"
                   implementation="com.zj.jsonsql.ui.table.TableExecutor"/>
-        <toolWindow id="JsonSql" factoryClass="com.zj.jsonsql.ui.JsonSqlToolWindowFactory" anchor="bottom" canCloseContents="true" />
+        <toolWindow id="JsonSql" factoryClass="com.zj.jsonsql.ui.JsonSqlToolWindowFactory" anchor="bottom" canCloseContents="true" icon="AllIcons.FileTypes.JsonSchema"/>
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->

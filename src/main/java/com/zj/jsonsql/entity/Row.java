@@ -139,9 +139,6 @@ public class Row {
         SqlKind kind = key.getKind();
         switch (kind) {
             case IDENTIFIER:
-                if (MapUtils.isNotEmpty(nameMap) && !nameMap.containsKey(key.toString())) {
-                    throw new SqlException(key + "字段不存在");
-                }
                 return get(key.toString());
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
@@ -173,7 +170,7 @@ public class Row {
             if (nameMap.containsKey(key.toString())) {
                 return nameMap.get(key.toString());
             }
-            SqlIdentifier key1 = (SqlIdentifier) key;
+            throw new SqlException(key + "字段不存在");
         }
         if (key instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) key;

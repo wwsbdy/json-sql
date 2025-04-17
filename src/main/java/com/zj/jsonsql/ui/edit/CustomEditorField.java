@@ -23,7 +23,7 @@ public class CustomEditorField extends LanguageTextField {
     }
 
     @Override
-    protected EditorEx createEditor() {
+    protected @NotNull EditorEx createEditor() {
         EditorEx editor = super.createEditor();
         // 垂直滚动条
         editor.setVerticalScrollbarVisible(true);

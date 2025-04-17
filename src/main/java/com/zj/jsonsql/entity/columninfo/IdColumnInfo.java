@@ -1,7 +1,6 @@
 package com.zj.jsonsql.entity.columninfo;
 
 import com.intellij.ui.components.JBLabel;
-import com.intellij.util.ui.ColumnInfo;
 import com.zj.jsonsql.entity.Row;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +14,7 @@ import javax.swing.table.TableCellRenderer;
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class IdColumnInfo extends ColumnInfo<Row, Integer> {
+public class IdColumnInfo extends TableColumnInfo<Integer> {
 
     public IdColumnInfo() {
         super("序号");

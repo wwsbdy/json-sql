@@ -169,3 +169,14 @@ Rectangle2D rectangle2D = sqlContent.getUI().modelToView2D(sqlContent, wordEnd, 
 Settings->Build,Execution,Deployment->Build Tools->Gradle->Gradle JVM->Project SDK
 ```
 
+### 13.build报错
+```
+Illegal char <:> at index 25: -Djna.boot.library.path=
+```
+升级org.jetbrains.intellij 1.14.0->1.14.1
+```
+plugins {
+    id 'org.jetbrains.intellij' version '1.14.1'
+}
+```
+

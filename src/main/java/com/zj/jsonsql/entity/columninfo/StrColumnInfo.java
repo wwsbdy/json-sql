@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.intellij.ui.ColoredTableCellRenderer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
-import com.intellij.util.ui.ColumnInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
 import lombok.EqualsAndHashCode;
 import org.apache.calcite.sql.SqlNode;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ import java.util.Objects;
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class StrColumnInfo extends ColumnInfo<Row, String> {
+public class StrColumnInfo extends TableColumnInfo<String> {
     /**
      * 原始名称
      */
@@ -77,7 +77,7 @@ public class StrColumnInfo extends ColumnInfo<Row, String> {
     public @Nullable TableCellRenderer getRenderer(Row myRow) {
         return new ColoredTableCellRenderer() {
             @Override
-            protected void customizeCellRenderer(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
+            protected void customizeCellRenderer(@NotNull JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
                 // NULL的颜色
                 if (Objects.isNull(myRow.get(originalFiled))) {
                     append((String) value, new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, new JBColor(new Color(255, 153, 0, 168), new Color(255, 153, 0, 168))));

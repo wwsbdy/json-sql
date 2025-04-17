@@ -86,13 +86,14 @@ public class SqlUtil {
         // group
         SqlNodeList groupList = sqlNode.getGroup();
         if (CollectionUtils.isNotEmpty(groupList)) {
-            stream = stream.collect(Collectors.groupingBy(row -> {
-                        JSONObject jsonObject = new JSONObject();
-                        for (SqlNode group : groupList) {
-                            jsonObject.put(nameMap.getOrDefault(group.toString(), group).toString(), row.get(group, nameMap));
-                        }
-                        return jsonObject;
-                    })).values().stream()
+            Map<JSONObject, List<Row>> groupMap = stream.collect(Collectors.groupingBy(row -> {
+                JSONObject jsonObject = new JSONObject();
+                for (SqlNode group : groupList) {
+                    jsonObject.put(nameMap.getOrDefault(group.toString(), group).toString(), row.get(group, nameMap));
+                }
+                return jsonObject;
+            }));
+            stream = groupMap.values().stream()
                     .map(rows -> {
                         JSONObject jsonObject = Optional.of(rows)
                                 .filter(CollectionUtils::isNotEmpty)
@@ -337,7 +338,7 @@ public class SqlUtil {
         if (value instanceof Number) {
             return new BigDecimal(String.valueOf(value));
         }
-        return String.valueOf(value);
+        return Objects.isNull(value) ? null : String.valueOf(value);
     }
 
     /**

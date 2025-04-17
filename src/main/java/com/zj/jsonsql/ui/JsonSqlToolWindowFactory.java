@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.zj.jsonsql.entity.JsonInfo;
@@ -13,7 +14,7 @@ import com.zj.jsonsql.ui.table.Table;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.List;
+import java.util.Collections;
 
 /**
  * @author : jie.zhou
@@ -46,6 +47,9 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
             }
         };
         // 将动作添加到ToolWindow的标题栏
-        toolWindow.setTitleActions(List.of(addTabAction));
+        toolWindow.setTitleActions(Collections.singletonList(addTabAction));
+        if (toolWindow instanceof ToolWindowEx) {
+            ((ToolWindowEx) toolWindow).setTabActions(addTabAction);
+        }
     }
 }

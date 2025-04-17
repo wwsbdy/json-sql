@@ -1,6 +1,5 @@
 package com.zj.jsonsql.entity.columninfo;
 
-import com.intellij.util.ui.ColumnInfo;
 import com.zj.jsonsql.entity.Row;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nls;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * @author arthur_zhou
  */
 @EqualsAndHashCode(callSuper = true)
-public class BooleanColumnInfo extends ColumnInfo<Row, Boolean> {
+public class BooleanColumnInfo extends TableColumnInfo<Boolean> {
 
     public BooleanColumnInfo(@Nls(capitalization = Nls.Capitalization.Title) String name) {
         super(name);
