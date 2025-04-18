@@ -66,6 +66,9 @@ public class EasyExcelUtil {
      * @return 数据行
      */
     private static List<List<String>> getDataList(List<List<String>> headerList, JSONArray jsonArray) {
+        if (CollectionUtils.isEmpty(headerList) || CollectionUtils.isEmpty(jsonArray)) {
+            return Collections.emptyList();
+        }
         List<List<String>> dataList = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -111,6 +114,9 @@ public class EasyExcelUtil {
      * @return 表头列表
      */
     private static List<List<String>> getHeaderList(JSONArray jsonArray) {
+        if (CollectionUtils.isEmpty(jsonArray)) {
+            return Collections.emptyList();
+        }
         // 先组装成树结构防止重复表头
         HeaderTree headerTree = new HeaderTree(null);
         for (int i = 0; i < jsonArray.size(); i++) {
