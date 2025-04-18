@@ -7,6 +7,7 @@ import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
 import com.intellij.ui.wizard.WizardStep;
 import com.zj.jsonsql.entity.ExportInfo;
+import com.zj.jsonsql.ui.PluginBundle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,9 +29,9 @@ public class Setting extends WizardStep<WizardModel> {
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridLayout(5, 2));
         ComboBox<Object> rowComboBox = new ComboBox<>();
-        rowComboBox.addItem("SQL查询");
-        rowComboBox.addItem("勾选行");
-        rowComboBox.addItem("全部");
+        rowComboBox.addItem(PluginBundle.get("setting.sql-query"));
+        rowComboBox.addItem(PluginBundle.get("setting.select-row"));
+        rowComboBox.addItem(PluginBundle.get("setting.all"));
         rowComboBox.setSelectedIndex(exportInfo.getRow());
         rowComboBox.addActionListener(new AbstractAction() {
             @Override
@@ -39,12 +40,12 @@ public class Setting extends WizardStep<WizardModel> {
             }
         });
 
-        jPanel.add(new JBLabel("导出行"));
+        jPanel.add(new JBLabel(PluginBundle.get("setting.export-row")));
         jPanel.add(rowComboBox);
 
         ComboBox<Object> columnComboBox = new ComboBox<>();
-        columnComboBox.addItem("SQL查询");
-        columnComboBox.addItem("全部");
+        columnComboBox.addItem(PluginBundle.get("setting.sql-query"));
+        columnComboBox.addItem(PluginBundle.get("setting.all"));
         columnComboBox.setSelectedIndex(exportInfo.getColumn());
         columnComboBox.addActionListener(new AbstractAction() {
             @Override
@@ -52,7 +53,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setColumn(columnComboBox.getSelectedIndex());
             }
         });
-        jPanel.add(new JBLabel("导出列"));
+        jPanel.add(new JBLabel(PluginBundle.get("setting.export-column")));
         jPanel.add(columnComboBox);
 
         JBCheckBox roundCheckBox = new JBCheckBox();
@@ -63,8 +64,8 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setRound(roundCheckBox.isSelected());
             }
         });
-        JBLabel label = new JBLabel("平铺数组");
-        label.setToolTipText("<html>仅有一个字段导出时，会把对象平铺成基础值</html>");
+        JBLabel label = new JBLabel(PluginBundle.get("setting.flat-array"));
+        label.setToolTipText(PluginBundle.get("setting.flat-array-desc"));
         jPanel.add(label);
         jPanel.add(roundCheckBox);
         JBCheckBox beautifyCheckBox = new JBCheckBox();
@@ -75,7 +76,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setBeautify(beautifyCheckBox.isSelected());
             }
         });
-        jPanel.add(new JBLabel("美化Json"));
+        jPanel.add(new JBLabel(PluginBundle.get("setting.beautify-json")));
         jPanel.add(beautifyCheckBox);
         JBCheckBox distinctCheckBox = new JBCheckBox();
         distinctCheckBox.setSelected(exportInfo.isDistinct());
@@ -85,7 +86,7 @@ public class Setting extends WizardStep<WizardModel> {
                 exportInfo.setDistinct(beautifyCheckBox.isSelected());
             }
         });
-        jPanel.add(new JBLabel("数据去重"));
+        jPanel.add(new JBLabel(PluginBundle.get("setting.deduplication")));
         jPanel.add(distinctCheckBox);
         JPanel resultPanel = new JPanel(new GridLayout(4, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));

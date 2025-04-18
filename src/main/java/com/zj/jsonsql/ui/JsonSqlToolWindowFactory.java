@@ -31,7 +31,7 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
     public void addContent(Project project, ToolWindow toolWindow) {
         JComponent jComponent = Table.create(project, new JsonInfo());
         Content content = ContentFactory.getInstance()
-                .createContent(jComponent, "Json数据" + toolWindow.getContentManager().getContentCount(), false);
+                .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
         content.setCloseable(true);
 
         toolWindow.getContentManager().addContent(content);
@@ -40,7 +40,7 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
 
     private void setupAddTabAction(Project project, ToolWindow toolWindow) {
         // 创建"添加Tab"的动作
-        AnAction addTabAction = new AnAction("Add Tab", "Add new tab", AllIcons.General.Add) {
+        AnAction addTabAction = new AnAction(PluginBundle.get("tool-window.add-tab"), "", AllIcons.General.Add) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 addContent(project, toolWindow);

@@ -6,11 +6,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.zj.jsonsql.listener.ImportReadListener;
 import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * easy excel工具类
@@ -33,22 +39,14 @@ public class EasyExcelUtil {
     /**
      * 写入数据
      *
-     * @param jsonArrayStr jsonArray字符串
-     * @param out          输出流
+     * @param jsonArrayStr     jsonArray字符串
+     * @param out              输出流
+     * @param excelType        文件类型
+     * @param multiLevelHeader 是否多级表头
      */
-    public static void write(String jsonArrayStr, OutputStream out) {
-        write(jsonArrayStr, out, ExcelTypeEnum.XLSX);
-    }
-
-    /**
-     * 写入数据
-     *
-     * @param jsonArrayStr jsonArray字符串
-     * @param out          输出流
-     */
-    public static void write(String jsonArrayStr, OutputStream out, ExcelTypeEnum excelType) {
+    public static void write(String jsonArrayStr, OutputStream out, ExcelTypeEnum excelType, boolean multiLevelHeader) {
         JSONArray jsonArray = parseArrayOrderly(jsonArrayStr);
-        List<List<String>> headerList = getHeaderList(jsonArray);
+        List<List<String>> headerList = getHeaderList(jsonArray, multiLevelHeader);
         List<List<String>> dataList = getDataList(headerList, jsonArray);
 
         EasyExcel.write(out)
@@ -56,6 +54,21 @@ public class EasyExcelUtil {
                 // 这里放入动态头
                 .head(headerList).sheet("Sheet1")
                 .doWrite(dataList);
+    }
+
+    /**
+     * 读取数据
+     *
+     * @param filePath 文件路径
+     * @return 数据
+     */
+    public static JSONArray read(String filePath) throws IOException {
+        if (StringUtils.isEmpty(filePath)) {
+            return null;
+        }
+        ImportReadListener importReadListener = new ImportReadListener();
+        EasyExcel.read(Files.newInputStream(Paths.get(filePath)), importReadListener).doReadAllSync();
+        return importReadListener.getJsonArray();
     }
 
     /**
@@ -110,10 +123,11 @@ public class EasyExcelUtil {
     /**
      * 获取表头列表
      *
-     * @param jsonArray 原数据
+     * @param jsonArray        原数据
+     * @param multiLevelHeader 是否多级表头
      * @return 表头列表
      */
-    private static List<List<String>> getHeaderList(JSONArray jsonArray) {
+    private static List<List<String>> getHeaderList(JSONArray jsonArray, boolean multiLevelHeader) {
         if (CollectionUtils.isEmpty(jsonArray)) {
             return Collections.emptyList();
         }
@@ -122,6 +136,11 @@ public class EasyExcelUtil {
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             foreachJsonObject(headerTree, jsonObject);
+        }
+        if (!multiLevelHeader) {
+            return headerTree.getChildren().keySet().stream()
+                    .map(Collections::singletonList)
+                    .collect(Collectors.toList());
         }
         // 再平铺
         return getHeader(Collections.emptyList(), headerTree);

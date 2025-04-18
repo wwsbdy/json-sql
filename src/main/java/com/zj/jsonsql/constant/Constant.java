@@ -13,7 +13,7 @@ public interface Constant {
     /**
      * 最大列数
      */
-    int COLUMNS_MAX = 50;
+    int COLUMNS_MAX = 100;
     /**
      * 最大SQL长度
      */

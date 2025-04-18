@@ -1,4 +1,4 @@
-package com.zj.jsonsql.ui.edit;
+package com.zj.jsonsql.ui.dialog.json;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.EditorSettings;

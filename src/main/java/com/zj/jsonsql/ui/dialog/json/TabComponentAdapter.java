@@ -1,4 +1,4 @@
-package com.zj.jsonsql.ui.edit;
+package com.zj.jsonsql.ui.dialog.json;
 
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.command.WriteCommandAction;

@@ -13,6 +13,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.SqlException;
+import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,7 @@ public class SqlDialog extends DialogWrapper {
         this.jsonInfo = jsonInfo;
         this.originalSql = jsonInfo.getSql();
         // 设置会话框标题
-        setTitle("输入sql");
+        setTitle(PluginBundle.get("sql.title"));
         // 获取到当前项目的名称
         // 初始化文本框
         initSqlContent();
@@ -81,7 +82,7 @@ public class SqlDialog extends DialogWrapper {
     protected JComponent createSouthPanel() {
         final JPanel south = new JPanel();
         //定义表单的提交按钮，放置到IDEA会话框的底部位置
-        JButton submit = new JButton("提交");
+        JButton submit = new JButton(PluginBundle.get("sql.submit"));
         // 水平居中
         submit.setHorizontalAlignment(SwingConstants.CENTER);
         // 垂直居中
@@ -91,7 +92,6 @@ public class SqlDialog extends DialogWrapper {
         submit.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //获取到name和age
                 String sqlStr = sqlContent.getText();
 //                if (StringUtils.isNotEmpty(sqlStr) && sqlStr.length() > Constant.SQL_MAX) {
 //                    Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
@@ -115,7 +115,7 @@ public class SqlDialog extends DialogWrapper {
                     List<Row> result = SqlUtil.getDataList(jsonInfo.getList(), jsonInfo.getColumns(), sqlSelect);
                     jsonInfo.setResult(result);
                 } catch (SqlException sqlException) {
-                    Messages.showErrorDialog(sqlException.getMessage(), "SQL错误");
+                    Messages.showErrorDialog(sqlException.getMessage(), PluginBundle.get("error.title.sql-error"));
                     return;
                 }
                 jsonInfo.setSql(sqlStr);

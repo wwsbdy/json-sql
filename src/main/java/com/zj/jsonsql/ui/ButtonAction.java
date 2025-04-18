@@ -1,10 +1,10 @@
-package com.zj.jsonsql.ui.dialog.json;
+package com.zj.jsonsql.ui;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import com.google.common.collect.Lists;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
@@ -17,46 +17,36 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.util.*;
 
 /**
- * 点击输入json确定按钮事件
+ * json确定按钮事件
  *
  * @author arthur_zhou
  * @date 2023/12/20 15:08
  */
-public class ButtonAction extends AbstractAction {
+public abstract class ButtonAction<Dialog extends DialogWrapper> extends AbstractAction {
 
-    private final FormDialog formDialog;
+    protected final Project project;
+    protected final Dialog dialog;
+    protected final JsonInfo jsonInfo;
 
-    public ButtonAction(FormDialog formDialog) {
-        this.formDialog = formDialog;
+    public ButtonAction(Project project, Dialog dialog, JsonInfo jsonInfo) {
+        this.project = project;
+        this.dialog = dialog;
+        this.jsonInfo = jsonInfo;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //获取到name和age
-        String jsonStr = formDialog.getJsonContent().getText();
-        JSONArray jsonArray = null;
-        try {
-            Object parse = JSON.parse(jsonStr, Feature.OrderedField);
-            if (parse instanceof JSONObject) {
-                jsonArray = new JSONArray();
-                jsonArray.add(parse);
-            } else if (parse instanceof JSONArray) {
-                jsonArray = JSONArray.parseArray(jsonStr, Feature.OrderedField);
-            }
-        } catch (Exception exception) {
-            Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
-            return;
-        }
-        if (Objects.isNull(jsonArray)) {
-            Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
-            return;
-        }
+
+    /**
+     * 按钮事件结束调用，设置jsonInfo的值
+     *
+     * @param jsonArray jsonArray
+     * @param jsonStr   jsonStr
+     */
+    protected void end(JSONArray jsonArray, String jsonStr) {
         if (jsonArray.size() > Constant.ROWS_MAX) {
-            Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
+            Messages.showErrorDialog(project, NoticeEnum.ROWS_TOO_MANY.getMessage(), NoticeEnum.ROWS_TOO_MANY.getWarn());
             return;
         }
         List<Row> rowList = new ArrayList<>();
@@ -85,19 +75,18 @@ public class ButtonAction extends AbstractAction {
             rowList.add(row);
         }
         if (MapUtils.isEmpty(columnMap) || CollectionUtils.isEmpty(rowList)) {
-            Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.JSON_EMPTY.getMessage(), NoticeEnum.JSON_EMPTY.getWarn());
+            Messages.showErrorDialog(project, NoticeEnum.JSON_EMPTY.getMessage(), NoticeEnum.JSON_EMPTY.getWarn());
             return;
         }
         if (columnMap.size() > Constant.COLUMNS_MAX) {
-            Messages.showErrorDialog(formDialog.getProject(), NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
+            Messages.showErrorDialog(project, NoticeEnum.COLUMNS_TOO_MANY.getMessage(), NoticeEnum.COLUMNS_TOO_MANY.getWarn());
             return;
         }
-        JsonInfo jsonInfo = formDialog.getJsonInfo();
         jsonInfo.setColumns(Field.getOriginalField(columnMap));
         jsonInfo.setList(rowList);
         jsonInfo.setJsonContent(jsonStr);
         jsonInfo.resetSql();
         // 关闭窗口
-        formDialog.doCancelAction();
+        dialog.doCancelAction();
     }
 }

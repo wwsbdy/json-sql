@@ -10,7 +10,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.ui.dialog.json.JsonLanguage;
-import com.zj.jsonsql.ui.edit.CustomEditorField;
+import com.zj.jsonsql.ui.dialog.json.CustomEditorField;
 
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;

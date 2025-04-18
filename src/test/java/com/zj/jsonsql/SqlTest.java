@@ -49,7 +49,7 @@ public class SqlTest {
 
     @Test
     public void groupTest1() {
-        SqlTestUtil.out("select id a,left(min(id), 1) from t_user group by left(v, 10)");
+        SqlTestUtil.out("select id a,left(min(id), 1) b from t_user group by left(b.cca, 10)");
     }
 
 }

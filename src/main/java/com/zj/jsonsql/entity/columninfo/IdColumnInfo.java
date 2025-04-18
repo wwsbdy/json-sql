@@ -2,6 +2,7 @@ package com.zj.jsonsql.entity.columninfo;
 
 import com.intellij.ui.components.JBLabel;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.ui.PluginBundle;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ import javax.swing.table.TableCellRenderer;
 public class IdColumnInfo extends TableColumnInfo<Integer> {
 
     public IdColumnInfo() {
-        super("序号");
+        super(PluginBundle.get("table.number"));
     }
 
     @Nullable

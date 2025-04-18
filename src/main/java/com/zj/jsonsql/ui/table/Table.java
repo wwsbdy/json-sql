@@ -12,11 +12,13 @@ import com.intellij.util.ui.ListTableModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.ui.dialog.export.Export;
 import com.zj.jsonsql.ui.dialog.export.Json;
-import com.zj.jsonsql.ui.dialog.export.MyWizardDialog;
+import com.zj.jsonsql.ui.dialog.export.ExportDialog;
 import com.zj.jsonsql.ui.dialog.export.Setting;
-import com.zj.jsonsql.ui.dialog.json.FormDialog;
+import com.zj.jsonsql.ui.dialog.importexcel.ImportDialog;
+import com.zj.jsonsql.ui.dialog.json.JsonDialog;
 import com.zj.jsonsql.ui.dialog.sql.SqlDialog;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,16 +55,16 @@ public class Table {
         // 禁用自带的按钮
         disableButton(decorator);
         // 编辑sql按钮
-        AnActionButton modifyJson = new AnActionButton("编辑json", AllIcons.Actions.Edit) {
+        AnActionButton modifyJson = new AnActionButton(PluginBundle.get("table.edit-json"), AllIcons.Actions.Edit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                FormDialog formDialog = new FormDialog(project, jsonInfo);
-                formDialog.show();
+                JsonDialog jsonDialog = new JsonDialog(project, jsonInfo);
+                jsonDialog.show();
                 refresh(dataModel, jsonInfo, table);
             }
         };
         // 编辑sql按钮
-        AnActionButton editSql = new AnActionButton("SQL查询", AllIcons.Actions.Find) {
+        AnActionButton editSql = new AnActionButton(PluginBundle.get("table.sql-query"), AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(jsonInfo);
@@ -71,7 +73,7 @@ public class Table {
             }
         };
         // 重置按钮
-        AnActionButton reset = new AnActionButton("重置", AllIcons.General.Reset) {
+        AnActionButton reset = new AnActionButton(PluginBundle.get("table.reset"), AllIcons.General.Reset) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 jsonInfo.resetSql();
@@ -79,19 +81,28 @@ public class Table {
             }
         };
         // 导出按钮
-        AnActionButton export = new AnActionButton("导出", AllIcons.Actions.Commit) {
+        AnActionButton export = new AnActionButton(PluginBundle.get("table.export"), AllIcons.ToolbarDecorator.Export) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                WizardModel wizardModel = new WizardModel("导出");
+                WizardModel wizardModel = new WizardModel(PluginBundle.get("table.export"));
                 ExportInfo exportInfo = new ExportInfo();
                 wizardModel.add(new Setting(exportInfo));
                 wizardModel.add(new Json(exportInfo, project));
                 wizardModel.add(new Export(exportInfo, project, jsonInfo));
-                MyWizardDialog wizardDialog = new MyWizardDialog(exportInfo, jsonInfo, project, true, wizardModel);
+                ExportDialog wizardDialog = new ExportDialog(exportInfo, jsonInfo, project, true, wizardModel);
                 wizardDialog.show();
             }
         };
-        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export);
+        // 导出按钮
+        AnActionButton importExcel = new AnActionButton(PluginBundle.get("table.import"), AllIcons.ToolbarDecorator.Import) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                ImportDialog importDialog = new ImportDialog(project, jsonInfo);
+                importDialog.show();
+                refresh(dataModel, jsonInfo, table);
+            }
+        };
+        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export, importExcel);
         return decorator.createPanel();
     }
 

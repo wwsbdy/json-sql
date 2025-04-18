@@ -4,6 +4,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.IFunctionStrategy;
+import com.zj.jsonsql.ui.PluginBundle;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
@@ -26,7 +27,7 @@ public class SumStrategy implements IFunctionStrategy {
     public Object get(Row row, SqlBasicCall sqlBasicCall) {
         List<SqlNode> params = sqlBasicCall.getOperandList();
         if (!isSupport(params)) {
-            throw new SqlException(getType().name() + "函数参数错误");
+            throw new SqlException(getType().name() + PluginBundle.get("error.message.func-param-error"));
         }
         List<Row> rows = row.getRows();
         if (CollectionUtils.isEmpty(rows)) {

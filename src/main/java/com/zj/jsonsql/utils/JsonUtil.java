@@ -11,6 +11,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class JsonUtil {
      * @param object 数据
      * @return 类型枚举
      */
-    public static JsonEnum getType(Object object) {
+    public static @NotNull JsonEnum getType(Object object) {
         if (Objects.isNull(object)) {
             return JsonEnum.NULL;
         }

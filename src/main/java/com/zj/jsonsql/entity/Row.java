@@ -2,9 +2,11 @@ package com.zj.jsonsql.entity;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ImmutableList;
 import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.StrategyBean;
+import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.JsonUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Data;
@@ -91,9 +93,6 @@ public class Row {
     @Nullable
     public Object getObject(String key, Object object) {
         JsonEnum jsonEnum = JsonUtil.getType(object);
-        if (Objects.isNull(jsonEnum)) {
-            return null;
-        }
         Object result;
         switch (jsonEnum) {
             case OBJECT:
@@ -114,7 +113,7 @@ public class Row {
                 result = CollectionUtils.isEmpty(arr) || arr.stream().noneMatch(Objects::nonNull) ? null : arr;
                 break;
             default:
-                return null;
+                throw new SqlException(object + PluginBundle.get("error.message.no-json"));
         }
         return result;
     }
@@ -170,7 +169,18 @@ public class Row {
             if (nameMap.containsKey(key.toString())) {
                 return nameMap.get(key.toString());
             }
-            throw new SqlException(key + "字段不存在");
+            ImmutableList<String> names = ((SqlIdentifier) key).names;
+            if (CollectionUtils.isNotEmpty(names) && nameMap.containsKey(names.get(0))) {
+                SqlNode sqlNode = nameMap.get(names.get(0));
+                if (sqlNode instanceof SqlIdentifier) {
+                    List<String> newNames = new ArrayList<>(names);
+                    newNames.set(0, sqlNode.toString());
+                    return new SqlIdentifier(newNames, key.getParserPosition());
+                } else {
+                    throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
+                }
+            }
+            throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
         }
         if (key instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) key;

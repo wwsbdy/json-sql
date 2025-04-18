@@ -5,6 +5,7 @@ import com.zj.jsonsql.entity.columninfo.BooleanColumnInfo;
 import com.zj.jsonsql.entity.columninfo.IdColumnInfo;
 import com.zj.jsonsql.entity.columninfo.StrColumnInfo;
 import com.zj.jsonsql.entity.columninfo.TableColumnInfo;
+import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -83,7 +84,7 @@ public class JsonInfo extends BaseJsonInfo {
         List<TableColumnInfo<?>> columnInfos = new ArrayList<>();
         // 首位添加序号和选择框
         columnInfos.add(new IdColumnInfo());
-        columnInfos.add(new BooleanColumnInfo("选择"));
+        columnInfos.add(new BooleanColumnInfo(PluginBundle.get("table.select")));
         for (Field field : select) {
             columnInfos.add(new StrColumnInfo(field.getOriginalFiled(), field.getName(), field.getType()));
         }

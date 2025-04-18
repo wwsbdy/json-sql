@@ -12,6 +12,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
 import com.zj.jsonsql.entity.JsonInfo;
+import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.MyExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +65,7 @@ public class TableRunner {
         descriptor.setExecutionId(System.nanoTime());
 
         JComponent jComponent = Table.create(project, jsonInfo);
-        final Content content = layoutUi.createContent("contentId", jComponent, "json数据", AllIcons.Toolwindows.ToolWindowMessages, jComponent);
+        final Content content = layoutUi.createContent("contentId", jComponent, PluginBundle.get("table.json-data"), AllIcons.Toolwindows.ToolWindowMessages, jComponent);
         content.setCloseable(false);
         layoutUi.addContent(content);
 

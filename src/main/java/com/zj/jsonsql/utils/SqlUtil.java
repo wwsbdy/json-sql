@@ -12,6 +12,7 @@ import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.AbstractWhereStrategy;
 import com.zj.jsonsql.strategy.SortStrategy;
 import com.zj.jsonsql.strategy.StrategyBean;
+import com.zj.jsonsql.ui.PluginBundle;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
@@ -109,7 +110,7 @@ public class SqlUtil {
                         rows -> Collections.singletonList(new Row(rows.get(0).getJsonObject(), rows))
                 )).stream();
             } else if (selectList.stream().map(Field::getOriginalFiled).anyMatch(SqlUtil::existAggregateFunc)) {
-                throw new SqlException("不能有聚合函数");
+                throw new SqlException(PluginBundle.get("error.message.cant-have-agg-func"));
             }
         }
         // 排序
@@ -162,11 +163,11 @@ public class SqlUtil {
                 }
                 String[] keys = originalName.split("\\.");
                 if (keys.length == 0) {
-                    throw new SqlException(originalName + "字段错误");
+                    throw new SqlException(originalName + PluginBundle.get("error.message.filed-error"));
                 }
                 JsonEnum type = typeMap.get(keys[0]);
                 if (Objects.isNull(type)) {
-                    throw new SqlException(originalName + "字段不存在");
+                    throw new SqlException(originalName + PluginBundle.get("error.message.filed-no-find"));
                 }
                 field.setType(JsonEnum.INNER);
                 continue;
@@ -218,14 +219,14 @@ public class SqlUtil {
                 if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
                     SqlNode notExistFiled = findNotExistFiled(operandList.get(0), columnSet);
                     if (Objects.nonNull(notExistFiled)) {
-                        throw new SqlException(notExistFiled + "字段不存在");
+                        throw new SqlException(notExistFiled + PluginBundle.get("error.message.filed-no-find"));
                     }
                     select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
                 }
             } else {
                 SqlNode notExistFiled = findNotExistFiled(node, columnSet);
                 if (Objects.nonNull(notExistFiled)) {
-                    throw new SqlException(notExistFiled + "字段不存在");
+                    throw new SqlException(notExistFiled + PluginBundle.get("error.message.filed-no-find"));
                 }
                 select.add(new Field(node, name));
             }

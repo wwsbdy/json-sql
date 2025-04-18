@@ -16,12 +16,12 @@ import java.util.Objects;
  *
  * @author 19242
  */
-public class MyWizardDialog extends WizardDialog<WizardModel> {
+public class ExportDialog extends WizardDialog<WizardModel> {
 
     private final ExportInfo exportInfo;
     private final JsonInfo jsonInfo;
 
-    public MyWizardDialog(ExportInfo exportInfo, JsonInfo jsonInfo, Project project, boolean canBeParent, WizardModel model) {
+    public ExportDialog(ExportInfo exportInfo, JsonInfo jsonInfo, Project project, boolean canBeParent, WizardModel model) {
         super(project, canBeParent, model);
         this.jsonInfo = jsonInfo;
         setResizable(false);

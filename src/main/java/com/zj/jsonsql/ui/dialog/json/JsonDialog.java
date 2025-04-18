@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.JsonInfo;
-import com.zj.jsonsql.ui.edit.CustomEditorField;
+import com.zj.jsonsql.ui.PluginBundle;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +19,7 @@ import java.util.Objects;
  */
 @Setter
 @Getter
-public class FormDialog extends DialogWrapper {
+public class JsonDialog extends DialogWrapper {
 
     private final Project project;
 
@@ -30,7 +30,7 @@ public class FormDialog extends DialogWrapper {
 
     private JsonInfo jsonInfo;
 
-    public FormDialog(Project project, JsonInfo jsonInfo) {
+    public JsonDialog(Project project, JsonInfo jsonInfo) {
         super(true);
         // 是否允许拖拽的方式扩大或缩小
         setResizable(true);
@@ -40,7 +40,7 @@ public class FormDialog extends DialogWrapper {
             content = "";
         }
         // 设置会话框标题
-        setTitle("输入json");
+        setTitle(PluginBundle.get("json.title"));
         // 获取到当前项目的名称
         this.project = project;
         jsonContent = new CustomEditorField(JsonLanguage.INSTANCE, project, content);
@@ -50,7 +50,7 @@ public class FormDialog extends DialogWrapper {
     }
 
     @Deprecated
-    public FormDialog(Project project, String content) {
+    public JsonDialog(Project project, String content) {
         this(project, new JsonInfo(content));
     }
 
@@ -75,14 +75,14 @@ public class FormDialog extends DialogWrapper {
     protected JComponent createSouthPanel() {
         final JPanel south = new JPanel();
         //定义表单的提交按钮，放置到IDEA会话框的底部位置
-        JButton submit = new JButton("提交");
+        JButton submit = new JButton(PluginBundle.get("json.submit"));
         // 水平居中
         submit.setHorizontalAlignment(SwingConstants.CENTER);
         // 垂直居中
         submit.setVerticalAlignment(SwingConstants.CENTER);
         south.add(submit);
         //按钮事件绑定
-        submit.addActionListener(new ButtonAction(this));
+        submit.addActionListener(new JsonButtonAction(project, this, jsonInfo));
         return south;
     }
 
