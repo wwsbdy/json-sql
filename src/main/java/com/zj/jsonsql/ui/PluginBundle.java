@@ -1,9 +1,9 @@
 package com.zj.jsonsql.ui;
 
-import com.intellij.DynamicBundle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -19,7 +19,10 @@ public class PluginBundle {
     }
 
     public static void reloadBundle() {
-        Locale ideLocale = DynamicBundle.getLocale();
+        // 系统语言是中文时，使用中文语言，否则用英文语言
+        Locale ideLocale = Optional.ofNullable(Locale.getDefault())
+                .filter(v -> "zh".equalsIgnoreCase(v.getLanguage()))
+                .orElse(Locale.US);
         bundle = ResourceBundle.getBundle(BUNDLE_NAME, ideLocale);
     }
 
