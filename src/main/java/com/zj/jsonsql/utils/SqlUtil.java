@@ -92,7 +92,8 @@ public class SqlUtil {
             Map<JSONObject, List<Row>> groupMap = stream.collect(Collectors.groupingBy(row -> {
                 JSONObject jsonObject = new JSONObject();
                 for (SqlNode group : groupList) {
-                    jsonObject.put(nameMap.getOrDefault(group.toString(), group).toString(), row.get(group, nameMap));
+                    SqlNode originalGroup = replaceAlias(group, nameMap);
+                    jsonObject.put(originalGroup.toString(), row.get(originalGroup));
                 }
                 return jsonObject;
             }));

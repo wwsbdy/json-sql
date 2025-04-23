@@ -52,16 +52,6 @@ public class Row {
     /**
      * 获取value
      *
-     * @param key SqlNode
-     * @return value
-     */
-    public Object get(SqlNode key) {
-        return get(key, Collections.emptyMap());
-    }
-
-    /**
-     * 获取value
-     *
      * @param key 多层用 . 隔开
      * @return value
      */
@@ -97,6 +87,10 @@ public class Row {
         Object result;
         switch (jsonEnum) {
             case OBJECT:
+                // TODO
+                if (!((JSONObject) object).containsKey(key)) {
+                    throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
+                }
                 result = ((JSONObject) object).get(key);
                 break;
             case ARRAY:
@@ -128,14 +122,12 @@ public class Row {
      * 获取对应列值
      *
      * @param key     SqlNode 列信息
-     * @param nameMap nameMap 可能有别名存在，优先用这里的
      * @return value
      */
-    public Object get(SqlNode key, Map<String, SqlNode> nameMap) {
+    public Object get(SqlNode key) {
         if (Objects.isNull(key)) {
             return null;
         }
-        key = SqlUtil.replaceAlias(key, nameMap);
         SqlKind kind = key.getKind();
         switch (kind) {
             case IDENTIFIER:

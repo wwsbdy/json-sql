@@ -2,6 +2,7 @@ package com.zj.jsonsql.strategy;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.utils.CompareUtil;
+import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Data;
 import org.apache.calcite.sql.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,10 +23,6 @@ public class SortStrategy {
      * 排序信息数组
      */
     private final List<Sort> sortList = new ArrayList<>();
-    /**
-     * 别名和真实名称map
-     */
-    private final Map<String, SqlNode> nameMap;
 
     @Data
     private static class Sort {
@@ -44,8 +41,8 @@ public class SortStrategy {
 
 
     public SortStrategy(SqlNodeList orderList, Map<String, SqlNode> nameMap) {
-        this.nameMap = nameMap;
         for (SqlNode sqlNode : orderList) {
+            sqlNode = SqlUtil.replaceAlias(sqlNode, nameMap);
             if (sqlNode instanceof SqlIdentifier) {
                 sortList.add(new Sort(sqlNode));
                 continue;
@@ -95,6 +92,6 @@ public class SortStrategy {
         if (Objects.isNull(var)) {
             return null;
         }
-        return var.get(column, nameMap);
+        return var.get(column);
     }
 }
