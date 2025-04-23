@@ -2,7 +2,6 @@ package com.zj.jsonsql.entity;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ImmutableList;
 import com.zj.jsonsql.enums.JsonEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.StrategyBean;
@@ -10,9 +9,11 @@ import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.JsonUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Data;
-import org.apache.calcite.sql.*;
+import org.apache.calcite.sql.SqlBasicCall;
+import org.apache.calcite.sql.SqlKind;
+import org.apache.calcite.sql.SqlLiteral;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -134,7 +135,7 @@ public class Row {
         if (Objects.isNull(key)) {
             return null;
         }
-        key = replaceAlias(key, nameMap);
+        key = SqlUtil.replaceAlias(key, nameMap);
         SqlKind kind = key.getKind();
         switch (kind) {
             case IDENTIFIER:
@@ -145,51 +146,12 @@ public class Row {
         }
         // where条件
         if (key instanceof SqlBasicCall) {
-            return StrategyBean.getStrategy((SqlBasicCall) key).apply(this);
+            return StrategyBean.getStrategy(key).apply(this);
         }
         // 常量
         if (key instanceof SqlLiteral) {
             return SqlUtil.toString(key);
         }
         return get(key.toString());
-    }
-
-    /**
-     * 替换别名
-     *
-     * @param key     SqlNode
-     * @param nameMap nameMap
-     * @return SqlNode
-     */
-    private SqlNode replaceAlias(SqlNode key, Map<String, SqlNode> nameMap) {
-        if (MapUtils.isEmpty(nameMap)) {
-            return key;
-        }
-        if (key instanceof SqlIdentifier) {
-            if (nameMap.containsKey(key.toString())) {
-                return nameMap.get(key.toString());
-            }
-            ImmutableList<String> names = ((SqlIdentifier) key).names;
-            if (CollectionUtils.isNotEmpty(names) && nameMap.containsKey(names.get(0))) {
-                SqlNode sqlNode = nameMap.get(names.get(0));
-                if (sqlNode instanceof SqlIdentifier) {
-                    List<String> newNames = new ArrayList<>(names);
-                    newNames.set(0, sqlNode.toString());
-                    return new SqlIdentifier(newNames, key.getParserPosition());
-                } else {
-                    throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
-                }
-            }
-            throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
-        }
-        if (key instanceof SqlBasicCall) {
-            SqlBasicCall sqlBasicCall = (SqlBasicCall) key;
-            List<SqlNode> operandList = sqlBasicCall.getOperandList();
-            for (int i = 0; i < operandList.size(); i++) {
-                SqlNode sqlNode = operandList.get(i);
-                sqlBasicCall.setOperand(i, replaceAlias(sqlNode, nameMap));
-            }
-        }
-        return key;
     }
 }

@@ -1,6 +1,7 @@
 package com.zj.jsonsql.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ImmutableList;
 import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
@@ -20,6 +21,7 @@ import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 import org.apache.calcite.util.NlsString;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +64,7 @@ public class SqlUtil {
         }
         // 过滤
         SqlNode where = sqlNode.getWhere();
-        AbstractWhereStrategy strategy = StrategyBean.getStrategy((SqlBasicCall) where);
+        AbstractWhereStrategy strategy = StrategyBean.getStrategy(where);
         Stream<Row> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
         List<Field> selectList = getSelectList(columns, sqlNode);
@@ -113,6 +115,12 @@ public class SqlUtil {
                 throw new SqlException(PluginBundle.get("error.message.cant-have-agg-func"));
             }
         }
+        // having
+        if (Objects.nonNull(sqlNode.getHaving())) {
+            SqlNode having = replaceAlias(sqlNode.getHaving(), nameMap);
+            AbstractWhereStrategy havingStrategy = StrategyBean.getStrategy(having);
+            stream = stream.filter(havingStrategy::apply);
+        }
         // 排序
         SqlNodeList orderList = sqlNode.getOrderList();
         if (CollectionUtils.isNotEmpty(orderList)) {
@@ -155,7 +163,7 @@ public class SqlUtil {
         // 取交集
         for (Field field : select) {
             SqlNode originalFiled = field.getOriginalFiled();
-            if (originalFiled.getKind() == SqlKind.IDENTIFIER) {
+            if (originalFiled instanceof SqlIdentifier) {
                 String originalName = originalFiled.toString();
                 if (typeMap.containsKey(originalName)) {
                     field.setType(typeMap.get(originalName));
@@ -172,7 +180,7 @@ public class SqlUtil {
                 field.setType(JsonEnum.INNER);
                 continue;
             }
-            if (originalFiled.getKind() == SqlKind.LITERAL) {
+            if (originalFiled instanceof SqlLiteral) {
                 SqlLiteral sqlLiteral = (SqlLiteral) originalFiled;
                 Object value = sqlLiteral.getValue();
                 if (value instanceof NlsString) {
@@ -389,5 +397,44 @@ public class SqlUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 替换别名
+     *
+     * @param key     SqlNode
+     * @param nameMap nameMap
+     * @return SqlNode
+     */
+    public static SqlNode replaceAlias(SqlNode key, Map<String, SqlNode> nameMap) {
+        if (MapUtils.isEmpty(nameMap)) {
+            return key;
+        }
+        if (key instanceof SqlIdentifier) {
+            if (nameMap.containsKey(key.toString())) {
+                return nameMap.get(key.toString());
+            }
+            ImmutableList<String> names = ((SqlIdentifier) key).names;
+            if (CollectionUtils.isNotEmpty(names) && nameMap.containsKey(names.get(0))) {
+                SqlNode sqlNode = nameMap.get(names.get(0));
+                if (sqlNode instanceof SqlIdentifier) {
+                    List<String> newNames = new ArrayList<>(names);
+                    newNames.set(0, sqlNode.toString());
+                    return new SqlIdentifier(newNames, key.getParserPosition());
+                } else {
+                    throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
+                }
+            }
+            throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
+        }
+        if (key instanceof SqlBasicCall) {
+            SqlBasicCall sqlBasicCall = (SqlBasicCall) key;
+            List<SqlNode> operandList = sqlBasicCall.getOperandList();
+            for (int i = 0; i < operandList.size(); i++) {
+                SqlNode sqlNode = operandList.get(i);
+                sqlBasicCall.setOperand(i, replaceAlias(sqlNode, nameMap));
+            }
+        }
+        return key;
     }
 }

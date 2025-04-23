@@ -13,7 +13,7 @@ public class SqlTest {
      */
     @Test
     public void test() {
-        SqlTestUtil.out("select left(code, 4) a,right(123,2) n,if(right(123,2),code,null) from t_user where left(code, 4) = '5101'");
+        SqlTestUtil.out("select left(code, 4) a,right(123,2) n,if(right(123,2),code,null) from t_user where 1");
     }
 
     @Test
@@ -50,6 +50,12 @@ public class SqlTest {
     @Test
     public void groupTest1() {
         SqlTestUtil.out("select id a,left(min(id), 1) b from t_user group by left(b.cca, 10)");
+    }
+
+    @Test
+    public void havingTest() {
+        SqlTestUtil.out("select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b " +
+                "from t_user group by a having b order by b");
     }
 
 }

@@ -5,8 +5,8 @@ import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.func.*;
-import org.apache.calcite.sql.SqlBasicCall;
-import org.apache.calcite.sql.SqlOperator;
+import com.zj.jsonsql.utils.SqlUtil;
+import org.apache.calcite.sql.*;
 
 import java.util.Map;
 import java.util.Objects;
@@ -78,40 +78,60 @@ public class StrategyBean {
      * @param where where条件
      * @return 过滤策略
      */
-    public static AbstractWhereStrategy getStrategy(SqlBasicCall where) {
+    public static AbstractWhereStrategy getStrategy(SqlNode where) {
         if (Objects.isNull(where)) {
             return ALWAYS_TRUE_STRATEGY;
         }
-        switch (where.getKind()) {
+        if (where instanceof SqlIdentifier) {
+            return new AbstractWhereStrategy(false) {
+                @Override
+                public boolean apply(Row item) {
+                    Object object = item.get(where);
+                    return Objects.nonNull(object) && (!(object instanceof Boolean) || (Boolean) object) && !"0".equals(object.toString());
+                }
+            };
+        }
+        // 常量
+        if (where instanceof SqlLiteral) {
+            return new AbstractWhereStrategy(false) {
+                @Override
+                public boolean apply(Row item) {
+                    Object object = SqlUtil.toString(where);
+                    return Objects.nonNull(object) && (!(object instanceof Boolean) || (Boolean) object) && !"0".equals(object.toString());
+                }
+            };
+        }
+        SqlBasicCall sqlBasicCall = (SqlBasicCall) where;
+        switch (sqlBasicCall.getKind()) {
             case EQUALS:
-                return new EqualsStrategy(false, where.getOperandList());
+                return new EqualsStrategy(false, sqlBasicCall.getOperandList());
             case NOT_EQUALS:
-                return new EqualsStrategy(true, where.getOperandList());
+                return new EqualsStrategy(true, sqlBasicCall.getOperandList());
             case IN:
-                return new InStrategy(false, where.getOperandList());
+                return new InStrategy(false, sqlBasicCall.getOperandList());
             case NOT_IN:
-                return new InStrategy(true, where.getOperandList());
+                return new InStrategy(true, sqlBasicCall.getOperandList());
             case LIKE:
-                return new LikeStrategy(where);
+                return new LikeStrategy(sqlBasicCall);
             case IS_NULL:
-                return new NullStrategy(false, where.getOperandList());
+                return new NullStrategy(false, sqlBasicCall.getOperandList());
             case IS_NOT_NULL:
-                return new NullStrategy(true, where.getOperandList());
+                return new NullStrategy(true, sqlBasicCall.getOperandList());
             case GREATER_THAN:
             case GREATER_THAN_OR_EQUAL:
             case LESS_THAN:
             case LESS_THAN_OR_EQUAL:
             case BETWEEN:
-                return new RangeStrategy(where.getKind(), where.getOperandList());
+                return new RangeStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
             case OR:
             case AND:
-                return new RelationStrategy(where.getKind(), where.getOperandList());
+                return new RelationStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
             case OTHER_FUNCTION:
                 return new AbstractWhereStrategy(false) {
                     @Override
                     public boolean apply(Row item) {
-                        Object flag = getFuncStrategy(where.getOperator()).get(item, where);
-                        return Objects.nonNull(flag) && (!(flag instanceof Boolean) || (Boolean) flag);
+                        Object flag = getFuncStrategy(sqlBasicCall.getOperator()).get(item, sqlBasicCall);
+                        return Objects.nonNull(flag) && (!(flag instanceof Boolean) || (Boolean) flag) && !"0".equals(flag.toString());
                     }
                 };
             default:

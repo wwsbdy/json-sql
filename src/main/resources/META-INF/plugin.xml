@@ -20,6 +20,7 @@
         <li>and、or、嵌套and和or</li>
         <li>left、right、length、concat、if、ifnull、nullif、substr、substring、upper、lower、isnull、round等函数</li>
         <li>group by；sum、avg、max、min、count、group_concat、any_value、group_array 等函数</li>
+        <li>having</li>
         <li>order by asc、desc、distinct</li>
         <li>limit 1,2</li>
     </ul>
