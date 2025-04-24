@@ -83,7 +83,7 @@ public class Setting extends WizardStep<WizardModel> {
         distinctCheckBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                exportInfo.setDistinct(beautifyCheckBox.isSelected());
+                exportInfo.setDistinct(distinctCheckBox.isSelected());
             }
         });
         jPanel.add(new JBLabel(PluginBundle.get("setting.deduplication")));
