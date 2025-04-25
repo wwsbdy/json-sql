@@ -1,2 +1,4 @@
 rootProject.name = 'json-sql'
+include 'json-sql-core'
+include 'json-sql-ui'
 

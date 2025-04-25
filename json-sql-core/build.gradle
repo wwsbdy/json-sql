@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group 'com.zj'
+version '2024.3.4'
+
+repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
+    maven { url'https://maven.aliyun.com/repository/public/' }
+    maven { url'https://maven.aliyun.com/repository/google/' }
+    maven { url'https://maven.aliyun.com/repository/jcenter/' }
+    maven { url'https://maven.aliyun.com/repository/central/' }
+    google()
+}
+
+dependencies {
+//    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+//    implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
+//    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+//    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+//    implementation("org.apache.calcite:calcite-core:1.35.0") {
+//        exclude group: 'org.slf4j', module: 'slf4j-api'
+//        exclude group: 'commons-io', module: 'commons-io'
+//        exclude group: 'org.apache.commons', module: 'commons-math3'
+//        exclude group: 'commons-codec', module: 'commons-codec'
+//    }
+//    implementation("com.alibaba:easyexcel:3.3.3") {
+//        exclude group: 'org.slf4j', module: 'slf4j-api'
+//    }
+//    implementation("com.jetbrains.intellij.idea:ideaIC:2024.3.4")
+    implementation("com.alibaba:easyexcel:3.3.3") {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    implementation("org.jetbrains:annotations:24.0.1")
+    implementation("commons-collections:commons-collections:3.2.2")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+

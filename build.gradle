@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.14.1'
 }
 
 group 'com.zj'
@@ -14,43 +13,25 @@ repositories {
     maven { url'https://maven.aliyun.com/repository/central/' }
     google()
 }
+subprojects {
+    apply plugin: 'java'
 
-dependencies {
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
-    implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
-    implementation("org.apache.calcite:calcite-core:1.35.0") {
-        exclude group: 'org.slf4j', module: 'slf4j-api'
-        exclude group: 'commons-io', module: 'commons-io'
-        exclude group: 'org.apache.commons', module: 'commons-math3'
-        exclude group: 'commons-codec', module: 'commons-codec'
-    }
-    implementation("com.alibaba:easyexcel:3.3.3") {
-        exclude group: 'org.slf4j', module: 'slf4j-api'
+    dependencies {
+        testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+        implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+        implementation("org.apache.calcite:calcite-core:1.35.0") {
+            exclude group: 'org.slf4j', module: 'slf4j-api'
+            exclude group: 'commons-io', module: 'commons-io'
+            exclude group: 'org.apache.commons', module: 'commons-math3'
+            exclude group: 'commons-codec', module: 'commons-codec'
+        }
+//        implementation("com.alibaba:easyexcel:3.3.3") {
+//            exclude group: 'org.slf4j', module: 'slf4j-api'
+//        }
     }
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-    // jdk 升到17
-    plugins = ['com.intellij.java']
-    version = '2024.3.4'
-}
-patchPluginXml {
-    //最低支持的版本
-    //版本参考：https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html?from=jetbrains.org#intellij-platform-based-products-of-recent-ide-versions
-    sinceBuild = '241'
-    //最高支持的版本，不能不设置，不设置是默认为 project.version
-    untilBuild = ''
-    changeNotes = """
-      2.0版本.<br>
-      针对2020版本的更新，主要修复了2020版本及更高版本报explicitly marked as incompatible的问题.<br>
-      使用了新的gradle来创建插件.<br>
-      """
-}
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
-}
 
 
