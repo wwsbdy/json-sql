@@ -40,7 +40,7 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
 
     private void setupAddTabAction(Project project, ToolWindow toolWindow) {
         // 创建"添加Tab"的动作
-        AnAction addTabAction = new AnAction(PluginBundle.get("tool-window.add-tab"), "", AllIcons.General.Add) {
+        AnAction addTabAction = new AnActionButtonImpl(PluginBundle.get("tool-window.add-tab"), "", AllIcons.General.Add) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 addContent(project, toolWindow);
