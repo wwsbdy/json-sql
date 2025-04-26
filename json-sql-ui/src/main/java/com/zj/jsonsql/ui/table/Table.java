@@ -154,7 +154,7 @@ public class Table {
 
         if (Objects.nonNull(toolWindow)) {
             // 复制
-            AnActionButton copy = new AnActionButton(PluginBundle.get("table.copy"), AllIcons.General.Copy) {
+            AnActionButton copy = new AnActionButton(PluginBundle.get("table.copy"), AllIcons.Actions.Copy) {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     IdeaJsonInfo nextIdeaJsonInfo = new IdeaJsonInfo();
