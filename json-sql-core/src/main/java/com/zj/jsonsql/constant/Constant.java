@@ -26,4 +26,8 @@ public interface Constant {
      * 最大消息长度
      */
     int MESSAGE_MAX = 60;
+    /**
+     * 最大标签页长度
+     */
+    int TAB_MAX = 15;
 }

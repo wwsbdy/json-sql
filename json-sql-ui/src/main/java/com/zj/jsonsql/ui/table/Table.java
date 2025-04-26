@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
@@ -13,10 +14,12 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.table.TableView;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.util.ui.ListTableModel;
+import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.JsonException;
 import com.zj.jsonsql.ui.AnActionButtonImpl;
 import com.zj.jsonsql.ui.PluginBundle;
@@ -164,6 +167,10 @@ public class Table {
             AnActionButton copy = new AnActionButtonImpl(PluginBundle.get("table.copy"), AllIcons.Actions.Copy) {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
+                    if (toolWindow.getContentManager().getContentCount() >= Constant.TAB_MAX) {
+                        Messages.showErrorDialog(project, NoticeEnum.TAB_TOO_MANY.getMessage(), NoticeEnum.TAB_TOO_MANY.getWarn());
+                        return;
+                    }
                     IdeaJsonInfo nextIdeaJsonInfo = new IdeaJsonInfo();
                     String jsonStr = JsonUtil.getJsonStr(ideaJsonInfo, null);
                     nextIdeaJsonInfo.setJsonContent(jsonStr);

@@ -56,6 +56,10 @@ public enum NoticeEnum {
      * 文件读取失败
      */
     FILE_READ_ERROR(PluginBundle.get("error.title.file-read-error"), PluginBundle.get("error.message.file-read-error")),
+    /**
+     * 标签过多
+     */
+    TAB_TOO_MANY(PluginBundle.get("error.title.tab-too-many"), PluginBundle.get("error.message.tab-too-many")),
     ;
 
     private final String warn;

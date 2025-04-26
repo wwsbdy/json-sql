@@ -4,12 +4,15 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
+import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.table.Table;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +32,10 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
     }
 
     public void addContent(Project project, ToolWindow toolWindow) {
+        if (toolWindow.getContentManager().getContentCount() >= Constant.TAB_MAX) {
+            Messages.showErrorDialog(project, NoticeEnum.TAB_TOO_MANY.getMessage(), NoticeEnum.TAB_TOO_MANY.getWarn());
+            return;
+        }
         JComponent jComponent = Table.create(project, new IdeaJsonInfo(), toolWindow);
         Content content = ContentFactory.getInstance()
                 .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
