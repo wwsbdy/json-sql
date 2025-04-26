@@ -135,7 +135,7 @@ public class JsonUtil {
         }
         JSON result = jsonArray;
         // 当只有一个元素时，只要不要[]
-        if (exportInfo.isOnlyOne() && CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
+        if (realExportInfo.isOnlyOne() && CollectionUtils.isNotEmpty(jsonArray) && jsonArray.size() == 1) {
             Object o = jsonArray.get(0);
             if (o instanceof JSON) {
                 result = (JSON) o;
@@ -223,11 +223,22 @@ public class JsonUtil {
         return resultJsonObject;
     }
 
-    public static JsonInfo getJsonInfo(String jsonStr) {
+    public static JsonInfo getJsonInfo(String jsonStr) throws JsonException {
         if (StringUtils.isEmpty(jsonStr)) {
             throw new JsonException(NoticeEnum.JSON_EMPTY);
         }
-        JSONArray jsonArray = JSONArray.parseArray(jsonStr, Feature.OrderedField);
+        JSONArray jsonArray = null;
+        try {
+            Object parse = JSON.parse(jsonStr, Feature.OrderedField);
+            if (parse instanceof JSONObject) {
+                jsonArray = new JSONArray();
+                jsonArray.add(parse);
+            } else if (parse instanceof JSONArray) {
+                jsonArray = JSONArray.parseArray(jsonStr, Feature.OrderedField);
+            }
+        } catch (Exception exception) {
+            throw new JsonException(NoticeEnum.JSON_ERROR);
+        }
         if (CollectionUtils.isEmpty(jsonArray)) {
             throw new JsonException(NoticeEnum.JSON_EMPTY);
         }

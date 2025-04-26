@@ -64,7 +64,7 @@ public class JsonInfo extends BaseJsonInfo {
     }
 
     @Override
-    public List<Row> getRows() {
+    public List<Row> getResult() {
         if (Objects.nonNull(result)) {
             return result;
         }

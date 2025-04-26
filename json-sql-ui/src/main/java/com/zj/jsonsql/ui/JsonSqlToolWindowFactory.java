@@ -29,7 +29,7 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
     }
 
     public void addContent(Project project, ToolWindow toolWindow) {
-        JComponent jComponent = Table.create(project, new IdeaJsonInfo());
+        JComponent jComponent = Table.create(project, new IdeaJsonInfo(), toolWindow);
         Content content = ContentFactory.getInstance()
                 .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
         content.setCloseable(true);

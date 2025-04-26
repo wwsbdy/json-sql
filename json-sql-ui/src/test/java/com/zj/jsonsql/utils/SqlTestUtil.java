@@ -64,7 +64,7 @@ public class SqlTestUtil {
 
     public static JSONArray getJsonArray(IdeaJsonInfo jsonInfo) {
         ColumnInfo<Row, ?>[] fields = jsonInfo.getFields();
-        List<Row> rows = jsonInfo.getRows();
+        List<Row> rows = jsonInfo.getResult();
         JSONArray objects = new JSONArray();
         for (Row row : rows) {
             JSONObject jsonObject = new JSONObject(true);
@@ -84,7 +84,7 @@ public class SqlTestUtil {
             System.out.print("\t\t");
         }
         System.out.println();
-        List<Row> rows = jsonInfo.getRows();
+        List<Row> rows = jsonInfo.getResult();
         for (Row row : rows) {
             for (ColumnInfo<Row, ?> field : fields) {
                 System.out.print(field.valueOf(row));

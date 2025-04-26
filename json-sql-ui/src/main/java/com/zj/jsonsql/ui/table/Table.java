@@ -4,26 +4,33 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.table.TableView;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.util.ui.ListTableModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
+import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.exception.JsonException;
 import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.ui.dialog.export.Export;
-import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.ExportDialog;
+import com.zj.jsonsql.ui.dialog.export.Json;
 import com.zj.jsonsql.ui.dialog.export.Setting;
 import com.zj.jsonsql.ui.dialog.importexcel.ImportDialog;
 import com.zj.jsonsql.ui.dialog.json.JsonDialog;
 import com.zj.jsonsql.ui.dialog.sql.SqlDialog;
+import com.zj.jsonsql.utils.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.util.Objects;
 
 /**
  * 表格
@@ -38,7 +45,48 @@ public class Table {
      * @param ideaJsonInfo json信息
      * @return 面板
      */
+    @Deprecated
     public static JPanel create(@NotNull Project project, @NotNull IdeaJsonInfo ideaJsonInfo) {
+        return create(project, ideaJsonInfo, null);
+    }
+
+    private static void refresh(ListTableModel<Row> dataModel, @NotNull IdeaJsonInfo ideaJsonInfo, TableView<Row> table) {
+        // 重新赋值
+        dataModel.setColumnInfos(ideaJsonInfo.getFields());
+        // 设置序号和选择表头不可改变大小
+        setIdAndSelectHeader(table);
+        dataModel.setItems(ideaJsonInfo.getResult());
+    }
+
+    /**
+     * 设置序号和选择表头不可改变大小
+     *
+     * @param table 表格视图
+     */
+    private static void setIdAndSelectHeader(TableView<Row> table) {
+        TableColumn column = table.getTableHeader().getColumnModel().getColumn(0);
+        column.setResizable(false);
+        column.setMaxWidth(40);
+        TableColumn column1 = table.getTableHeader().getColumnModel().getColumn(1);
+        column1.setResizable(false);
+        column1.setMaxWidth(40);
+    }
+
+    /**
+     * 禁用自带的按钮
+     *
+     * @param decorator ToolbarDecorator
+     */
+    private static void disableButton(ToolbarDecorator decorator) {
+        // 禁用新增删除移动按钮
+        decorator.disableAddAction();
+        decorator.disableDownAction();
+        decorator.disableRemoveAction();
+        decorator.disableUpAction();
+        decorator.disableUpDownActions();
+    }
+
+    public static JPanel create(Project project, IdeaJsonInfo ideaJsonInfo, ToolWindow toolWindow) {
         // 创建表格模型
         ListTableModel<Row> dataModel = new ListTableModel<>(ideaJsonInfo.getFields());
         // 创建JTable表格组件
@@ -49,7 +97,7 @@ public class Table {
         // 设置序号和选择表头不可改变大小
         setIdAndSelectHeader(table);
         // 绑定结果
-        dataModel.addRows(ideaJsonInfo.getRows());
+        dataModel.addRows(ideaJsonInfo.getResult());
         // 创建装饰器实例
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(table, null);
         // 禁用自带的按钮
@@ -103,43 +151,32 @@ public class Table {
             }
         };
         decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export, importExcel);
+
+        if (Objects.nonNull(toolWindow)) {
+            // 复制
+            AnActionButton copy = new AnActionButton(PluginBundle.get("table.copy"), AllIcons.General.Copy) {
+                @Override
+                public void actionPerformed(@NotNull AnActionEvent e) {
+                    IdeaJsonInfo nextIdeaJsonInfo = new IdeaJsonInfo();
+                    String jsonStr = JsonUtil.getJsonStr(ideaJsonInfo, null);
+                    nextIdeaJsonInfo.setJsonContent(jsonStr);
+                    try {
+                        JsonInfo jsonInfo = JsonUtil.getJsonInfo(jsonStr);
+                        nextIdeaJsonInfo.setColumns(jsonInfo.getColumns());
+                        nextIdeaJsonInfo.setList(jsonInfo.getList());
+                    } catch (JsonException ignored) {
+                    }
+                    JComponent jComponent = Table.create(project, nextIdeaJsonInfo, toolWindow);
+                    Content content = ContentFactory.getInstance()
+                            .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
+                    content.setCloseable(true);
+
+                    toolWindow.getContentManager().addContent(content);
+                    toolWindow.getContentManager().setSelectedContent(content);
+                }
+            };
+            decorator.addExtraAction((AnAction) copy);
+        }
         return decorator.createPanel();
     }
-
-    private static void refresh(ListTableModel<Row> dataModel, @NotNull IdeaJsonInfo ideaJsonInfo, TableView<Row> table) {
-        // 重新赋值
-        dataModel.setColumnInfos(ideaJsonInfo.getFields());
-        // 设置序号和选择表头不可改变大小
-        setIdAndSelectHeader(table);
-        dataModel.setItems(ideaJsonInfo.getRows());
-    }
-
-    /**
-     * 设置序号和选择表头不可改变大小
-     *
-     * @param table 表格视图
-     */
-    private static void setIdAndSelectHeader(TableView<Row> table) {
-        TableColumn column = table.getTableHeader().getColumnModel().getColumn(0);
-        column.setResizable(false);
-        column.setMaxWidth(40);
-        TableColumn column1 = table.getTableHeader().getColumnModel().getColumn(1);
-        column1.setResizable(false);
-        column1.setMaxWidth(40);
-    }
-
-    /**
-     * 禁用自带的按钮
-     *
-     * @param decorator ToolbarDecorator
-     */
-    private static void disableButton(ToolbarDecorator decorator) {
-        // 禁用新增删除移动按钮
-        decorator.disableAddAction();
-        decorator.disableDownAction();
-        decorator.disableRemoveAction();
-        decorator.disableUpAction();
-        decorator.disableUpDownActions();
-    }
-
 }

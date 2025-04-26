@@ -35,5 +35,5 @@ public abstract class BaseJsonInfo {
      *
      * @return 表数据
      */
-    public abstract List<Row> getRows();
+    public abstract List<Row> getResult();
 }

@@ -40,7 +40,7 @@ public class SqlTestUtil {
             System.out.print("\t\t");
         }
         System.out.println();
-        List<Row> rows = jsonInfo.getRows();
+        List<Row> rows = jsonInfo.getResult();
         for (Row row : rows) {
             for (Field field : select) {
                 System.out.print(row.get(field.getOriginalFiled()));
