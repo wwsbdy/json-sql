@@ -49,7 +49,7 @@ public class ImportButtonAction extends ButtonAction<ImportDialog> {
         if (Objects.isNull(jsonArray)) {
             jsonArray = new JSONArray();
         }
-        end(jsonArray, jsonArray.toString(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue));
+        end(jsonArray.toString(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue));
     }
 
 }

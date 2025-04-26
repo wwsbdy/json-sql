@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,4 +70,16 @@ public class JsonInfo extends BaseJsonInfo {
         }
         return result = SqlUtil.getDataList(super.getList(), super.getColumns(), sqlNode);
     }
+
+
+    public List<Field> getSelect() {
+        if (Objects.isNull(select)) {
+            select = SqlUtil.getFields(super.getColumns(), sqlNode);
+        }
+        if (CollectionUtils.isEmpty(select)) {
+            select = Collections.emptyList();
+        }
+        return select;
+    }
+
 }

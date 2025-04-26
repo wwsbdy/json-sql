@@ -42,7 +42,7 @@ public class JsonButtonAction extends ButtonAction<JsonDialog> {
             Messages.showErrorDialog(project, NoticeEnum.JSON_ERROR.getMessage(), NoticeEnum.JSON_ERROR.getWarn());
             return;
         }
-        end(jsonArray, jsonStr);
+        end(jsonStr);
     }
 
 }

@@ -3,21 +3,25 @@ package com.zj.jsonsql.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.Lists;
+import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.JsonEnum;
+import com.zj.jsonsql.enums.NoticeEnum;
+import com.zj.jsonsql.exception.JsonException;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -217,5 +221,50 @@ public class JsonUtil {
         JSONObject resultJsonObject = new JSONObject(true);
         jsonObject.forEach((k, v) -> resultJsonObject.put(k.replaceAll(regex, replacement), v));
         return resultJsonObject;
+    }
+
+    public static JsonInfo getJsonInfo(String jsonStr) {
+        if (StringUtils.isEmpty(jsonStr)) {
+            throw new JsonException(NoticeEnum.JSON_EMPTY);
+        }
+        JSONArray jsonArray = JSONArray.parseArray(jsonStr, Feature.OrderedField);
+        if (CollectionUtils.isEmpty(jsonArray)) {
+            throw new JsonException(NoticeEnum.JSON_EMPTY);
+        }
+        if (jsonArray.size() > Constant.ROWS_MAX) {
+            throw new JsonException(NoticeEnum.ROWS_TOO_MANY);
+        }
+        List<Row> rowList = new ArrayList<>();
+        Map<String, List<JsonEnum>> columnMap = new LinkedHashMap<>();
+        String onlyFiled = null;
+        for (Object o : jsonArray) {
+            Row row;
+            if (Objects.isNull(o) || !(o instanceof JSONObject)) {
+                // 不是JSONObject, 新定义一个JSONObject放入
+                if (Objects.isNull(onlyFiled)) {
+                    onlyFiled = Constant.ONLY_FILED + System.currentTimeMillis() / 1000L;
+                }
+                row = new Row(new JSONObject().fluentPut(onlyFiled, o), rowList);
+            } else {
+                row = new Row((JSONObject) o, rowList);
+            }
+            for (String key : row.keySet()) {
+                // 可能会出现不同数据里同一个key，value不一样的情况。如：null和string。这时以不是null的为准，其他的情况以最后一个value类型为准
+                JsonEnum type = JsonUtil.getType(row.get(key));
+                if (columnMap.containsKey(key)) {
+                    columnMap.get(key).add(type);
+                } else {
+                    columnMap.put(key, Lists.newArrayList(type));
+                }
+            }
+            rowList.add(row);
+        }
+        if (MapUtils.isEmpty(columnMap) || CollectionUtils.isEmpty(rowList)) {
+            throw new JsonException(NoticeEnum.JSON_EMPTY);
+        }
+        if (columnMap.size() > Constant.COLUMNS_MAX) {
+            throw new JsonException(NoticeEnum.COLUMNS_TOO_MANY);
+        }
+        return new JsonInfo(Field.getOriginalField(columnMap), rowList, jsonStr);
     }
 }
