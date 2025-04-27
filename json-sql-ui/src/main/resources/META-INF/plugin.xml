@@ -49,7 +49,7 @@
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
-    <idea-version since-build="241" until-build="999.*"/>
+    <idea-version since-build="241"/>
 
     <actions>
         <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.FromAction"
@@ -57,4 +57,5 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
+    <depends>com.intellij.modules.platform</depends>
 </idea-plugin>

@@ -40,7 +40,12 @@ public class StrColumnInfo extends TableColumnInfo<String> {
     @Nullable
     @Override
     public String valueOf(Row row) {
-        Object value = row.get(originalFiled);
+        Object value;
+        try {
+            value = row.get(originalFiled);
+        } catch (Exception e) {
+            value = null;
+        }
         if (Objects.isNull(value)) {
             return "NULL";
         }

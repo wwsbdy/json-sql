@@ -89,10 +89,6 @@ public class Row {
         Object result;
         switch (jsonEnum) {
             case OBJECT:
-                // TODO
-                if (!((JSONObject) object).containsKey(key)) {
-                    throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
-                }
                 result = ((JSONObject) object).get(key);
                 break;
             case ARRAY:
