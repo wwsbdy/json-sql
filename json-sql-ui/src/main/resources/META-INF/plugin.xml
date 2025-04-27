@@ -9,9 +9,38 @@
     <!--插件的描述信息，支持html，展示的位置参考图14-->
     <description><![CDATA[
     Json Sql<br>
+    Retrieve the desired data from JSON using SQL<br>
+    And convert SQL to JSON again<br>
+    The supported SQL statements are：
+    <ul>
+        <li>select *、name、name as alias、name.surname(Multi layer query)</li>
+        <li>where =、!=、in、not in、&gt;、&gt;=、&lt;、&lt;=、between</li>
+        <li>like(_ and% escape with \\_ and \\%)、not like、is null、is not null</li>
+        <li>and、or、Nesting 'and' and 'or'</li>
+        <li>left、right、length、concat、if、ifnull、nullif、substr、substring、upper、lower、isnull、round functions</li>
+        <li>group by；sum、avg、max、min、count、group_concat、any_value、group_array functions</li>
+        <li>having</li>
+        <li>order by asc、desc、distinct</li>
+        <li>limit 1,2</li>
+    </ul>
+    Unsupported SQL statements include：
+    <ul>
+        <li>update、insert、delete</li>
+        <li>join</li>
+        <li>union</li>
+        <li>Special keywords such as 'result' and 'date' (should be accompanied by ``)</li>
+        <li>The key in JSON cannot contain '.' If there is, it will be converted to _NaN_ (SQL query only)</li>
+    </ul>
+    Some Examples：
+    <ul>
+        <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
+        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%\\%lin%')</li>
+        <li>select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a</li>
+    </ul>
+    <br>
+    <br>
     将json通过sql查出想要的数据<br>
     并把sql再转成json<br>
-    插件位于Tools里<br>
     支持的sql语句有：
     <ul>
         <li>select *、name、name as alias、name.surname（多层查询）</li>

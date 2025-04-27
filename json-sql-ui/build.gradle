@@ -43,10 +43,10 @@ patchPluginXml {
     sinceBuild = '241'
     //最高支持的版本，不能不设置，不设置是默认为 project.version
     untilBuild = ''
-    changeNotes = """
-      2024.3.4.1版本.<br>
-      修复了一些报错问题<br>
-      """
+//    changeNotes = """
+//      2024.3.4.1版本.<br>
+//      修复了一些报错问题<br>
+//      """
 }
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
