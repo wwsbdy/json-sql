@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.zj'
-version '2024.3.4'
+version '2024.3.4.1'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
@@ -44,9 +44,8 @@ patchPluginXml {
     //最高支持的版本，不能不设置，不设置是默认为 project.version
     untilBuild = ''
     changeNotes = """
-      2.0版本.<br>
-      针对2020版本的更新，主要修复了2020版本及更高版本报explicitly marked as incompatible的问题.<br>
-      使用了新的gradle来创建插件.<br>
+      2024.3.4.1版本.<br>
+      修复了一些报错问题<br>
       """
 }
 tasks.withType(JavaCompile).configureEach {
