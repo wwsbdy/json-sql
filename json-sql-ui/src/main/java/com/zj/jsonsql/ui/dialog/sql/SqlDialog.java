@@ -251,8 +251,10 @@ public class SqlDialog extends DialogWrapper {
             int wordStart = caretPosition;
             int wordEnd = caretPosition;
 
-            while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
-                wordStart--;
+            if (caretPosition < text.length() && Character.isJavaIdentifierPart(text.charAt(caretPosition))) {
+                while (wordStart > 0 && Character.isJavaIdentifierPart(text.charAt(wordStart - 1))) {
+                    wordStart--;
+                }
             }
             while (wordEnd < text.length() && Character.isJavaIdentifierPart(text.charAt(wordEnd))) {
                 wordEnd++;
