@@ -1,7 +1,6 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -109,11 +108,6 @@ public class Table {
         disableButton(decorator);
         // 编辑sql按钮
         AnActionButton modifyJson = new AnActionButtonImpl(PluginBundle.get("table.edit-json"), AllIcons.Actions.Edit) {
-            @Override
-            public @NotNull ActionUpdateThread getActionUpdateThread() {
-                return super.getActionUpdateThread();
-            }
-
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 JsonDialog jsonDialog = new JsonDialog(project, ideaJsonInfo);

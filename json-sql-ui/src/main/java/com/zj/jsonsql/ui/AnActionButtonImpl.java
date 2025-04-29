@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.function.Supplier;
 
+/**
+ * @author jie.zhou
+ */
 public abstract class AnActionButtonImpl extends AnActionButton {
     public AnActionButtonImpl(@NlsContexts.Button String text) {
         super(text);
