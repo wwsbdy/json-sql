@@ -29,8 +29,6 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
     implementation project(':json-sql-core')
-    implementation("net.java.dev.jna:jna-platform:5.12.1")
-    implementation("net.java.dev.jna:jna:5.12.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -57,19 +55,19 @@ tasks.register("prepareKotlinBuildScriptModel"){}
 
 
 tasks {
-//    buildPlugin {
-//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//    }
-//
-//    prepareSandbox {
-//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//    }
+    buildPlugin {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    prepareSandbox {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
     // mac指定为此idea运行环境，其他系统请参考： https://github.com/JetBrains/JetBrainsRuntime/releases
-    buildSearchableOptions {
-        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
-    }
-    runIde {
-        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
-    }
+//    buildSearchableOptions {
+//        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+//    }
+//    runIde {
+//        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+//    }
 }
 
