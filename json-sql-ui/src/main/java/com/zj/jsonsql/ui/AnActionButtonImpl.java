@@ -1,8 +1,7 @@
 package com.zj.jsonsql.ui;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.util.NlsContexts;
 import com.intellij.ui.AnActionButton;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +12,7 @@ import java.util.function.Supplier;
  * @author jie.zhou
  */
 public abstract class AnActionButtonImpl extends AnActionButton {
-    public AnActionButtonImpl(@NlsContexts.Button String text) {
+    public AnActionButtonImpl(@Nls(capitalization = Nls.Capitalization.Title) String text) {
         super(text);
     }
 
@@ -21,7 +20,7 @@ public abstract class AnActionButtonImpl extends AnActionButton {
         super(dynamicText);
     }
 
-    public AnActionButtonImpl(@NlsContexts.Button String text, @NlsContexts.Tooltip String description, @Nullable Icon icon) {
+    public AnActionButtonImpl(@Nls(capitalization = Nls.Capitalization.Title) String text, @Nls(capitalization = Nls.Capitalization.Sentence) String description, @Nullable Icon icon) {
         super(text, description, icon);
     }
 
@@ -29,7 +28,7 @@ public abstract class AnActionButtonImpl extends AnActionButton {
         super(dynamicText, dynamicDescription, icon);
     }
 
-    public AnActionButtonImpl(@NlsContexts.Button String text, Icon icon) {
+    public AnActionButtonImpl(@Nls(capitalization = Nls.Capitalization.Title) String text, Icon icon) {
         super(text, icon);
     }
 
@@ -38,10 +37,5 @@ public abstract class AnActionButtonImpl extends AnActionButton {
     }
 
     public AnActionButtonImpl() {
-    }
-
-    @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.EDT;
     }
 }

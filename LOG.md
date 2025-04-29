@@ -180,3 +180,18 @@ plugins {
 }
 ```
 
+### 14.build失败，runIde后的社区版idea点击无反应
+
+无法下载idea的运行环境，需要指定jbrVersion
+```
+tasks {
+    // mac指定为此idea运行环境，其他系统请参考： https://github.com/JetBrains/JetBrainsRuntime/releases
+    buildSearchableOptions {
+        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+    }
+    runIde {
+        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+    }
+}
+```
+

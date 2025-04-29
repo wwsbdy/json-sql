@@ -17,7 +17,6 @@ import com.zj.jsonsql.ui.table.Table;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.Collections;
 
 /**
  * @author : jie.zhou
@@ -37,7 +36,7 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
             return;
         }
         JComponent jComponent = Table.create(project, new IdeaJsonInfo(), toolWindow);
-        Content content = ContentFactory.getInstance()
+        Content content = ContentFactory.SERVICE.getInstance()
                 .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
         content.setCloseable(true);
 
@@ -53,8 +52,6 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
                 addContent(project, toolWindow);
             }
         };
-        // 将动作添加到ToolWindow的标题栏
-        toolWindow.setTitleActions(Collections.singletonList(addTabAction));
         if (toolWindow instanceof ToolWindowEx) {
             ((ToolWindowEx) toolWindow).setTabActions(addTabAction);
         }

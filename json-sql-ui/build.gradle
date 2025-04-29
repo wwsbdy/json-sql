@@ -1,9 +1,9 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.14.1'
+    id 'org.jetbrains.intellij' version '1.0'
 }
 
 group 'com.zj'
-version '2024.3.4.1'
+version '2020.1.2.1'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
@@ -29,18 +29,20 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
     implementation project(':json-sql-core')
+    implementation("net.java.dev.jna:jna-platform:5.12.1")
+    implementation("net.java.dev.jna:jna:5.12.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    // jdk 升到17
+    // jdk 升到11
     plugins = ['com.intellij.java']
-    version = '2024.3.4'
+    version = '2020.1.1'
 }
 patchPluginXml {
     //最低支持的版本
     //版本参考：https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html?from=jetbrains.org#intellij-platform-based-products-of-recent-ide-versions
-    sinceBuild = '241'
+    sinceBuild = '201'
     //最高支持的版本，不能不设置，不设置是默认为 project.version
     untilBuild = ''
 //    changeNotes = """
@@ -54,4 +56,20 @@ tasks.withType(JavaCompile).configureEach {
 tasks.register("prepareKotlinBuildScriptModel"){}
 
 
+tasks {
+//    buildPlugin {
+//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    }
+//
+//    prepareSandbox {
+//        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    }
+    // mac指定为此idea运行环境，其他系统请参考： https://github.com/JetBrains/JetBrainsRuntime/releases
+    buildSearchableOptions {
+        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+    }
+    runIde {
+        jbrVersion = 'jbr_jcef-11_0_12b1649.1'
+    }
+}
 

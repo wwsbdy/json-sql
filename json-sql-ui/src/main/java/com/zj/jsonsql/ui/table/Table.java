@@ -1,7 +1,6 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -108,6 +107,7 @@ public class Table {
         disableButton(decorator);
         // 编辑sql按钮
         AnActionButton modifyJson = new AnActionButtonImpl(PluginBundle.get("table.edit-json"), AllIcons.Actions.Edit) {
+
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 JsonDialog jsonDialog = new JsonDialog(project, ideaJsonInfo);
@@ -154,7 +154,7 @@ public class Table {
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
-        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export, importExcel);
+        decorator.addExtraActions(modifyJson, editSql, reset, export, importExcel);
 
         if (Objects.nonNull(toolWindow)) {
             // 复制
@@ -175,7 +175,7 @@ public class Table {
                     } catch (JsonException ignored) {
                     }
                     JComponent jComponent = Table.create(project, nextIdeaJsonInfo, toolWindow);
-                    Content content = ContentFactory.getInstance()
+                    Content content = ContentFactory.SERVICE.getInstance()
                             .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
                     content.setCloseable(true);
 
@@ -183,7 +183,7 @@ public class Table {
                     toolWindow.getContentManager().setSelectedContent(content);
                 }
             };
-            decorator.addExtraAction((AnAction) copy);
+            decorator.addExtraAction(copy);
         }
         return decorator.createPanel();
     }

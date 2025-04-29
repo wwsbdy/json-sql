@@ -19,8 +19,8 @@ subprojects {
     dependencies {
         testImplementation group: 'junit', name: 'junit', version: '4.13.1'
         implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
-        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
-        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
         implementation("org.apache.calcite:calcite-core:1.35.0") {
             exclude group: 'org.slf4j', module: 'slf4j-api'
             exclude group: 'commons-io', module: 'commons-io'
