@@ -5,11 +5,11 @@ import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.IFunctionStrategy;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.CompareUtil;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author : jie.zhou
@@ -23,7 +23,7 @@ public class IfStrategy implements IFunctionStrategy {
             throw new SqlException(getType().name() + PluginBundle.get("error.message.func-param-error"));
         }
         Object flag = getValue(row, params.get(0));
-        return Objects.nonNull(flag) && (!(flag instanceof Boolean) || (Boolean) flag) ?
+        return CompareUtil.isRight(flag) ?
                 getValue(row, params.get(1)) : getValue(row, params.get(2));
     }
 

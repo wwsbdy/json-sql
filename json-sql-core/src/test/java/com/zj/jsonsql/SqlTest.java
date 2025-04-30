@@ -28,7 +28,7 @@ public class SqlTest {
 
     @Test
     public void isNullTest() {
-        SqlTestUtil.out("select * from t_user where isnull(`children`)");
+        SqlTestUtil.out("select * from t_user where isnull(nullif(`code`, 510100))");
     }
 
     @Test

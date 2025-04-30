@@ -31,4 +31,16 @@ public class CompareUtil {
         return str1.compareTo(str2);
     }
 
+    /**
+     * 判断值是否为true
+     *
+     * @param val 值
+     * @return true:是
+     */
+    public static boolean isRight(Object val) {
+        return Objects.nonNull(val)
+                && (!(val instanceof Boolean) || (Boolean) val)
+                && !"0".equals(val.toString());
+    }
+
 }
