@@ -44,7 +44,7 @@ public class SqlTest {
 
     @Test
     public void groupTest() {
-        SqlTestUtil.out("select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a ");
+        SqlTestUtil.out("select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b,group_concat(name) from t_user group by a ");
     }
 
     @Test

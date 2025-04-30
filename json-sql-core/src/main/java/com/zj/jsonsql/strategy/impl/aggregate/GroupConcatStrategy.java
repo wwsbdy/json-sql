@@ -39,7 +39,7 @@ public class GroupConcatStrategy implements IFunctionStrategy {
         if (Objects.nonNull(functionQuantifier) && SqlSelectKeyword.DISTINCT.equals(functionQuantifier.getValue())) {
             stream = stream.distinct();
         }
-        return stream.collect(Collectors.joining());
+        return stream.collect(Collectors.joining(","));
     }
 
     @Override

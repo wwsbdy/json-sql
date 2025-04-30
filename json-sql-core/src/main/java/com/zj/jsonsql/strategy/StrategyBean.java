@@ -103,26 +103,42 @@ public class StrategyBean {
             };
         }
         SqlBasicCall sqlBasicCall = (SqlBasicCall) where;
-        return switch (sqlBasicCall.getKind()) {
-            case EQUALS -> new EqualsStrategy(false, sqlBasicCall.getOperandList());
-            case NOT_EQUALS -> new EqualsStrategy(true, sqlBasicCall.getOperandList());
-            case IN -> new InStrategy(false, sqlBasicCall.getOperandList());
-            case NOT_IN -> new InStrategy(true, sqlBasicCall.getOperandList());
-            case LIKE -> new LikeStrategy(sqlBasicCall);
-            case IS_NULL -> new NullStrategy(false, sqlBasicCall.getOperandList());
-            case IS_NOT_NULL -> new NullStrategy(true, sqlBasicCall.getOperandList());
-            case GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN ->
-                    new RangeStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
-            case OR, AND -> new RelationStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
-            case OTHER_FUNCTION -> new AbstractWhereStrategy(false) {
-                @Override
-                public boolean apply(Row item) {
-                    Object flag = getFuncStrategy(sqlBasicCall.getOperator()).get(item, sqlBasicCall);
-                    return CompareUtil.isRight(flag);
-                }
-            };
-            default -> ALWAYS_FALSE_STRATEGY;
-        };
+        switch (sqlBasicCall.getKind()) {
+            case EQUALS:
+                return new EqualsStrategy(false, sqlBasicCall.getOperandList());
+            case NOT_EQUALS:
+                return new EqualsStrategy(true, sqlBasicCall.getOperandList());
+            case IN:
+                return new InStrategy(false, sqlBasicCall.getOperandList());
+            case NOT_IN:
+                return new InStrategy(true, sqlBasicCall.getOperandList());
+            case LIKE:
+                return new LikeStrategy(sqlBasicCall);
+            case IS_NULL:
+                return new NullStrategy(false, sqlBasicCall.getOperandList());
+            case IS_NOT_NULL:
+                return new NullStrategy(true, sqlBasicCall.getOperandList());
+            case GREATER_THAN:
+            case GREATER_THAN_OR_EQUAL:
+            case LESS_THAN:
+            case LESS_THAN_OR_EQUAL:
+            case BETWEEN:
+                return new RangeStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
+            case OR:
+            case AND:
+                return new RelationStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
+            case GROUP_CONCAT:
+            case OTHER_FUNCTION:
+                return new AbstractWhereStrategy(false) {
+                    @Override
+                    public boolean apply(Row item) {
+                        Object flag = getFuncStrategy(sqlBasicCall.getOperator()).get(item, sqlBasicCall);
+                        return CompareUtil.isRight(flag);
+                    }
+                };
+            default:
+                return ALWAYS_FALSE_STRATEGY;
+        }
     }
 
     public static IFunctionStrategy getFuncStrategy(SqlOperator operator) {

@@ -130,6 +130,7 @@ public class Row {
         switch (kind) {
             case IDENTIFIER:
                 return get(key.toString());
+            case GROUP_CONCAT:
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())
                         .get(this, ((SqlBasicCall) key));
