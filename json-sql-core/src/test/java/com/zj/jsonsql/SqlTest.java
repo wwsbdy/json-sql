@@ -5,15 +5,18 @@ import org.junit.Test;
 
 public class SqlTest {
 
-    //id		code		name		parentId		parentName		groupName		isChoosed		isDisabled		childList		children
-    //2484		510100		成都市		2483		四川省		华西		1		NULL		NULL		NULL
-
+    // id   name    code    city_code
     /**
      * 函数测试
      */
     @Test
     public void test() {
         SqlTestUtil.out("select left(code, 4) a,right(123,2) n,if(right(123,2),code,null) from t_user where 1");
+    }
+
+    @Test
+    public void ifnullTest() {
+        SqlTestUtil.out("select id,name,code,parent_id,ifnull(level, if(code not like '__0000', 3, 1)) from arr");
     }
 
     @Test
@@ -49,7 +52,7 @@ public class SqlTest {
 
     @Test
     public void groupTest1() {
-        SqlTestUtil.out("select id a,left(min(id), 1) b from t_user group by left(b.cca, 10)");
+        SqlTestUtil.out("select id a,left(min(id), 1) b from t_user group by left(b, 10)");
     }
 
     @Test
