@@ -23,7 +23,7 @@ public class IfNullStrategy implements IFunctionStrategy {
             throw new SqlException(getType().name() + PluginBundle.get("error.message.func-param-error"));
         }
         Object flag = getValue(row, params.get(0));
-        return Objects.nonNull(flag) ? flag : getValue(row, params.get(2));
+        return Objects.nonNull(flag) ? flag : getValue(row, params.get(1));
     }
 
     @Override
