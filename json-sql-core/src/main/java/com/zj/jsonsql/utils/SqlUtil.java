@@ -64,6 +64,9 @@ public class SqlUtil {
         }
         // 过滤
         SqlNode where = sqlNode.getWhere();
+        // 校验字段是否存在，用替换别名的方法，不存在的会抛异常
+        replaceAlias(where, columns.stream()
+                .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2)));
         AbstractWhereStrategy strategy = StrategyBean.getStrategy(where);
         Stream<Row> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
@@ -408,7 +411,7 @@ public class SqlUtil {
      * @return SqlNode
      */
     public static SqlNode replaceAlias(SqlNode key, Map<String, SqlNode> nameMap) {
-        if (MapUtils.isEmpty(nameMap)) {
+        if (Objects.isNull(key) || MapUtils.isEmpty(nameMap)) {
             return key;
         }
         if (key instanceof SqlIdentifier) {
@@ -427,6 +430,10 @@ public class SqlUtil {
                 }
             }
             throw new SqlException(key + PluginBundle.get("error.message.filed-no-find"));
+        }
+        // 带.的函数字段不支持
+        if (key.getKind() == SqlKind.DOT) {
+            throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
         }
         if (key instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) key;

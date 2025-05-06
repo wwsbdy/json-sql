@@ -130,6 +130,8 @@ public class Row {
         switch (kind) {
             case IDENTIFIER:
                 return get(key.toString());
+            case DOT:
+                throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
             case GROUP_CONCAT:
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())

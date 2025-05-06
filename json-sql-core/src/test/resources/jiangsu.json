@@ -18,7 +18,10 @@
     "name":"南京市市辖区",
     "code":"320101",
     "parent_id":"868",
-    "level":null
+    "level":null,
+    "json": {
+      "k": "v"
+    }
   },
   {
     "id":"870",
