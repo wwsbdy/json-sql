@@ -5,6 +5,7 @@ import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.func.*;
+import com.zj.jsonsql.utils.CompareUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import org.apache.calcite.sql.*;
 
@@ -87,7 +88,7 @@ public class StrategyBean {
                 @Override
                 public boolean apply(Row item) {
                     Object object = item.get(where);
-                    return Objects.nonNull(object) && (!(object instanceof Boolean) || (Boolean) object) && !"0".equals(object.toString());
+                    return CompareUtil.isRight(object);
                 }
             };
         }
@@ -97,7 +98,7 @@ public class StrategyBean {
                 @Override
                 public boolean apply(Row item) {
                     Object object = SqlUtil.toString(where);
-                    return Objects.nonNull(object) && (!(object instanceof Boolean) || (Boolean) object) && !"0".equals(object.toString());
+                    return CompareUtil.isRight(object);
                 }
             };
         }
@@ -126,12 +127,13 @@ public class StrategyBean {
             case OR:
             case AND:
                 return new RelationStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
+            case GROUP_CONCAT:
             case OTHER_FUNCTION:
                 return new AbstractWhereStrategy(false) {
                     @Override
                     public boolean apply(Row item) {
                         Object flag = getFuncStrategy(sqlBasicCall.getOperator()).get(item, sqlBasicCall);
-                        return Objects.nonNull(flag) && (!(flag instanceof Boolean) || (Boolean) flag) && !"0".equals(flag.toString());
+                        return CompareUtil.isRight(flag);
                     }
                 };
             default:
