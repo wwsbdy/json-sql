@@ -1,7 +1,6 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -154,7 +153,7 @@ public class Table {
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
-        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export, importExcel);
+        decorator.addExtraActions(modifyJson, editSql, reset, export, importExcel);
 
         if (Objects.nonNull(toolWindow)) {
             // 复制
@@ -183,7 +182,7 @@ public class Table {
                     toolWindow.getContentManager().setSelectedContent(content);
                 }
             };
-            decorator.addExtraAction((AnAction) copy);
+            decorator.addExtraAction(copy);
         }
         return decorator.createPanel();
     }
