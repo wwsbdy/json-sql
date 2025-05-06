@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.zj'
-version '2022.2.5.1'
+version '2022.2.5.2'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
@@ -42,7 +42,7 @@ patchPluginXml {
     //版本参考：https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html?from=jetbrains.org#intellij-platform-based-products-of-recent-ide-versions
     sinceBuild = '222'
     //最高支持的版本，不能不设置，不设置是默认为 project.version
-    untilBuild = ''
+    untilBuild = '222'
 //    changeNotes = """
 //      2024.3.4.1版本.<br>
 //      修复了一些报错问题<br>
