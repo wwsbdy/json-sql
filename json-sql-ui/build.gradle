@@ -35,7 +35,7 @@ dependencies {
 intellij {
     // jdk 升到11
     plugins = ['com.intellij.java']
-    version = '2020.1.1'
+    version = '2020.1.2'
 }
 patchPluginXml {
     //最低支持的版本
