@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.zj'
-version '2022.2.5.2'
+version '2022.2.5.3'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
