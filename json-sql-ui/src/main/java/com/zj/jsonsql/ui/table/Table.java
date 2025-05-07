@@ -119,7 +119,7 @@ public class Table {
         AnActionButton editSql = new AnActionButtonImpl(PluginBundle.get("table.sql-query"), AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                SqlDialog formTestDialog = new SqlDialog(ideaJsonInfo);
+                SqlDialog formTestDialog = new SqlDialog(ideaJsonInfo, project);
                 formTestDialog.show();
                 refresh(dataModel, ideaJsonInfo, table);
             }

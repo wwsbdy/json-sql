@@ -10,7 +10,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.ui.dialog.json.JsonLanguage;
-import com.zj.jsonsql.ui.dialog.json.CustomEditorField;
+import com.zj.jsonsql.ui.dialog.json.JsonEditorField;
 
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
@@ -40,14 +40,14 @@ public class Json extends WizardStep<WizardModel> {
         center.setLayout(new BorderLayout(0, 0));
         center.setPreferredSize(new Dimension(500, 250));
         panel1.add(center, BorderLayout.CENTER);
-        CustomEditorField customEditorField = new CustomEditorField(JsonLanguage.INSTANCE, project, "");
-        customEditorField.addAncestorListener(new AncestorListenerAdapter() {
+        JsonEditorField jsonEditorField = new JsonEditorField(JsonLanguage.INSTANCE, project, "");
+        jsonEditorField.addAncestorListener(new AncestorListenerAdapter() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
-                customEditorField.setText(exportInfo.getJsonArrayStr());
+                jsonEditorField.setText(exportInfo.getJsonArrayStr());
             }
         });
-        center.add(customEditorField, BorderLayout.CENTER);
+        center.add(jsonEditorField, BorderLayout.CENTER);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
