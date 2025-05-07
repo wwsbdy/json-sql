@@ -123,7 +123,8 @@ public class Export extends WizardStep<WizardModel> {
         });
         jPanel.add(exportButton);
 
-        JPanel resultPanel = new JPanel(new GridLayout(5, 1));
+        JPanel resultPanel = new JPanel(new GridLayout(4, 1));
+        resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);
         return resultPanel;
     }

@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author 19242
  */
-public class CustomEditorField extends LanguageTextField {
+public class JsonEditorField extends LanguageTextField {
 
-    public CustomEditorField(Language language, @Nullable Project project, @NotNull String value) {
+    public JsonEditorField(Language language, @Nullable Project project, @NotNull String value) {
         super(language, project, value);
         addComponentListener(new TabComponentAdapter(this));
         // 关闭只能一行编辑
