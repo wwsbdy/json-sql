@@ -2,8 +2,7 @@ package com.zj.jsonsql.ui.dialog.sql;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.util.NlsSafe;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,12 +25,12 @@ public class SqlLanguageFileType extends LanguageFileType {
     }
 
     @Override
-    public @NlsContexts.Label @NotNull String getDescription() {
+    public @Nls @NotNull String getDescription() {
         return "SQL-CUSTOM";
     }
 
     @Override
-    public @NlsSafe @NotNull String getDefaultExtension() {
+    public @NonNls @NotNull String getDefaultExtension() {
         return "SQL-CUSTOM";
     }
 
