@@ -26,7 +26,7 @@ public class JsonDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final CustomEditorField jsonContent;
+    private final JsonEditorField jsonContent;
 
     private IdeaJsonInfo jsonInfo;
 
@@ -43,7 +43,7 @@ public class JsonDialog extends DialogWrapper {
         setTitle(PluginBundle.get("json.title"));
         // 获取到当前项目的名称
         this.project = project;
-        jsonContent = new CustomEditorField(JsonLanguage.INSTANCE, project, content);
+        jsonContent = new JsonEditorField(JsonLanguage.INSTANCE, project, content);
         jsonContent.setPreferredSize(new Dimension(500, 700));
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();

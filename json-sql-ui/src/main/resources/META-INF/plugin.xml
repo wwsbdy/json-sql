@@ -75,6 +75,13 @@
         <executor id="JsonSql" order="last"
                   implementation="com.zj.jsonsql.ui.table.TableExecutor"/>
         <toolWindow id="JsonSql" factoryClass="com.zj.jsonsql.ui.JsonSqlToolWindowFactory" anchor="bottom" canCloseContents="true" icon="AllIcons.FileTypes.JsonSchema"/>
+        <fileType name="SQL-CUSTOM" language="SQL-CUSTOM"
+                  extensions="SQL-CUSTOM"
+                  implementationClass="com.zj.jsonsql.ui.dialog.sql.SqlLanguageFileType"/>
+        <lang.parserDefinition language="SQL-CUSTOM" implementationClass="com.zj.jsonsql.ui.dialog.sql.SqlParserDefinition"/>
+        <completion.contributor id="SQL-CUSTOM" language="SQL-CUSTOM"
+                                implementationClass="com.zj.jsonsql.ui.dialog.sql.SqlParamCompletionContributor"
+                                order="first"/>
     </extensions>
 
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
