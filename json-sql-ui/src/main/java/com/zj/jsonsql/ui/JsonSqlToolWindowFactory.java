@@ -15,6 +15,7 @@ import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.table.Table;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -36,11 +37,11 @@ public class JsonSqlToolWindowFactory implements ToolWindowFactory {
             Messages.showErrorDialog(project, NoticeEnum.TAB_TOO_MANY.getMessage(), NoticeEnum.TAB_TOO_MANY.getWarn());
             return;
         }
-        JComponent jComponent = Table.create(project, new IdeaJsonInfo(), toolWindow);
+        Table table = Table.create(project, new IdeaJsonInfo(), toolWindow);
         Content content = ContentFactory.SERVICE.getInstance()
-                .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
+                .createContent(table.getPanel(), PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
         content.setCloseable(true);
-
+        ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table.getAnActionButtonList());
         toolWindow.getContentManager().addContent(content);
         toolWindow.getContentManager().setSelectedContent(content);
     }

@@ -2,6 +2,7 @@ package com.zj.jsonsql.ui.dialog.json;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
@@ -46,6 +47,7 @@ public class JsonDialog extends DialogWrapper {
         jsonContent = new JsonEditorField(JsonLanguage.INSTANCE, project, content);
         jsonContent.setPreferredSize(new Dimension(500, 700));
         // 触发一下init方法，否则swing样式将无法展示在会话框
+        Disposer.register(getDisposable(), jsonContent);
         init();
     }
 

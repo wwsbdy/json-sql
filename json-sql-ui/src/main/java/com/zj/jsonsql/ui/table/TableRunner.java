@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.content.Content;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.ui.PluginBundle;
-import com.zj.jsonsql.utils.MyExecutorUtil;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +37,7 @@ public class TableRunner {
 
     public void run(@NotNull IdeaJsonInfo jsonInfo) {
         // 返回定义的 Executor
-        Executor executor = MyExecutorUtil.getRunExecutorInstance(TableExecutor.PLUGIN_ID);
+        Executor executor = ExecutorUtil.getRunExecutorInstance(TableExecutor.PLUGIN_ID);
         if (executor == null) {
             return;
         }
@@ -64,9 +64,10 @@ public class TableRunner {
         }, new DefaultExecutionResult(), layoutUi);
         descriptor.setExecutionId(System.nanoTime());
 
-        JComponent jComponent = Table.create(project, jsonInfo);
-        final Content content = layoutUi.createContent("contentId", jComponent, PluginBundle.get("table.json-data"), AllIcons.Toolwindows.ToolWindowMessages, jComponent);
+        Table table = Table.create(project, jsonInfo);
+        final Content content = layoutUi.createContent("contentId", table.getPanel(), PluginBundle.get("table.json-data"), AllIcons.Toolwindows.ToolWindowMessages, table.getPanel());
         content.setCloseable(false);
+        ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table.getAnActionButtonList());
         layoutUi.addContent(content);
 
         RunContentManager.getInstance(project).showRunContent(executor, descriptor);

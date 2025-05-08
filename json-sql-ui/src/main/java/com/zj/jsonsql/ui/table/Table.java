@@ -4,8 +4,8 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -28,11 +28,15 @@ import com.zj.jsonsql.ui.dialog.export.Setting;
 import com.zj.jsonsql.ui.dialog.importexcel.ImportDialog;
 import com.zj.jsonsql.ui.dialog.json.JsonDialog;
 import com.zj.jsonsql.ui.dialog.sql.SqlDialog;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.JsonUtil;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,7 +44,17 @@ import java.util.Objects;
  *
  * @author 19242
  */
+@Getter
 public class Table {
+
+    private final JPanel panel;
+
+    private final List<AnActionButtonImpl> anActionButtonList;
+
+    private Table(JPanel panel, List<AnActionButtonImpl> anActionButtonList) {
+        this.panel = panel;
+        this.anActionButtonList = anActionButtonList;
+    }
 
     /**
      * 插件表格
@@ -49,7 +63,7 @@ public class Table {
      * @return 面板
      */
     @Deprecated
-    public static JPanel create(@NotNull Project project, @NotNull IdeaJsonInfo ideaJsonInfo) {
+    public static Table create(@NotNull Project project, @NotNull IdeaJsonInfo ideaJsonInfo) {
         return create(project, ideaJsonInfo, null);
     }
 
@@ -89,7 +103,7 @@ public class Table {
         decorator.disableUpDownActions();
     }
 
-    public static JPanel create(Project project, IdeaJsonInfo ideaJsonInfo, ToolWindow toolWindow) {
+    public static Table create(Project project, IdeaJsonInfo ideaJsonInfo, ToolWindow toolWindow) {
         // 创建表格模型
         ListTableModel<Row> dataModel = new ListTableModel<>(ideaJsonInfo.getFields());
         // 创建JTable表格组件
@@ -111,21 +125,23 @@ public class Table {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 JsonDialog jsonDialog = new JsonDialog(project, ideaJsonInfo);
+                Disposer.register(this, jsonDialog.getDisposable());
                 jsonDialog.show();
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
         // 编辑sql按钮
-        AnActionButton editSql = new AnActionButtonImpl(PluginBundle.get("table.sql-query"), AllIcons.Actions.Find) {
+        AnActionButtonImpl editSql = new AnActionButtonImpl(PluginBundle.get("table.sql-query"), AllIcons.Actions.Find) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 SqlDialog formTestDialog = new SqlDialog(ideaJsonInfo, project);
+                Disposer.register(this, formTestDialog.getDisposable());
                 formTestDialog.show();
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
         // 重置按钮
-        AnActionButton reset = new AnActionButtonImpl(PluginBundle.get("table.reset"), AllIcons.General.Reset) {
+        AnActionButtonImpl reset = new AnActionButtonImpl(PluginBundle.get("table.reset"), AllIcons.General.Reset) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ideaJsonInfo.resetSql();
@@ -133,7 +149,7 @@ public class Table {
             }
         };
         // 导出按钮
-        AnActionButton export = new AnActionButtonImpl(PluginBundle.get("table.export"), AllIcons.ToolbarDecorator.Export) {
+        AnActionButtonImpl export = new AnActionButtonImpl(PluginBundle.get("table.export"), AllIcons.ToolbarDecorator.Export) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 WizardModel wizardModel = new WizardModel(PluginBundle.get("table.export"));
@@ -142,23 +158,31 @@ public class Table {
                 wizardModel.add(new Json(exportInfo, project));
                 wizardModel.add(new Export(exportInfo, project, ideaJsonInfo));
                 ExportDialog wizardDialog = new ExportDialog(exportInfo, ideaJsonInfo, project, true, wizardModel);
+                Disposer.register(this, wizardDialog.getDisposable());
                 wizardDialog.show();
             }
         };
         // 导出按钮
-        AnActionButton importExcel = new AnActionButtonImpl(PluginBundle.get("table.import"), AllIcons.ToolbarDecorator.Import) {
+        AnActionButtonImpl importExcel = new AnActionButtonImpl(PluginBundle.get("table.import"), AllIcons.ToolbarDecorator.Import) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ImportDialog importDialog = new ImportDialog(project, ideaJsonInfo);
+                Disposer.register(this, importDialog.getDisposable());
                 importDialog.show();
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
         decorator.addExtraActions(modifyJson, editSql, reset, export, importExcel);
 
+        List<AnActionButtonImpl> anActionButtonList = new ArrayList<>();
+        anActionButtonList.add(modifyJson);
+        anActionButtonList.add(editSql);
+        anActionButtonList.add(reset);
+        anActionButtonList.add(export);
+        anActionButtonList.add(importExcel);
         if (Objects.nonNull(toolWindow)) {
             // 复制
-            AnActionButton copy = new AnActionButtonImpl(PluginBundle.get("table.copy"), AllIcons.Actions.Copy) {
+            AnActionButtonImpl copy = new AnActionButtonImpl(PluginBundle.get("table.copy"), AllIcons.Actions.Copy) {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     if (toolWindow.getContentManager().getContentCount() >= Constant.TAB_MAX) {
@@ -174,17 +198,19 @@ public class Table {
                         nextIdeaJsonInfo.setList(jsonInfo.getList());
                     } catch (JsonException ignored) {
                     }
-                    JComponent jComponent = Table.create(project, nextIdeaJsonInfo, toolWindow);
+                    Table table1 = Table.create(project, nextIdeaJsonInfo, toolWindow);
                     Content content = ContentFactory.SERVICE.getInstance()
-                            .createContent(jComponent, PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
+                            .createContent(table1.getPanel(), PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
                     content.setCloseable(true);
-
+                    ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table1.getAnActionButtonList());
                     toolWindow.getContentManager().addContent(content);
                     toolWindow.getContentManager().setSelectedContent(content);
                 }
             };
             decorator.addExtraAction(copy);
+            anActionButtonList.add(copy);
         }
-        return decorator.createPanel();
+        JPanel panel = decorator.createPanel();
+        return new Table(panel, anActionButtonList);
     }
 }

@@ -1,5 +1,6 @@
 package com.zj.jsonsql.ui;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.ui.AnActionButton;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * @author jie.zhou
  */
-public abstract class AnActionButtonImpl extends AnActionButton {
+public abstract class AnActionButtonImpl extends AnActionButton implements Disposable {
     public AnActionButtonImpl(@Nls(capitalization = Nls.Capitalization.Title) String text) {
         super(text);
     }
@@ -37,5 +38,10 @@ public abstract class AnActionButtonImpl extends AnActionButton {
     }
 
     public AnActionButtonImpl() {
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }
