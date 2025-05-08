@@ -1,9 +1,11 @@
 package com.zj.jsonsql.ui.dialog.json;
 
 import com.intellij.lang.Language;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.EditorSettings;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.LanguageTextField;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,11 +15,13 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author 19242
  */
-public class JsonEditorField extends LanguageTextField {
+public class JsonEditorField extends LanguageTextField implements Disposable {
 
     public JsonEditorField(Language language, @Nullable Project project, @NotNull String value) {
         super(language, project, value);
-        addComponentListener(new TabComponentAdapter(this));
+        TabComponentAdapter tabComponentAdapter = new TabComponentAdapter(this);
+        addComponentListener(tabComponentAdapter);
+        Disposer.register(this, tabComponentAdapter);
         // 关闭只能一行编辑
         setOneLineMode(false);
     }
@@ -42,5 +46,10 @@ public class JsonEditorField extends LanguageTextField {
         // 显示右边缘线
         settings.setRightMarginShown(true);
         return editor;
+    }
+
+    @Override
+    public void dispose() {
+        removeAll();
     }
 }

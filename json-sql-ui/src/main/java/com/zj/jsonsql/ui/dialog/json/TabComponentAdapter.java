@@ -1,8 +1,10 @@
 package com.zj.jsonsql.ui.dialog.json;
 
 import com.intellij.ide.DataManager;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Caret;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.actionSystem.EditorAction;
 import com.intellij.openapi.editor.actions.IndentSelectionAction;
 import com.intellij.openapi.editor.actions.UnindentSelectionAction;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
  *
  * @author 19242
  */
-public class TabComponentAdapter extends ComponentAdapter {
+public class TabComponentAdapter extends ComponentAdapter implements Disposable {
     private final EditorTextField editor;
     private boolean initDone = false;
 
@@ -75,6 +77,13 @@ public class TabComponentAdapter extends ComponentAdapter {
     private static void performAction(EditorEx editor, EditorAction action) {
         for (Caret caret : editor.getCaretModel().getAllCarets()) {
             WriteCommandAction.runWriteCommandAction(editor.getProject(), () -> action.getHandler().execute(editor, caret, DataManager.getInstance().getDataContext(editor.getContentComponent())));
+        }
+    }
+
+    @Override
+    public void dispose() {
+        if (Objects.nonNull(this.editor.getEditor()) && !this.editor.getEditor().isDisposed()) {
+            EditorFactory.getInstance().releaseEditor(this.editor.getEditor());
         }
     }
 }

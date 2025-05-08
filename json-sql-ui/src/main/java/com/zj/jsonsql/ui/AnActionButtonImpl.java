@@ -1,5 +1,6 @@
 package com.zj.jsonsql.ui;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.ui.AnActionButton;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 /**
  * @author jie.zhou
  */
-public abstract class AnActionButtonImpl extends AnActionButton {
+public abstract class AnActionButtonImpl extends AnActionButton implements Disposable {
     public AnActionButtonImpl(@NlsContexts.Button String text) {
         super(text);
     }
@@ -43,5 +44,10 @@ public abstract class AnActionButtonImpl extends AnActionButton {
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.EDT;
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }
