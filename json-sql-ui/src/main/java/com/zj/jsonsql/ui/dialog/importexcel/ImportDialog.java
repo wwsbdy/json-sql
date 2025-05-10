@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * @author : jie.zhou
@@ -25,7 +27,10 @@ public class ImportDialog extends DialogWrapper {
 
     private final Project project;
     private final IdeaJsonInfo jsonInfo;
-    private final TextFieldWithBrowseButton textFieldWithBrowseButton;
+
+    private boolean disposed = false;
+    private TextFieldWithBrowseButton textFieldWithBrowseButton;
+    private JButton submit;
 
     public ImportDialog(Project project, @NotNull IdeaJsonInfo jsonInfo) {
         super(true);
@@ -57,6 +62,21 @@ public class ImportDialog extends DialogWrapper {
         south.add(submit);
         //按钮事件绑定
         submit.addActionListener(new ImportButtonAction(project, this, jsonInfo));
+        this.submit = submit;
         return south;
+    }
+
+    @Override
+    protected void dispose() {
+        if (!disposed) {
+            disposed = true;
+            if (Objects.nonNull(textFieldWithBrowseButton)) {
+                textFieldWithBrowseButton.dispose();
+            }
+            ExecutorUtil.removeListener(submit);
+            textFieldWithBrowseButton = null;
+            submit = null;
+        }
+        super.dispose();
     }
 }

@@ -4,12 +4,12 @@ import com.intellij.ide.DataManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Caret;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.actionSystem.EditorAction;
 import com.intellij.openapi.editor.actions.IndentSelectionAction;
 import com.intellij.openapi.editor.actions.UnindentSelectionAction;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.ui.EditorTextField;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.swing.*;
@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
 public class TabComponentAdapter extends ComponentAdapter implements Disposable {
     private final EditorTextField editor;
     private boolean initDone = false;
+
+    private boolean disposed = false;
+    private JButton submit;
 
     public TabComponentAdapter(EditorTextField editor) {
         this.editor = editor;
@@ -82,8 +85,13 @@ public class TabComponentAdapter extends ComponentAdapter implements Disposable 
 
     @Override
     public void dispose() {
-        if (Objects.nonNull(this.editor.getEditor()) && !this.editor.getEditor().isDisposed()) {
-            EditorFactory.getInstance().releaseEditor(this.editor.getEditor());
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(submit);
+            submit  = null;
         }
+//        if (Objects.nonNull(this.editor.getEditor()) && !this.editor.getEditor().isDisposed()) {
+//            EditorFactory.getInstance().releaseEditor(this.editor.getEditor());
+//        }
     }
 }

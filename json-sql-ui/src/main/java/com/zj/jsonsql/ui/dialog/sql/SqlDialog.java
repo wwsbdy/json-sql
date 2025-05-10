@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.ui.LanguageTextField;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -16,6 +16,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
 import org.apache.calcite.sql.SqlSelect;
@@ -36,9 +37,13 @@ public class SqlDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final LanguageTextField sqlContent;
+    private final SqlEditorFiled sqlContent;
     private final IdeaJsonInfo jsonInfo;
     private final String originalSql;
+
+    private boolean disposed = false;
+    private JButton submit;
+    private ComboBox<Object> rowComboBox;
 
     public SqlDialog(IdeaJsonInfo jsonInfo, Project project) {
         super(true);
@@ -47,6 +52,7 @@ public class SqlDialog extends DialogWrapper {
         // 设置会话框标题
         setTitle(PluginBundle.get("sql.title"));
         sqlContent = new SqlEditorFiled(SqlLanguage.INSTANCE, project, jsonInfo);
+        Disposer.register(getDisposable(), sqlContent);
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();
     }
@@ -116,9 +122,12 @@ public class SqlDialog extends DialogWrapper {
                 }
             });
             south.add(rowComboBox);
+            this.rowComboBox = rowComboBox;
         } else {
             south.add(new JBLabel());
         }
+        this.submit = submit;
+
         return south;
     }
 
@@ -140,6 +149,18 @@ public class SqlDialog extends DialogWrapper {
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
         return contentPanel;
+    }
+
+    @Override
+    protected void dispose() {
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(submit);
+            ExecutorUtil.removeListener(rowComboBox);
+            submit = null;
+            rowComboBox = null;
+        }
+        super.dispose();
     }
 }
 

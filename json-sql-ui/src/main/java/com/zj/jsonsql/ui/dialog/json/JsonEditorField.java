@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.LanguageTextField;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
  * @author 19242
  */
 public class JsonEditorField extends LanguageTextField implements Disposable {
+
+
+    private boolean disposed = false;
 
     public JsonEditorField(Language language, @Nullable Project project, @NotNull String value) {
         super(language, project, value);
@@ -50,6 +54,9 @@ public class JsonEditorField extends LanguageTextField implements Disposable {
 
     @Override
     public void dispose() {
-        removeAll();
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(this);
+        }
     }
 }
