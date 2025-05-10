@@ -21,15 +21,23 @@ subprojects {
         implementation group: 'com.alibaba', name: 'fastjson', version: '2.0.39'
         compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
         annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
-        implementation("org.apache.calcite:calcite-core:1.35.0") {
+        implementation("org.apache.calcite:calcite-core:1.36.0") {
             exclude group: 'org.slf4j', module: 'slf4j-api'
             exclude group: 'commons-io', module: 'commons-io'
             exclude group: 'org.apache.commons', module: 'commons-math3'
             exclude group: 'commons-codec', module: 'commons-codec'
+            exclude group: 'com.google.protobuf', module: 'protobuf-java'
         }
-//        implementation("com.alibaba:easyexcel:3.3.3") {
-//            exclude group: 'org.slf4j', module: 'slf4j-api'
-//        }
+        implementation 'com.google.protobuf:protobuf-java:4.28.2'
+        implementation("com.alibaba:easyexcel:3.3.3") {
+            exclude group: 'org.slf4j', module: 'slf4j-api'
+            exclude group: 'org.apache.poi', module: 'poi-ooxml'
+            exclude group: 'commons-io', module: 'commons-io'
+            exclude group: 'org.apache.commons', module: 'commons-compress'
+        }
+    implementation 'org.apache.poi:poi-ooxml:5.2.3' // 升级到安全版本
+    implementation 'commons-io:commons-io:2.15.1' // 升级到安全版本
+    implementation 'org.apache.commons:commons-compress:1.26.1' // 升级到安全版本
     }
 }
 
