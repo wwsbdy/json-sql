@@ -155,9 +155,11 @@ public class Table {
                 WizardModel wizardModel = new WizardModel(PluginBundle.get("table.export"));
                 ExportInfo exportInfo = new ExportInfo();
                 wizardModel.add(new Setting(exportInfo));
-                wizardModel.add(new Json(exportInfo, project));
+                Json json = new Json(exportInfo, project);
+                wizardModel.add(json);
                 wizardModel.add(new Export(exportInfo, project, ideaJsonInfo));
                 ExportDialog wizardDialog = new ExportDialog(exportInfo, ideaJsonInfo, project, true, wizardModel);
+                Disposer.register(this, json);
                 Disposer.register(this, wizardDialog.getDisposable());
                 wizardDialog.show();
             }
