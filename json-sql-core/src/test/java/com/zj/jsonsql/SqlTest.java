@@ -36,7 +36,7 @@ public class SqlTest {
 
     @Test
     public void funcTest11111() {
-        SqlTestUtil.out("select *  from t_user where right(left(id,3),1) = right(left(parentId,3),1)");
+        SqlTestUtil.out("select *  from t_user where right(left(id,3),1) = right(left(parent_id,3),1)");
         SqlTestUtil.out("select *  from t_user where name like concat('__','市')");
     }
 

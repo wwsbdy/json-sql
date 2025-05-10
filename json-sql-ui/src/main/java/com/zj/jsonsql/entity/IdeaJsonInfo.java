@@ -1,6 +1,7 @@
 package com.zj.jsonsql.entity;
 
 import com.intellij.util.ui.ColumnInfo;
+import com.zj.jsonsql.constant.Constant;
 import com.zj.jsonsql.entity.columninfo.BooleanColumnInfo;
 import com.zj.jsonsql.entity.columninfo.IdColumnInfo;
 import com.zj.jsonsql.entity.columninfo.StrColumnInfo;
@@ -9,6 +10,7 @@ import com.zj.jsonsql.ui.PluginBundle;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +25,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class IdeaJsonInfo extends JsonInfo {
 
-    public IdeaJsonInfo(List<Field> columns, List<Row> list, String jsonContent) {
-        super(columns, list, jsonContent);
-    }
+    private final SqlHistoryList sqlHistoryList = new SqlHistoryList(Constant.SQL_HISTORY_LIST_SIZE_MAX);
 
     public IdeaJsonInfo() {
         super();
@@ -44,5 +44,13 @@ public class IdeaJsonInfo extends JsonInfo {
             columnInfos.add(new StrColumnInfo(field.getOriginalFiled(), field.getName(), field.getType()));
         }
         return columnInfos.toArray(new TableColumnInfo<?>[]{});
+    }
+
+    @Override
+    public void setSql(String sql) {
+        if (StringUtils.isNotBlank(sql)) {
+            sqlHistoryList.add(sql);
+        }
+        super.setSql(sql);
     }
 }
