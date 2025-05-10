@@ -10,6 +10,7 @@ import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.FuncEnum;
 import org.apache.calcite.sql.SqlNode;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -65,15 +66,17 @@ public class SqlParamCompletionContributor extends CompletionContributor {
     }
 
     public void add(JsonInfo jsonInfo, CompletionResultSet result) {
-        String word = result.getPrefixMatcher().getPrefix();
+        String word = result.getPrefixMatcher().getPrefix().toLowerCase();
         CompletionResultSet completionResultSet = result.caseInsensitive();
         // 创建关键字提示框
         List<String> keywords = jsonInfo.getColumns().stream()
                 .map(Field::getOriginalFiled)
                 .map(SqlNode::toString)
+                .filter(StringUtils::isNotEmpty)
                 .collect(Collectors.toList());
         for (String keyword : keywords) {
-            if (!keyword.equals(word) && keyword.startsWith(word)) {
+            String lowerCaseKeyword = keyword.toLowerCase();
+            if (!lowerCaseKeyword.equals(word) && lowerCaseKeyword.contains(word)) {
                 completionResultSet.addElement(LookupElementBuilder.create(keyword));
             }
         }

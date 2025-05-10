@@ -1,15 +1,17 @@
 package com.zj.jsonsql.ui.dialog.sql;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.LanguageTextField;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.Field;
-import com.zj.jsonsql.entity.JsonInfo;
+import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.SqlException;
@@ -35,10 +37,10 @@ public class SqlDialog extends DialogWrapper {
      * swing样式类，定义在4.3.2
      */
     private final LanguageTextField sqlContent;
-    private final JsonInfo jsonInfo;
+    private final IdeaJsonInfo jsonInfo;
     private final String originalSql;
 
-    public SqlDialog(JsonInfo jsonInfo, Project project) {
+    public SqlDialog(IdeaJsonInfo jsonInfo, Project project) {
         super(true);
         this.jsonInfo = jsonInfo;
         this.originalSql = jsonInfo.getSql();
@@ -57,6 +59,8 @@ public class SqlDialog extends DialogWrapper {
     @Override
     protected JComponent createSouthPanel() {
         final JPanel south = new JPanel();
+        south.setLayout(new GridLayout(0, 3));
+        south.add(new JBLabel());
         //定义表单的提交按钮，放置到IDEA会话框的底部位置
         JButton submit = new JButton(PluginBundle.get("sql.submit"));
         // 水平居中
@@ -99,6 +103,22 @@ public class SqlDialog extends DialogWrapper {
                 doCancelAction();
             }
         });
+        if (jsonInfo.getSqlHistoryList().isNotEmpty()) {
+            ComboBox<Object> rowComboBox = new ComboBox<>();
+            jsonInfo.getSqlHistoryList().forEach(rowComboBox::addItem);
+            rowComboBox.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (Objects.isNull(rowComboBox.getSelectedItem())) {
+                        return;
+                    }
+                    sqlContent.setText(rowComboBox.getSelectedItem().toString());
+                }
+            });
+            south.add(rowComboBox);
+        } else {
+            south.add(new JBLabel());
+        }
         return south;
     }
 
