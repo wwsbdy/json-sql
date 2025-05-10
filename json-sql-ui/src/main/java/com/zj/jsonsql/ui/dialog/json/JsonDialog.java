@@ -8,6 +8,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,9 @@ public class JsonDialog extends DialogWrapper {
     private final JsonEditorField jsonContent;
 
     private IdeaJsonInfo jsonInfo;
+
+    private boolean disposed = false;
+    private JButton submit;
 
     public JsonDialog(Project project, IdeaJsonInfo jsonInfo) {
         super(true);
@@ -85,6 +89,7 @@ public class JsonDialog extends DialogWrapper {
         south.add(submit);
         //按钮事件绑定
         submit.addActionListener(new JsonButtonAction(project, this, jsonInfo));
+        this.submit = submit;
         return south;
     }
 
@@ -104,6 +109,16 @@ public class JsonDialog extends DialogWrapper {
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
         return contentPanel;
+    }
+
+    @Override
+    protected void dispose() {
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(submit);
+            submit = null;
+        }
+        super.dispose();
     }
 }
 

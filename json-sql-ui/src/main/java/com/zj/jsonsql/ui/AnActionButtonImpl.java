@@ -14,6 +14,7 @@ import java.util.function.Supplier;
  * @author jie.zhou
  */
 public abstract class AnActionButtonImpl extends AnActionButton implements Disposable {
+
     public AnActionButtonImpl(@NlsContexts.Button String text) {
         super(text);
     }

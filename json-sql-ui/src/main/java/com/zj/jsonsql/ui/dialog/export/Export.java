@@ -2,6 +2,7 @@ package com.zj.jsonsql.ui.dialog.export;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -19,6 +20,7 @@ import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.EasyExcelUtil;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,11 +38,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author arthur_zhou
  * @date 2023/12/22 17:50
  */
-public class Export extends WizardStep<WizardModel> {
+public class Export extends WizardStep<WizardModel> implements Disposable {
 
     private final ExportInfo exportInfo;
     private final Project project;
     private final JsonInfo jsonInfo;
+
+    private boolean disposed = false;
+    private TextFieldWithBrowseButton textFieldWithBrowseButton;
+    private JBCheckBox multiLevelHeaderCheckBox;
+    private JButton exportButton;
 
     public Export(ExportInfo exportInfo, Project project, JsonInfo jsonInfo) {
         this.exportInfo = exportInfo;
@@ -126,6 +133,24 @@ public class Export extends WizardStep<WizardModel> {
         JPanel resultPanel = new JPanel(new GridLayout(4, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);
+        this.textFieldWithBrowseButton = textFieldWithBrowseButton;
+        this.multiLevelHeaderCheckBox = multiLevelHeaderCheckBox;
+        this.exportButton = exportButton;
         return resultPanel;
+    }
+
+    @Override
+    public void dispose() {
+        if (!disposed) {
+            disposed = true;
+            if (Objects.nonNull(textFieldWithBrowseButton)) {
+                textFieldWithBrowseButton.dispose();
+            }
+            ExecutorUtil.removeListener(multiLevelHeaderCheckBox);
+            ExecutorUtil.removeListener(exportButton);
+            textFieldWithBrowseButton = null;
+            multiLevelHeaderCheckBox = null;
+            exportButton = null;
+        }
     }
 }
