@@ -32,7 +32,11 @@ public class ExecutorUtil {
      * @param anActionButtonList 按钮数组
      */
     public static void setContentDisposerAnActionButtonImpl(Content content, List<AnActionButtonImpl> anActionButtonList) {
-        Disposable disposable = new Disposable.Default() {
+        Disposable disposable = new Disposable() {
+            @Override
+            public void dispose() {
+
+            }
         };
         content.setDisposer(disposable);
         if (CollectionUtils.isEmpty(anActionButtonList)) {
