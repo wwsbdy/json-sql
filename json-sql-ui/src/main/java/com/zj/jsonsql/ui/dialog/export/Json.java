@@ -1,6 +1,8 @@
 package com.zj.jsonsql.ui.dialog.export;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.AncestorListenerAdapter;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.ui.wizard.WizardNavigationState;
@@ -19,7 +21,7 @@ import java.awt.*;
 /**
  * @author 19242
  */
-public class Json extends WizardStep<WizardModel> {
+public class Json extends WizardStep<WizardModel> implements Disposable {
 
     private final ExportInfo exportInfo;
     private final Project project;
@@ -47,10 +49,16 @@ public class Json extends WizardStep<WizardModel> {
                 jsonEditorField.setText(exportInfo.getJsonArrayStr());
             }
         });
+        Disposer.register(this, jsonEditorField);
         center.add(jsonEditorField, BorderLayout.CENTER);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
         return jPanel;
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

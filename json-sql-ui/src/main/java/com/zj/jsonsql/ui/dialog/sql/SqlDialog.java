@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.ui.LanguageTextField;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -36,7 +36,7 @@ public class SqlDialog extends DialogWrapper {
     /**
      * swing样式类，定义在4.3.2
      */
-    private final LanguageTextField sqlContent;
+    private final SqlEditorFiled sqlContent;
     private final IdeaJsonInfo jsonInfo;
     private final String originalSql;
 
@@ -47,6 +47,7 @@ public class SqlDialog extends DialogWrapper {
         // 设置会话框标题
         setTitle(PluginBundle.get("sql.title"));
         sqlContent = new SqlEditorFiled(SqlLanguage.INSTANCE, project, jsonInfo);
+        Disposer.register(getDisposable(), sqlContent);
         // 触发一下init方法，否则swing样式将无法展示在会话框
         init();
     }
