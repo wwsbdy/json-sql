@@ -30,4 +30,8 @@ public interface Constant {
      * 最大标签页长度
      */
     int TAB_MAX = 15;
+    /**
+     * SQL历史记录最大数
+     */
+    int SQL_HISTORY_LIST_SIZE_MAX = 10;
 }
