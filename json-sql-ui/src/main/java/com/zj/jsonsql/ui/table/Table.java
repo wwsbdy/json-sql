@@ -120,7 +120,7 @@ public class Table {
         // 禁用自带的按钮
         disableButton(decorator);
         // 编辑sql按钮
-        AnActionButton modifyJson = new AnActionButtonImpl(PluginBundle.get("table.edit-json"), AllIcons.Actions.Edit) {
+        AnActionButtonImpl modifyJson = new AnActionButtonImpl(PluginBundle.get("table.edit-json"), AllIcons.Actions.Edit) {
 
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
