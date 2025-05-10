@@ -154,12 +154,16 @@ public class Table {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 WizardModel wizardModel = new WizardModel(PluginBundle.get("table.export"));
                 ExportInfo exportInfo = new ExportInfo();
-                wizardModel.add(new Setting(exportInfo));
+                Setting setting = new Setting(exportInfo);
+                wizardModel.add(setting);
                 Json json = new Json(exportInfo, project);
                 wizardModel.add(json);
-                wizardModel.add(new Export(exportInfo, project, ideaJsonInfo));
+                Export export1 = new Export(exportInfo, project, ideaJsonInfo);
+                wizardModel.add(export1);
                 ExportDialog wizardDialog = new ExportDialog(exportInfo, ideaJsonInfo, project, true, wizardModel);
-                Disposer.register(this, json);
+                Disposer.register(wizardDialog.getDisposable(), setting);
+                Disposer.register(wizardDialog.getDisposable(), json);
+                Disposer.register(wizardDialog.getDisposable(), export1);
                 Disposer.register(this, wizardDialog.getDisposable());
                 wizardDialog.show();
             }

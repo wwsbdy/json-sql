@@ -11,6 +11,7 @@
     Json Sql<br>
     Retrieve the desired data from JSON using SQL<br>
     And convert SQL to JSON again<br>
+    Support import and export of Excel and CSV files<br>
     The supported SQL statements are：
     <ul>
         <li>select *、name、name as alias、name.surname(Multi layer query)</li>
@@ -41,6 +42,7 @@
     <br>
     将json通过sql查出想要的数据<br>
     并把sql再转成json<br>
+    支持excel、csv导入导出<br>
     支持的sql语句有：
     <ul>
         <li>select *、name、name as alias、name.surname（多层查询）</li>
@@ -72,8 +74,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <!-- 自定义 底部view -->
-        <executor id="JsonSql" order="last"
-                  implementation="com.zj.jsonsql.ui.table.TableExecutor"/>
+<!--        <executor id="JsonSql" order="last"-->
+<!--                  implementation="com.zj.jsonsql.ui.table.TableExecutor"/>-->
         <toolWindow id="JsonSql" factoryClass="com.zj.jsonsql.ui.JsonSqlToolWindowFactory" anchor="bottom" canCloseContents="true" icon="AllIcons.FileTypes.JsonSchema"/>
         <fileType name="SQL-CUSTOM" language="SQL-CUSTOM"
                   extensions="SQL-CUSTOM"
@@ -87,11 +89,11 @@
     <!--跟build.gradle里的sinceBuild一致即可，意义相同，必须配置-->
     <idea-version since-build="201" until-build="221.*"/>
 
-    <actions>
-        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.FromAction"
-                text="JsonSql" description="JsonArray解析" icon="AllIcons.FileTypes.JsonSchema">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-    </actions>
+<!--    <actions>-->
+<!--        <action id="com.kungyu.toolview.ConsoleViewAction" class="com.zj.jsonsql.ui.FromAction"-->
+<!--                text="JsonSql" description="JsonArray解析" icon="AllIcons.FileTypes.JsonSchema">-->
+<!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
+<!--        </action>-->
+<!--    </actions>-->
     <depends>com.intellij.modules.platform</depends>
 </idea-plugin>

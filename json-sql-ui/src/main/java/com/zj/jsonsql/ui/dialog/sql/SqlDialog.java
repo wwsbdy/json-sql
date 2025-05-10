@@ -16,6 +16,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
 import org.apache.calcite.sql.SqlSelect;
@@ -39,6 +40,10 @@ public class SqlDialog extends DialogWrapper {
     private final SqlEditorFiled sqlContent;
     private final IdeaJsonInfo jsonInfo;
     private final String originalSql;
+
+    private boolean disposed = false;
+    private JButton submit;
+    private ComboBox<Object> rowComboBox;
 
     public SqlDialog(IdeaJsonInfo jsonInfo, Project project) {
         super(true);
@@ -117,9 +122,12 @@ public class SqlDialog extends DialogWrapper {
                 }
             });
             south.add(rowComboBox);
+            this.rowComboBox = rowComboBox;
         } else {
             south.add(new JBLabel());
         }
+        this.submit = submit;
+
         return south;
     }
 
@@ -141,6 +149,18 @@ public class SqlDialog extends DialogWrapper {
         panel2.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panel1.add(panel2, BorderLayout.SOUTH);
         return contentPanel;
+    }
+
+    @Override
+    protected void dispose() {
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(submit);
+            ExecutorUtil.removeListener(rowComboBox);
+            submit = null;
+            rowComboBox = null;
+        }
+        super.dispose();
     }
 }
 

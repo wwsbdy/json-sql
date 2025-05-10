@@ -5,6 +5,7 @@ import com.intellij.ui.wizard.WizardDialog;
 import com.intellij.ui.wizard.WizardModel;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.entity.JsonInfo;
+import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.JsonUtil;
 
 import javax.swing.*;
@@ -20,6 +21,9 @@ public class ExportDialog extends WizardDialog<WizardModel> {
 
     private final ExportInfo exportInfo;
     private final JsonInfo jsonInfo;
+
+    private boolean disposed = false;
+    private JButton jButton;
 
     public ExportDialog(ExportInfo exportInfo, JsonInfo jsonInfo, Project project, boolean canBeParent, WizardModel model) {
         super(project, canBeParent, model);
@@ -40,10 +44,21 @@ public class ExportDialog extends WizardDialog<WizardModel> {
             JButton jButton = (JButton) panel.getComponent(0);
             jButton.addActionListener(event -> exportInfo.setJsonArrayStr(JsonUtil.getJsonStr(jsonInfo, exportInfo)));
             panel1.add(jButton);
+            this.jButton = jButton;
         }
         final JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(panel1, BorderLayout.EAST);
         southPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         return southPanel;
+    }
+
+    @Override
+    protected void dispose() {
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(jButton);
+            jButton = null;
+        }
+        super.dispose();
     }
 }

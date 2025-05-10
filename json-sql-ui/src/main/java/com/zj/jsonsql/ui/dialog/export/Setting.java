@@ -1,5 +1,6 @@
 package com.zj.jsonsql.ui.dialog.export;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
@@ -8,6 +9,7 @@ import com.intellij.ui.wizard.WizardNavigationState;
 import com.intellij.ui.wizard.WizardStep;
 import com.zj.jsonsql.entity.ExportInfo;
 import com.zj.jsonsql.ui.PluginBundle;
+import com.zj.jsonsql.utils.ExecutorUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,9 +18,16 @@ import java.awt.event.ActionEvent;
 /**
  * @author arthur_zhou
  */
-public class Setting extends WizardStep<WizardModel> {
+public class Setting extends WizardStep<WizardModel> implements Disposable {
 
     private final ExportInfo exportInfo;
+
+    private boolean disposed = false;
+    private ComboBox<Object> rowComboBox;
+    private ComboBox<Object> columnComboBox;
+    private JBCheckBox roundCheckBox;
+    private JBCheckBox beautifyCheckBox;
+    private JBCheckBox distinctCheckBox;
 
     public Setting(ExportInfo exportInfo) {
         this.exportInfo = exportInfo;
@@ -91,6 +100,28 @@ public class Setting extends WizardStep<WizardModel> {
         JPanel resultPanel = new JPanel(new GridLayout(4, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);
+        this.rowComboBox = rowComboBox;
+        this.columnComboBox = columnComboBox;
+        this.roundCheckBox = roundCheckBox;
+        this.beautifyCheckBox = beautifyCheckBox;
+        this.distinctCheckBox = distinctCheckBox;
         return resultPanel;
+    }
+
+    @Override
+    public void dispose() {
+        if (!disposed) {
+            disposed = true;
+            ExecutorUtil.removeListener(rowComboBox);
+            ExecutorUtil.removeListener(columnComboBox);
+            ExecutorUtil.removeListener(roundCheckBox);
+            ExecutorUtil.removeListener(beautifyCheckBox);
+            ExecutorUtil.removeListener(distinctCheckBox);
+            rowComboBox = null;
+            columnComboBox = null;
+            roundCheckBox = null;
+            beautifyCheckBox = null;
+            distinctCheckBox = null;
+        }
     }
 }
