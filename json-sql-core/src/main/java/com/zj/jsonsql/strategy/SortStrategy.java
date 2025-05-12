@@ -51,9 +51,9 @@ public class SortStrategy {
                 SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
                 if (sqlBasicCall.getOperator().isName("desc", false)) {
                     sortList.add(new Sort(sqlBasicCall.getOperandList().get(0), false));
-                } else if (sqlBasicCall.getKind() == SqlKind.OTHER_FUNCTION) {
-                    sortList.add(new Sort(sqlNode));
+                    continue;
                 }
+                sortList.add(new Sort(sqlNode));
             }
         }
     }
