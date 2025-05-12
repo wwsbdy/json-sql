@@ -82,10 +82,11 @@ public class SqlUtil {
             }, v -> v, (v1, v2) -> v1, LinkedHashMap::new)).values().stream();
         }
         // 追加表字段
-        List<Field> selectAndColumnList = new ArrayList<>(selectList);
+        List<Field> selectAndColumnList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(columns)) {
             selectAndColumnList.addAll(columns);
         }
+        selectAndColumnList.addAll(selectList);
         // 获取别名和原始名
         Map<String, SqlNode> nameMap = selectAndColumnList.stream()
                 .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2));
