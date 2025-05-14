@@ -388,9 +388,12 @@ public class SqlUtil {
             return sqlNode;
         }
         if (sqlNode instanceof SqlIdentifier
-                && !"*".equals(sqlNode.toString())
-                && !columnSet.contains(((SqlIdentifier) sqlNode).getSimple())) {
-            return sqlNode;
+                && !"*".equals(sqlNode.toString())) {
+            SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
+            if (CollectionUtils.isNotEmpty(sqlIdentifier.names) && !columnSet.contains(sqlIdentifier.names.get(0))) {
+                return sqlNode;
+            }
+            return null;
         }
         if (sqlNode instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
