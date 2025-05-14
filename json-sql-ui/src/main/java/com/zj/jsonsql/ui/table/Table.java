@@ -2,6 +2,7 @@ package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -171,7 +172,7 @@ public class Table implements Disposable {
                 refresh(dataModel, ideaJsonInfo, table);
             }
         };
-        decorator.addExtraActions(modifyJson, editSql, reset, export, importExcel);
+        decorator.addExtraActions((AnAction) modifyJson, editSql, reset, export, importExcel);
         Disposer.register(myTable, modifyJson);
         Disposer.register(myTable, editSql);
         Disposer.register(myTable, reset);
@@ -198,7 +199,7 @@ public class Table implements Disposable {
                     ExecutorUtil.addContent(nextIdeaJsonInfo, project, toolWindow);
                 }
             };
-            decorator.addExtraAction(copy);
+            decorator.addExtraAction((AnAction) copy);
             Disposer.register(myTable, copy);
         }
         myTable.panel = decorator.createPanel();
