@@ -1,12 +1,13 @@
 package com.zj.jsonsql.entity;
 
+import com.zj.jsonsql.enums.NoticeEnum;
+import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,13 +74,26 @@ public class JsonInfo extends BaseJsonInfo {
 
 
     public List<Field> getSelect() {
-        if (Objects.isNull(select)) {
-            select = SqlUtil.getFields(super.getColumns(), sqlNode);
+        if (Objects.nonNull(select)) {
+            return select;
         }
-        if (CollectionUtils.isEmpty(select)) {
-            select = Collections.emptyList();
-        }
-        return select;
+        return select = SqlUtil.getFields(super.getColumns(), sqlNode);
     }
 
+    /**
+     * 尝试执行sql，成功则替换原始sql
+     *
+     * @param sql sql语句
+     */
+    public void trySql(String sql) throws SqlException, SqlParseException {
+        SqlSelect sqlSelect;
+        sqlSelect = SqlUtil.toSqlSelect(sql);
+        if (Objects.isNull(sqlSelect)) {
+            throw new SqlException(NoticeEnum.SQL_ERROR.getMessage());
+        }
+        setSelect(SqlUtil.getFields(getColumns(), sqlSelect));
+        setResult(SqlUtil.getDataList(getList(), getColumns(), sqlSelect));
+        setSql(sql);
+        setSqlNode(sqlSelect);
+    }
 }
