@@ -5,8 +5,6 @@ import com.alibaba.fastjson.parser.Feature;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
-import org.apache.calcite.sql.SqlSelect;
-import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.commons.codec.Resources;
 import org.apache.commons.io.IOUtils;
 
@@ -29,14 +27,11 @@ public class SqlTestUtil {
 
     public static JsonInfo getJsonInfo(String sql) {
         JsonInfo jsonInfo = JsonUtil.getJsonInfo(jsonStr);
-        jsonInfo.setSql(sql);
-        SqlSelect sqlSelect;
         try {
-            sqlSelect = SqlUtil.toSqlSelect(sql);
-        } catch (SqlParseException e) {
+            jsonInfo.trySql(sql);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        jsonInfo.setSqlNode(sqlSelect);
         return jsonInfo;
 
     }

@@ -1,14 +1,13 @@
 package com.zj.jsonsql.ui.table;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.table.TableView;
 import com.intellij.ui.wizard.WizardModel;
 import com.intellij.util.ui.ListTableModel;
@@ -35,8 +34,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,15 +42,11 @@ import java.util.Objects;
  * @author 19242
  */
 @Getter
-public class Table {
+public class Table implements Disposable {
 
-    private final JPanel panel;
+    private JPanel panel;
 
-    private final List<AnActionButtonImpl> anActionButtonList;
-
-    private Table(JPanel panel, List<AnActionButtonImpl> anActionButtonList) {
-        this.panel = panel;
-        this.anActionButtonList = anActionButtonList;
+    private Table() {
     }
 
     /**
@@ -104,6 +97,7 @@ public class Table {
     }
 
     public static Table create(Project project, IdeaJsonInfo ideaJsonInfo, ToolWindow toolWindow) {
+        Table myTable = new Table();
         // 创建表格模型
         ListTableModel<Row> dataModel = new ListTableModel<>(ideaJsonInfo.getFields());
         // 创建JTable表格组件
@@ -179,13 +173,11 @@ public class Table {
             }
         };
         decorator.addExtraActions(modifyJson, editSql, reset, export, importExcel);
-
-        List<AnActionButtonImpl> anActionButtonList = new ArrayList<>();
-        anActionButtonList.add(modifyJson);
-        anActionButtonList.add(editSql);
-        anActionButtonList.add(reset);
-        anActionButtonList.add(export);
-        anActionButtonList.add(importExcel);
+        Disposer.register(myTable, modifyJson);
+        Disposer.register(myTable, editSql);
+        Disposer.register(myTable, reset);
+        Disposer.register(myTable, export);
+        Disposer.register(myTable, importExcel);
         if (Objects.nonNull(toolWindow)) {
             // 复制
             AnActionButtonImpl copy = new AnActionButtonImpl(PluginBundle.get("table.copy"), AllIcons.Actions.Copy) {
@@ -204,19 +196,19 @@ public class Table {
                         nextIdeaJsonInfo.setList(jsonInfo.getList());
                     } catch (JsonException ignored) {
                     }
-                    Table table1 = Table.create(project, nextIdeaJsonInfo, toolWindow);
-                    Content content = ContentFactory.SERVICE.getInstance()
-                            .createContent(table1.getPanel(), PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
-                    content.setCloseable(true);
-                    ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table1.getAnActionButtonList());
-                    toolWindow.getContentManager().addContent(content);
-                    toolWindow.getContentManager().setSelectedContent(content);
+                    ExecutorUtil.addContent(nextIdeaJsonInfo, project, toolWindow);
                 }
             };
             decorator.addExtraAction(copy);
-            anActionButtonList.add(copy);
+            Disposer.register(myTable, copy);
         }
-        JPanel panel = decorator.createPanel();
-        return new Table(panel, anActionButtonList);
+        myTable.panel = decorator.createPanel();
+        return myTable;
+    }
+
+
+    @Override
+    public void dispose() {
+
     }
 }
