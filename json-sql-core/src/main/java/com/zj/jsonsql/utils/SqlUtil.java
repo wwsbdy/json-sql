@@ -64,9 +64,11 @@ public class SqlUtil {
         }
         // 过滤
         SqlNode where = sqlNode.getWhere();
-        // 校验字段是否存在，用替换别名的方法，不存在的会抛异常
-        replaceAlias(where, columns.stream()
-                .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2)));
+        // 校验字段是否存在
+        SqlNode notExistFiled = findNotExistFiled(where, columns.stream().map(Field::getName).collect(Collectors.toSet()));
+        if (Objects.nonNull(notExistFiled)) {
+            throw new SqlException(notExistFiled + PluginBundle.get("error.message.filed-no-find"));
+        }
         AbstractWhereStrategy strategy = StrategyBean.getStrategy(where);
         Stream<Row> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
