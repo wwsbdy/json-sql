@@ -10,22 +10,18 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
-import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.IdeaJsonInfo;
-import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.NoticeEnum;
 import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.ExecutorUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import lombok.Getter;
-import org.apache.calcite.sql.SqlSelect;
 import org.apache.calcite.sql.parser.SqlParseException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -83,28 +79,18 @@ public class SqlDialog extends DialogWrapper {
 //                    Messages.showErrorDialog(NoticeEnum.SQL_TOO_LONG.getMessage(), NoticeEnum.SQL_TOO_LONG.getWarn());
 //                    return;
 //                }
-                SqlSelect sqlSelect;
                 try {
-                    sqlSelect = SqlUtil.toSqlSelect(sqlStr);
+                    jsonInfo.trySql(sqlStr);
                 } catch (SqlParseException e) {
                     Messages.showErrorDialog(SqlUtil.getErrorMessage(e), NoticeEnum.SQL_ERROR.getWarn());
                     return;
-                }
-                if (Objects.isNull(sqlSelect)) {
-                    Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
-                    return;
-                }
-                try {
-                    List<Field> fields = SqlUtil.getFields(jsonInfo.getColumns(), sqlSelect);
-                    jsonInfo.setSelect(fields);
-                    List<Row> result = SqlUtil.getDataList(jsonInfo.getList(), jsonInfo.getColumns(), sqlSelect);
-                    jsonInfo.setResult(result);
                 } catch (SqlException sqlException) {
                     Messages.showErrorDialog(sqlException.getMessage(), PluginBundle.get("error.title.sql-error"));
                     return;
+                } catch (Exception e) {
+                    Messages.showErrorDialog(NoticeEnum.SQL_ERROR.getMessage(), NoticeEnum.SQL_ERROR.getWarn());
+                    return;
                 }
-                jsonInfo.setSql(sqlStr);
-                jsonInfo.setSqlNode(sqlSelect);
                 // 关闭窗口
                 doCancelAction();
             }

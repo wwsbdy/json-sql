@@ -64,9 +64,8 @@ public class SqlUtil {
         }
         // 过滤
         SqlNode where = sqlNode.getWhere();
-        // 校验字段是否存在，用替换别名的方法，不存在的会抛异常
-        replaceAlias(where, columns.stream()
-                .collect(Collectors.toMap(Field::getName, Field::getOriginalFiled, (v1, v2) -> v2)));
+        // where校验字段是否存在
+        findNotExistOrErrorFiled(where, columns.stream().map(Field::getName).collect(Collectors.toSet()));
         AbstractWhereStrategy strategy = StrategyBean.getStrategy(where);
         Stream<Row> stream = dataList.stream().filter(strategy::apply);
         // 获取查询的字段
@@ -230,17 +229,11 @@ public class SqlUtil {
             if (node.getKind() == SqlKind.AS) {
                 List<SqlNode> operandList = ((SqlBasicCall) node).getOperandList();
                 if (CollectionUtils.isNotEmpty(operandList) && operandList.size() == 2) {
-                    SqlNode notExistFiled = findNotExistFiled(operandList.get(0), columnSet);
-                    if (Objects.nonNull(notExistFiled)) {
-                        throw new SqlException(notExistFiled + PluginBundle.get("error.message.filed-no-find"));
-                    }
+                    findNotExistOrErrorFiled(operandList.get(0), columnSet);
                     select.add(new Field(operandList.get(0), String.valueOf(operandList.get(1))));
                 }
             } else {
-                SqlNode notExistFiled = findNotExistFiled(node, columnSet);
-                if (Objects.nonNull(notExistFiled)) {
-                    throw new SqlException(notExistFiled + PluginBundle.get("error.message.filed-no-find"));
-                }
+                findNotExistOrErrorFiled(node, columnSet);
                 select.add(new Field(node, name));
             }
         }
@@ -377,31 +370,41 @@ public class SqlUtil {
     }
 
     /**
-     * 是否存在不存在的字段
+     * 是否存在不存在或错误函数的字段
      *
      * @param sqlNode   sql解析树
      * @param columnSet 原始表字段
-     * @return 是否存在聚合函数
      */
-    private static SqlNode findNotExistFiled(SqlNode sqlNode, Set<String> columnSet) {
-        if (CollectionUtils.isEmpty(columnSet)) {
-            return sqlNode;
+    private static void findNotExistOrErrorFiled(SqlNode sqlNode, Set<String> columnSet) {
+        if (Objects.isNull(sqlNode) || CollectionUtils.isEmpty(columnSet)) {
+            return;
+        }
+        // 带.的函数字段不支持
+        if (sqlNode.getKind() == SqlKind.DOT) {
+            throw new SqlException(sqlNode + PluginBundle.get("error.message.field-no-support"));
         }
         if (sqlNode instanceof SqlIdentifier
-                && !"*".equals(sqlNode.toString())
-                && !columnSet.contains(((SqlIdentifier) sqlNode).getSimple())) {
-            return sqlNode;
+                && !"*".equals(sqlNode.toString())) {
+            SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
+            if (CollectionUtils.isNotEmpty(sqlIdentifier.names) && !columnSet.contains(sqlIdentifier.names.get(0))) {
+                throw new SqlException(sqlNode + PluginBundle.get("error.message.filed-no-find"));
+            }
+            return;
         }
         if (sqlNode instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
             for (SqlNode node : sqlBasicCall.getOperandList()) {
-                SqlNode notExistFiled = findNotExistFiled(node, columnSet);
-                if (Objects.nonNull(notExistFiled)) {
-                    return notExistFiled;
-                }
+                findNotExistOrErrorFiled(node, columnSet);
             }
+            // 如果是函数，判断是否支持
+            Optional.ofNullable(StrategyBean.getFuncStrategy(sqlBasicCall.getOperator()))
+                            .ifPresent(funcStrategy -> {
+                                if (!funcStrategy.isSupport(sqlBasicCall.getOperandList())) {
+                                    throw new SqlException(sqlBasicCall + PluginBundle.get("error.message.field-no-support"));
+                                }
+                            });
+
         }
-        return null;
     }
 
     /**

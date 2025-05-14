@@ -67,7 +67,7 @@ public class TableRunner {
         Table table = Table.create(project, jsonInfo);
         final Content content = layoutUi.createContent("contentId", table.getPanel(), PluginBundle.get("table.json-data"), AllIcons.Toolwindows.ToolWindowMessages, table.getPanel());
         content.setCloseable(false);
-        ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table.getAnActionButtonList());
+        ExecutorUtil.setContentDisposerAnActionButtonImpl(content, table);
         layoutUi.addContent(content);
 
         RunContentManager.getInstance(project).showRunContent(executor, descriptor);
