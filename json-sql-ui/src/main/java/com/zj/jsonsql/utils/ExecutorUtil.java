@@ -95,7 +95,7 @@ public class ExecutorUtil {
 
     public static void addContent(IdeaJsonInfo nextIdeaJsonInfo, Project project, ToolWindow toolWindow) {
         Table table = Table.create(project, nextIdeaJsonInfo, toolWindow);
-        Content content = ContentFactory.getInstance()
+        Content content = ContentFactory.SERVICE.getInstance()
                 .createContent(table.getPanel(), PluginBundle.get("tool-window.title") + toolWindow.getContentManager().getContentCount(), false);
         content.setCloseable(true);
         Optional.ofNullable(content.getDisposer())
