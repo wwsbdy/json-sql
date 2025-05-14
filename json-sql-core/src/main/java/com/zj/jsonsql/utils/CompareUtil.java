@@ -27,7 +27,7 @@ public class CompareUtil {
         // 如果是集合
         if (var1 instanceof Collection && var2 instanceof Collection) {
             return compareCollection(((Collection<?>) var1), ((Collection<?>) var2));
-        } else if (var1 instanceof Map) {
+        } else if (var1 instanceof Map && var2 instanceof Map) {
             return compareCollection(((Map<?, ?>) var1).entrySet(), ((Map<?, ?>) var2).entrySet());
         }
         String str1 = var1.toString();
