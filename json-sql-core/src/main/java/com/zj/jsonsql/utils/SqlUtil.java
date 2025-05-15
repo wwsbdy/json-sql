@@ -393,17 +393,16 @@ public class SqlUtil {
         }
         if (sqlNode instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) sqlNode;
+            // 如果是函数，判断是否支持
+            Optional.ofNullable(StrategyBean.getFuncStrategy(sqlBasicCall.getOperator()))
+                    .ifPresent(funcStrategy -> {
+                        if (!funcStrategy.isSupport(sqlBasicCall.getOperandList())) {
+                            throw new SqlException(funcStrategy.getType().name() + PluginBundle.get("error.message.func-param-error"));
+                        }
+                    });
             for (SqlNode node : sqlBasicCall.getOperandList()) {
                 findNotExistOrErrorFiled(node, columnSet);
             }
-            // 如果是函数，判断是否支持
-            Optional.ofNullable(StrategyBean.getFuncStrategy(sqlBasicCall.getOperator()))
-                            .ifPresent(funcStrategy -> {
-                                if (!funcStrategy.isSupport(sqlBasicCall.getOperandList())) {
-                                    throw new SqlException(sqlBasicCall + PluginBundle.get("error.message.field-no-support"));
-                                }
-                            });
-
         }
     }
 
@@ -441,6 +440,13 @@ public class SqlUtil {
         }
         if (key instanceof SqlBasicCall) {
             SqlBasicCall sqlBasicCall = (SqlBasicCall) key;
+            // 如果是函数，判断是否支持
+            Optional.ofNullable(StrategyBean.getFuncStrategy(sqlBasicCall.getOperator()))
+                    .ifPresent(funcStrategy -> {
+                        if (!funcStrategy.isSupport(sqlBasicCall.getOperandList())) {
+                            throw new SqlException(funcStrategy.getType().name() + PluginBundle.get("error.message.func-param-error"));
+                        }
+                    });
             List<SqlNode> operandList = sqlBasicCall.getOperandList();
             for (int i = 0; i < operandList.size(); i++) {
                 SqlNode sqlNode = operandList.get(i);

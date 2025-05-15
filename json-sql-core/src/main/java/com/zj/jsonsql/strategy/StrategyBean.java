@@ -4,6 +4,7 @@ import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
 import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
+import com.zj.jsonsql.strategy.impl.fourfundamentalrules.*;
 import com.zj.jsonsql.strategy.impl.func.*;
 import com.zj.jsonsql.utils.CompareUtil;
 import com.zj.jsonsql.utils.SqlUtil;
@@ -70,7 +71,12 @@ public class StrategyBean {
             new AvgStrategy(),
             new AnyValueStrategy(),
             new GroupArrayStrategy(),
-            new GroupConcatStrategy()
+            new GroupConcatStrategy(),
+            new DivideStrategy(),
+            new MinusStrategy(),
+            new ModStrategy(),
+            new PlusStrategy(),
+            new TimesStrategy()
     ).collect(Collectors.toMap(IFunctionStrategy::getType, Function.identity(), (v1, v2) -> v2));
 
     /**
@@ -103,7 +109,8 @@ public class StrategyBean {
             };
         }
         SqlBasicCall sqlBasicCall = (SqlBasicCall) where;
-        switch (sqlBasicCall.getKind()) {
+        SqlKind kind = sqlBasicCall.getKind();
+        switch (kind) {
             case EQUALS:
                 return new EqualsStrategy(false, sqlBasicCall.getOperandList());
             case NOT_EQUALS:
@@ -123,10 +130,15 @@ public class StrategyBean {
             case LESS_THAN:
             case LESS_THAN_OR_EQUAL:
             case BETWEEN:
-                return new RangeStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
+                return new RangeStrategy(kind, sqlBasicCall.getOperandList());
             case OR:
             case AND:
-                return new RelationStrategy(sqlBasicCall.getKind(), sqlBasicCall.getOperandList());
+                return new RelationStrategy(kind, sqlBasicCall.getOperandList());
+            case PLUS:
+            case MINUS:
+            case TIMES:
+            case DIVIDE:
+            case MOD:
             case GROUP_CONCAT:
             case OTHER_FUNCTION:
                 return new AbstractWhereStrategy(false) {

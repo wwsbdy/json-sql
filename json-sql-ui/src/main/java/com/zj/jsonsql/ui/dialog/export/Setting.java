@@ -28,6 +28,7 @@ public class Setting extends WizardStep<WizardModel> implements Disposable {
     private JBCheckBox roundCheckBox;
     private JBCheckBox beautifyCheckBox;
     private JBCheckBox distinctCheckBox;
+    private JBCheckBox singleQuotesCheckBox;
 
     public Setting(ExportInfo exportInfo) {
         this.exportInfo = exportInfo;
@@ -36,7 +37,7 @@ public class Setting extends WizardStep<WizardModel> implements Disposable {
     @Override
     public JComponent prepare(WizardNavigationState state) {
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(5, 2));
+        jPanel.setLayout(new GridLayout(6, 2));
         ComboBox<Object> rowComboBox = new ComboBox<>();
         rowComboBox.addItem(PluginBundle.get("setting.sql-query"));
         rowComboBox.addItem(PluginBundle.get("setting.select-row"));
@@ -97,7 +98,17 @@ public class Setting extends WizardStep<WizardModel> implements Disposable {
         });
         jPanel.add(new JBLabel(PluginBundle.get("setting.deduplication")));
         jPanel.add(distinctCheckBox);
-        JPanel resultPanel = new JPanel(new GridLayout(4, 1));
+        JBCheckBox singleQuotesCheckBox = new JBCheckBox();
+        singleQuotesCheckBox.setSelected(exportInfo.isSingleQuotes());
+        singleQuotesCheckBox.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exportInfo.setSingleQuotes(singleQuotesCheckBox.isSelected());
+            }
+        });
+        jPanel.add(new JBLabel(PluginBundle.get("setting.single-quotes")));
+        jPanel.add(singleQuotesCheckBox);
+        JPanel resultPanel = new JPanel(new GridLayout(3, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);
         this.rowComboBox = rowComboBox;
@@ -105,6 +116,7 @@ public class Setting extends WizardStep<WizardModel> implements Disposable {
         this.roundCheckBox = roundCheckBox;
         this.beautifyCheckBox = beautifyCheckBox;
         this.distinctCheckBox = distinctCheckBox;
+        this.singleQuotesCheckBox = singleQuotesCheckBox;
         return resultPanel;
     }
 
@@ -117,11 +129,13 @@ public class Setting extends WizardStep<WizardModel> implements Disposable {
             ExecutorUtil.removeListener(roundCheckBox);
             ExecutorUtil.removeListener(beautifyCheckBox);
             ExecutorUtil.removeListener(distinctCheckBox);
+            ExecutorUtil.removeListener(singleQuotesCheckBox);
             rowComboBox = null;
             columnComboBox = null;
             roundCheckBox = null;
             beautifyCheckBox = null;
             distinctCheckBox = null;
+            singleQuotesCheckBox = null;
         }
     }
 }
