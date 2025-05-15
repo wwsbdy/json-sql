@@ -132,6 +132,11 @@ public class Row {
                 return get(key.toString());
             case DOT:
                 throw new SqlException(key + PluginBundle.get("error.message.field-no-support"));
+            case PLUS:
+            case MINUS:
+            case TIMES:
+            case DIVIDE:
+            case MOD:
             case GROUP_CONCAT:
             case OTHER_FUNCTION:
                 return StrategyBean.getFuncStrategy(((SqlBasicCall) key).getOperator())

@@ -61,4 +61,9 @@ public class SqlTest {
                 "from t_user group by a having b order by b");
     }
 
+    @Test
+    public void fourFundamentalRulesTest() {
+        SqlTestUtil.out("select id, (id + 10 )/ 10 a from t_user limit 4");
+    }
+
 }
