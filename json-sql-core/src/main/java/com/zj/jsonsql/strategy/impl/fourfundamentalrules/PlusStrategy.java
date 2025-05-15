@@ -2,9 +2,7 @@ package com.zj.jsonsql.strategy.impl.fourfundamentalrules;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
-import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.IFunctionStrategy;
-import com.zj.jsonsql.ui.PluginBundle;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -24,7 +22,7 @@ public class PlusStrategy implements IFunctionStrategy {
     public Object get(Row row, SqlBasicCall sqlBasicCall) {
         List<SqlNode> params = sqlBasicCall.getOperandList();
         if (!isSupport(params)) {
-            throw new SqlException("'+'" + PluginBundle.get("error.message.four-fundamental-rules-param-error"));
+            return null;
         }
         Object param1 = getValue(row, params.get(0));
         Object param2 = getValue(row, params.get(1));

@@ -21,17 +21,17 @@ public class SqlTest {
 
     @Test
     public void ifTest() {
-        SqlTestUtil.out("select if(left(left('510100',6), 4) = '5101',left(left('510100',6), 4) = '5101',0) a,if(code,1,0) b,if(right(123,2),1,0)c from t_user where left(code, 4) = '5101'");
+        SqlTestUtil.out("select if(left(left('320100',6), 4) = '3201',left(left('320100',6), 4) = '3201',0) a,if(code,1,0) b,if(right(123,2),1,0)c from t_user where left(code, 4) = '3201'");
     }
 
     @Test
     public void simpleIfTest() {
-        SqlTestUtil.out("select 1 a,if(code,1,0) b,if(right(123,2),1,0)c from t_user where left(code, 4) = '5101'");
+        SqlTestUtil.out("select 1 a,if(code,1,0) b,if(right(123,2),1,0)c from t_user where left(code, 4) = '3201'");
     }
 
     @Test
     public void isNullTest() {
-        SqlTestUtil.out("select * from t_user where isnull(nullif(`code`, 510100))");
+        SqlTestUtil.out("select * from t_user where isnull(nullif(`code`, 320100))");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class SqlTest {
 
     @Test
     public void fourFundamentalRulesTest() {
-        SqlTestUtil.out("select id, (id + 10 )/ 10 a from t_user limit 4");
+        SqlTestUtil.out("select id, id + '10' / 10 a, id / 10 + 10 b, id + (10 / 10) c from t_user limit 4");
     }
 
 }

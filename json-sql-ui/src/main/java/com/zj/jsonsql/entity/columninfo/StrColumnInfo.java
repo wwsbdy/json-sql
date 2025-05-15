@@ -47,15 +47,12 @@ public class StrColumnInfo extends TableColumnInfo<String> {
             value = null;
         }
         if (Objects.isNull(value)) {
-            return "NULL";
+            return null;
         }
         if (value instanceof String) {
             return (String) value;
         }
-        if (value instanceof Boolean) {
-            return String.valueOf(value);
-        }
-        if (value instanceof Number) {
+        if (value instanceof Boolean || value instanceof Number) {
             return String.valueOf(value);
         }
         return JSON.toJSONString(value);
@@ -84,8 +81,8 @@ public class StrColumnInfo extends TableColumnInfo<String> {
             @Override
             protected void customizeCellRenderer(@NotNull JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
                 // NULL的颜色
-                if (Objects.isNull(myRow.get(originalFiled))) {
-                    append((String) value, new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, new JBColor(new Color(255, 153, 0, 168), new Color(255, 153, 0, 168))));
+                if (Objects.isNull(value)) {
+                    append("NULL", new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, new JBColor(new Color(255, 153, 0, 168), new Color(255, 153, 0, 168))));
                 } else {
                     append((String) value, SimpleTextAttributes.REGULAR_ATTRIBUTES);
                 }

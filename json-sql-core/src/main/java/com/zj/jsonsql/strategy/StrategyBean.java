@@ -2,12 +2,10 @@ package com.zj.jsonsql.strategy;
 
 import com.zj.jsonsql.entity.Row;
 import com.zj.jsonsql.enums.FuncEnum;
-import com.zj.jsonsql.exception.SqlException;
 import com.zj.jsonsql.strategy.impl.aggregate.*;
 import com.zj.jsonsql.strategy.impl.compare.*;
 import com.zj.jsonsql.strategy.impl.fourfundamentalrules.*;
 import com.zj.jsonsql.strategy.impl.func.*;
-import com.zj.jsonsql.ui.PluginBundle;
 import com.zj.jsonsql.utils.CompareUtil;
 import com.zj.jsonsql.utils.SqlUtil;
 import org.apache.calcite.sql.*;
@@ -151,7 +149,7 @@ public class StrategyBean {
                     }
                 };
             default:
-                throw new SqlException(where + PluginBundle.get("error.message.grammar-not-supported"));
+                return ALWAYS_FALSE_STRATEGY;
         }
     }
 
