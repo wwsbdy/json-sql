@@ -130,7 +130,7 @@ public class Export extends WizardStep<WizardModel> implements Disposable {
         });
         jPanel.add(exportButton);
 
-        JPanel resultPanel = new JPanel(new GridLayout(4, 1));
+        JPanel resultPanel = new JPanel(new GridLayout(3, 1));
         resultPanel.setPreferredSize(new Dimension(500, 500));
         resultPanel.add(jPanel);
         this.textFieldWithBrowseButton = textFieldWithBrowseButton;

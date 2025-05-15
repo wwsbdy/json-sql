@@ -38,6 +38,10 @@ public class ExportInfo {
      */
     private boolean onlyOne = true;
     /**
+     * 单引号
+     */
+    private boolean singleQuotes;
+    /**
      * 展示的json字符串
      */
     private String jsonArrayStr = "";
@@ -52,6 +56,7 @@ public class ExportInfo {
         beautify = exportInfo.beautify;
         distinct = exportInfo.distinct;
         onlyOne = exportInfo.onlyOne;
+        singleQuotes = exportInfo.singleQuotes;
         jsonArrayStr = exportInfo.jsonArrayStr;
     }
 }

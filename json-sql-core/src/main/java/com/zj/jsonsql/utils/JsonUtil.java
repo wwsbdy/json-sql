@@ -141,11 +141,17 @@ public class JsonUtil {
                 result = (JSON) o;
             }
         }
+        List<SerializerFeature> features = new ArrayList<>();
+        features.add(SerializerFeature.WriteMapNullValue);
+        // 使用单引号
+        if (realExportInfo.isSingleQuotes()) {
+            features.add(SerializerFeature.UseSingleQuotes);
+        }
         // 是否美化
         if (realExportInfo.isBeautify()) {
-            return result.toString(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue);
+            features.add(SerializerFeature.PrettyFormat);
         }
-        return result.toString(SerializerFeature.WriteMapNullValue);
+        return result.toString(features.toArray(new SerializerFeature[0]));
     }
 
     /**

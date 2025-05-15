@@ -30,11 +30,18 @@ public enum FuncEnum {
     GROUP_CONCAT(1, JsonEnum.NUMBER),
     ANY_VALUE(1, JsonEnum.FUNC),
     GROUP_ARRAY(1, JsonEnum.ARRAY),
+
+    PLUS(2, JsonEnum.FUNC),
+    MINUS(2, JsonEnum.NUMBER),
+    TIMES(2, JsonEnum.NUMBER),
+    DIVIDE(2, JsonEnum.NUMBER),
+    MOD(2, JsonEnum.NUMBER),
     ;
 
     /**
      * 0: 函数
      * 1: 聚合函数
+     * 2: 四则运算
      */
     private final int type;
 
@@ -49,6 +56,18 @@ public enum FuncEnum {
     public static FuncEnum getByName(String name) {
         if (StringUtils.isEmpty(name)) {
             return null;
+        }
+        switch (name) {
+            case "+":
+                return PLUS;
+            case "-":
+                return MINUS;
+            case "*":
+                return TIMES;
+            case "/":
+                return DIVIDE;
+            case "%":
+                return MOD;
         }
         name = name.toUpperCase();
         for (FuncEnum funcEnum : values()) {
