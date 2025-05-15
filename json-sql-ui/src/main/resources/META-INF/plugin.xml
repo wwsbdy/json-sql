@@ -16,7 +16,8 @@
     <ul>
         <li>select *、name、name as alias、name.surname(Multi layer query)</li>
         <li>where =、!=、in、not in、&gt;、&gt;=、&lt;、&lt;=、between</li>
-        <li>like(_ and% escape with \\_ and \\%)、not like、is null、is not null</li>
+        <li>like、not like、is null、is not null</li>
+        <li>+、-、*、/、%</li>
         <li>and、or、Nesting 'and' and 'or'</li>
         <li>left、right、length、concat、if、ifnull、nullif、substr、substring、upper、lower、isnull、round functions</li>
         <li>group by；sum、avg、max、min、count、group_concat、any_value、group_array functions</li>
@@ -35,7 +36,7 @@
     Some Examples：
     <ul>
         <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
-        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%\\%lin%')</li>
+        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%lin%')</li>
         <li>select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a</li>
     </ul>
     <br>
@@ -47,7 +48,8 @@
     <ul>
         <li>select *、name、name as alias、name.surname（多层查询）</li>
         <li>where =、!=、in、not in、&gt;、&gt;=、&lt;、&lt;=、between</li>
-        <li>like（_和%转义用\\_和\\%）、not like、is null、is not null</li>
+        <li>like、not like、is null、is not null</li>
+        <li>+、-、*、/、%</li>
         <li>and、or、嵌套and和or</li>
         <li>left、right、length、concat、if、ifnull、nullif、substr、substring、upper、lower、isnull、round等函数</li>
         <li>group by；sum、avg、max、min、count、group_concat、any_value、group_array 等函数</li>
@@ -58,7 +60,7 @@
     不支持的sql语句有：
     <ul>
         <li>update、insert、delete</li>
-        <li>连表</li>
+        <li>join</li>
         <li>union</li>
         <li>特殊的关键词如：result、date（要带上``）</li>
         <li>json里的key不能含有'.'，有则会转成_NaN_（仅sql查询）</li>
@@ -66,7 +68,7 @@
     一些例子：
     <ul>
         <li>select level.type.name t from arr where level.type.name in ('hello') order by t</li>
-        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%\\%lin%')</li>
+        <li>select distinct name from a where name = 'hello' and (age >= 11 or level like '%lin%')</li>
         <li>select left(right(left(id,3),2), 1) a, count( left(right(left(id,3),2), 1)) b from t_user group by a</li>
     </ul>
     ]]></description>
