@@ -167,7 +167,12 @@ public class JsonUtil {
         if (round && CollectionUtils.isNotEmpty(columns) && columns.size() == 1) {
             SqlNode singleColumn = columns.get(0).getOriginalFiled();
             for (Row row : rows) {
-                jsonArray.addAll(round(row.get(singleColumn)));
+                Object value = null;
+                try {
+                    value = row.get(singleColumn);
+                } catch (Exception ignored) {
+                }
+                jsonArray.addAll(round(value));
             }
             return jsonArray;
         }
@@ -178,7 +183,12 @@ public class JsonUtil {
             }
             JSONObject jsonObject = new JSONObject(true);
             for (Field column : columns) {
-                jsonObject.put(column.getName().replaceAll("_NaN_", "."), row.get(column.getOriginalFiled()));
+                Object value = null;
+                try {
+                    value = row.get(column.getOriginalFiled());
+                } catch (Exception ignored) {
+                }
+                jsonObject.put(column.getName().replaceAll("_NaN_", "."), value);
             }
             jsonArray.add(jsonObject);
         }
