@@ -52,7 +52,9 @@ public class SqlTest {
 
     @Test
     public void groupTest1() {
-        SqlTestUtil.out("select id a,left(min(id), 1) b from t_user group by left(b, 10)");
+        SqlTestUtil.out("select parent_id,max(code),min(code),avg(code),group_array(code) \n" +
+                "from arr\n" +
+                "group by parent_id");
     }
 
     @Test

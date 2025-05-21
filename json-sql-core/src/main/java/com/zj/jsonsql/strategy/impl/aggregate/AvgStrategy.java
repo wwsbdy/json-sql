@@ -44,8 +44,12 @@ public class AvgStrategy implements IFunctionStrategy {
         if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> NumberUtils.isCreatable(v.toString()))) {
             List<BigDecimal> numberList = stream.map(v -> new BigDecimal(v.toString())).collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(numberList)) {
-                return numberList.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
-                        .divide(new BigDecimal(numberList.size()), 2, RoundingMode.HALF_UP).stripTrailingZeros();
+                return new BigDecimal(
+                        numberList.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
+                                .divide(new BigDecimal(numberList.size()), 10, RoundingMode.HALF_UP)
+                                .stripTrailingZeros()
+                                .toPlainString()
+                );
             }
         }
         return null;
