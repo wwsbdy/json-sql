@@ -37,7 +37,12 @@ public class DivideStrategy implements IFunctionStrategy {
             if (param2Num.compareTo(BigDecimal.ZERO) == 0) {
                 return null;
             }
-            return new BigDecimal(param1Str).divide(param2Num, 10, RoundingMode.HALF_UP).stripTrailingZeros();
+            return new BigDecimal(
+                    new BigDecimal(param1Str)
+                            .divide(param2Num, 10, RoundingMode.HALF_UP)
+                            .stripTrailingZeros()
+                            .toPlainString()
+            );
         }
         return null;
     }
