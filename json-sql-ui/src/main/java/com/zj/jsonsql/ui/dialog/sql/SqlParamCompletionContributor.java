@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public class SqlParamCompletionContributor extends CompletionContributor {
 
     private final List<String> SQL_KEYWORDS = Stream.of("select", "as", "from", "where", "not", "in", "like", "null", "between",
-            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit", "group").collect(Collectors.toList());
+            "is", "and", "or", "order", "by", "asc", "desc", "distinct", "limit", "group", "having").collect(Collectors.toList());
 
     public SqlParamCompletionContributor() {
         SQL_KEYWORDS.addAll(Stream.of(FuncEnum.values()).map(v -> v.name().toLowerCase()).collect(Collectors.toList()));

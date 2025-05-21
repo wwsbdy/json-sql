@@ -8,6 +8,7 @@ import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlSelectKeyword;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,11 +41,11 @@ public class AvgStrategy implements IFunctionStrategy {
             stream = stream.distinct();
         }
         // 要求全部是数字
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
+        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> NumberUtils.isCreatable(v.toString()))) {
             List<BigDecimal> numberList = stream.map(v -> new BigDecimal(v.toString())).collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(numberList)) {
                 return numberList.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
-                        .divide(new BigDecimal(numberList.size()), 2, RoundingMode.HALF_UP);
+                        .divide(new BigDecimal(numberList.size()), 2, RoundingMode.HALF_UP).stripTrailingZeros();
             }
         }
         return null;

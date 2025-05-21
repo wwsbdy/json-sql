@@ -6,6 +6,7 @@ import com.zj.jsonsql.strategy.IFunctionStrategy;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class MinStrategy implements IFunctionStrategy {
         SqlNode param = params.get(0);
         Stream<Object> stream = rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull);
         // 全部是数字，用数字；是集合，用长度；否则用字符串
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
+        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> NumberUtils.isCreatable(v.toString()))) {
             return stream.map(v -> new BigDecimal(v.toString()))
                     .min(BigDecimal::compareTo)
                     .orElse(null);
