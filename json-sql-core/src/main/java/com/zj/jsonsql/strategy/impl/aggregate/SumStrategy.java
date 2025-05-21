@@ -8,6 +8,7 @@ import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlSelectKeyword;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,7 +39,7 @@ public class SumStrategy implements IFunctionStrategy {
             stream = stream.distinct();
         }
         // 要求全部是数字
-        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> v instanceof Number)) {
+        if (rows.stream().map(v -> getValue(v, param)).filter(Objects::nonNull).allMatch(v -> NumberUtils.isCreatable(v.toString()))) {
             return stream.map(v -> new BigDecimal(v.toString())).reduce(BigDecimal::add).orElse(null);
         }
         return null;

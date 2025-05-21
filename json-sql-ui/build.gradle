@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.zj'
-version '2024.3.4.7'
+version '2024.3.4.8'
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
@@ -30,10 +30,16 @@ patchPluginXml {
     sinceBuild = '223'
     //最高支持的版本，不能不设置，不设置是默认为 project.version
     untilBuild = ''
-//    changeNotes = """
-//      2024.3.4.1版本.<br>
-//      修复了一些报错问题<br>
-//      """
+    changeNotes = """
+      Support excel export and import<br>
+      Support having<br>
+      Support +、-、*、/、% four fundamental rules<br>
+      <br>
+      <br>
+      支持excel导入导出<br>
+      支持having<br>
+      支持+、-、*、/、% 四则运算<br>
+      """
 }
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
