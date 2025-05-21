@@ -25,7 +25,7 @@ public class RoundStrategy implements IFunctionStrategy {
         Object param1 = getValue(row, params.get(0));
         Object param2 = getValue(row, params.get(1));
         if (NumberUtils.isCreatable(param1.toString()) && NumberUtils.isCreatable(param2.toString())) {
-            return new BigDecimal(param1.toString()).setScale(new BigDecimal(param2.toString()).intValue(), RoundingMode.HALF_UP);
+            return new BigDecimal(param1.toString()).setScale(new BigDecimal(param2.toString()).intValue(), RoundingMode.HALF_UP).stripTrailingZeros();
         }
         return null;
     }
