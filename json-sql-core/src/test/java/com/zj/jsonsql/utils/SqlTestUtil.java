@@ -5,6 +5,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.zj.jsonsql.entity.Field;
 import com.zj.jsonsql.entity.JsonInfo;
 import com.zj.jsonsql.entity.Row;
+import com.zj.jsonsql.exception.SqlException;
 import org.apache.commons.codec.Resources;
 import org.apache.commons.io.IOUtils;
 
@@ -29,6 +30,8 @@ public class SqlTestUtil {
         JsonInfo jsonInfo = JsonUtil.getJsonInfo(jsonStr);
         try {
             jsonInfo.trySql(sql);
+        } catch (SqlException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

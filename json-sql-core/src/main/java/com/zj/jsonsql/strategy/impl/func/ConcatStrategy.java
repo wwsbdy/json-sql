@@ -7,7 +7,6 @@ import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlNode;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -21,8 +20,12 @@ public class ConcatStrategy implements IFunctionStrategy {
         if (!isSupport(params)) {
             return null;
         }
-        return params.stream().map(param -> getValue(row, param))
-                .filter(Objects::nonNull)
+        // 有一个为null，返回null
+        List<?> valueList = params.stream().map(param -> getValue(row, param)).collect(Collectors.toList());
+        if (valueList.contains(null)) {
+            return null;
+        }
+        return valueList.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining());
     }
