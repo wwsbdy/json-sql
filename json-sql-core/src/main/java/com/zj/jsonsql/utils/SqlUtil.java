@@ -383,8 +383,7 @@ public class SqlUtil {
         if (sqlNode.getKind() == SqlKind.DOT) {
             throw new SqlException(sqlNode + PluginBundle.get("error.message.field-no-support"));
         }
-        if (sqlNode instanceof SqlIdentifier
-                && !"*".equals(sqlNode.toString())) {
+        if (sqlNode instanceof SqlIdentifier && !"*".equals(sqlNode.toString())) {
             SqlIdentifier sqlIdentifier = (SqlIdentifier) sqlNode;
             if (CollectionUtils.isNotEmpty(sqlIdentifier.names) && !columnSet.contains(sqlIdentifier.names.get(0))) {
                 throw new SqlException(sqlNode + PluginBundle.get("error.message.filed-no-find"));
@@ -417,7 +416,7 @@ public class SqlUtil {
         if (Objects.isNull(key) || MapUtils.isEmpty(nameMap)) {
             return key;
         }
-        if (key instanceof SqlIdentifier) {
+        if (key instanceof SqlIdentifier && !"*".equals(key.toString())) {
             if (nameMap.containsKey(key.toString())) {
                 return nameMap.get(key.toString());
             }
