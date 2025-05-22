@@ -31,8 +31,7 @@ public class GroupArrayStrategy implements IFunctionStrategy {
             return null;
         }
         SqlNode param = params.get(0);
-        Stream<Object> stream = rows.stream().map(v -> getValue(v, param))
-                .filter(Objects::nonNull);
+        Stream<Object> stream = rows.stream().map(v -> getValue(v, param));
         SqlLiteral functionQuantifier = sqlBasicCall.getFunctionQuantifier();
         if (Objects.nonNull(functionQuantifier) && SqlSelectKeyword.DISTINCT.equals(functionQuantifier.getValue())) {
             stream = stream.distinct();

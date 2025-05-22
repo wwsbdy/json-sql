@@ -31,8 +31,7 @@ public class GroupConcatStrategy implements IFunctionStrategy {
         }
         SqlNode param = params.get(0);
         Stream<String> stream = rows.stream().map(v -> getValue(v, param))
-                .filter(Objects::nonNull)
-                .map(Object::toString);
+                .map(String::valueOf);
         SqlLiteral functionQuantifier = sqlBasicCall.getFunctionQuantifier();
         if (Objects.nonNull(functionQuantifier) && SqlSelectKeyword.DISTINCT.equals(functionQuantifier.getValue())) {
             stream = stream.distinct();

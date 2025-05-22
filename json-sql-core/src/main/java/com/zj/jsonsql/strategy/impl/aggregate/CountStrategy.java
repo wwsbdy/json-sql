@@ -53,4 +53,9 @@ public class CountStrategy implements IFunctionStrategy {
     public FuncEnum getType() {
         return FuncEnum.COUNT;
     }
+
+    @Override
+    public boolean isSupport(List<SqlNode> params) {
+        return CollectionUtils.isNotEmpty(params);
+    }
 }
