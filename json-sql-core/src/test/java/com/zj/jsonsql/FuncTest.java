@@ -44,4 +44,8 @@ public class FuncTest {
                 () -> SqlTestUtil.out("select isnull(`*`) from arr limit 5")
         ).printStackTrace();
     }
+    @Test
+    public void testConcat5() {
+        SqlTestUtil.out("select concat(level), concat(level, ',', id), level from arr where id in (867, 868, 879, 880)");
+    }
 }

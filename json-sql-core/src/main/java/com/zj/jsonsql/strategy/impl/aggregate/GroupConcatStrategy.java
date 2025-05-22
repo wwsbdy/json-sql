@@ -29,9 +29,18 @@ public class GroupConcatStrategy implements IFunctionStrategy {
         if (CollectionUtils.isEmpty(rows)) {
             return null;
         }
-        SqlNode param = params.get(0);
-        Stream<String> stream = rows.stream().map(v -> getValue(v, param))
-                .map(String::valueOf);
+        Stream<String> stream = rows.stream().map(v -> {
+            StringBuilder sb = new StringBuilder();
+            for (SqlNode param : params) {
+                Object value = getValue(v, param);
+                // 有一个为null，返回null
+                if (Objects.isNull(value)) {
+                    return null;
+                }
+                sb.append(value);
+            }
+            return sb.toString();
+        }).filter(Objects::nonNull);
         SqlLiteral functionQuantifier = sqlBasicCall.getFunctionQuantifier();
         if (Objects.nonNull(functionQuantifier) && SqlSelectKeyword.DISTINCT.equals(functionQuantifier.getValue())) {
             stream = stream.distinct();
@@ -46,6 +55,6 @@ public class GroupConcatStrategy implements IFunctionStrategy {
 
     @Override
     public boolean isSupport(List<SqlNode> params) {
-        return IFunctionStrategy.super.isSupport(params) && params.size() == 1;
+        return IFunctionStrategy.super.isSupport(params);
     }
 }

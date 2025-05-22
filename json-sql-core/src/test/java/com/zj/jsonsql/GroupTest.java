@@ -42,4 +42,8 @@ public class GroupTest {
     public void test6() {
         SqlTestUtil.out("select parent_id pid, group_concat(detail.a),group_array(detail.a) from arr where id = '910' and code = '320500' or id in (867, 988) group by pid");
     }
+    @Test
+    public void testCount7() {
+        SqlTestUtil.out("select count(*), count(level), count(id, level), group_concat(level), group_array(level), group_concat(ifnull(level, 'Null2')) from arr where id in (867, 868, 879, 880)");
+    }
 }

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class JsonUtil {
 
-    private static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
+    public static final JSONObject EMPTY_JSON_OBJECT = new JSONObject();
     private static final String EMPTY_JSON_ARRAY_STR = "[]";
 
 
