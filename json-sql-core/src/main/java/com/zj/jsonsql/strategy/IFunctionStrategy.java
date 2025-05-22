@@ -21,7 +21,7 @@ public interface IFunctionStrategy {
     FuncEnum getType();
 
     default boolean isSupport(List<SqlNode> params) {
-        return CollectionUtils.isNotEmpty(params);
+        return CollectionUtils.isNotEmpty(params) && params.stream().filter(Objects::nonNull).map(Object::toString).noneMatch("*"::equals);
     }
 
     default Object getValue(Row row, SqlNode sqlNode) {
