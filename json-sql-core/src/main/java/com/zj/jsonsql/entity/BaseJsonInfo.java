@@ -29,11 +29,4 @@ public abstract class BaseJsonInfo {
         this.list = list;
         this.jsonContent = jsonContent;
     }
-
-    /**
-     * 获取行数据
-     *
-     * @return 表数据
-     */
-    public abstract List<Row> getResult();
 }

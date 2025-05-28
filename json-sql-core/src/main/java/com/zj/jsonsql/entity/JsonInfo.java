@@ -64,7 +64,6 @@ public class JsonInfo extends BaseJsonInfo {
         result = null;
     }
 
-    @Override
     public List<Row> getResult() {
         if (Objects.nonNull(result)) {
             return result;
@@ -91,8 +90,10 @@ public class JsonInfo extends BaseJsonInfo {
         if (Objects.isNull(sqlSelect)) {
             throw new SqlException(NoticeEnum.SQL_ERROR.getMessage());
         }
-        setSelect(SqlUtil.getFields(getColumns(), sqlSelect));
-        setResult(SqlUtil.getDataList(getList(), getColumns(), sqlSelect));
+        List<Field> fields = SqlUtil.getFields(getColumns(), sqlSelect);
+        List<Row> dataList = SqlUtil.getDataList(getList(), getColumns(), sqlSelect);
+        setSelect(fields);
+        setResult(dataList);
         setSql(sql);
         setSqlNode(sqlSelect);
     }
