@@ -43,23 +43,68 @@ public class LikeStrategy extends AbstractWhereStrategy {
         boolean equals = false;
         Object o = item.get(getField());
         Object convert = JsonUtil.convert(o);
-        String compareValue = String.valueOf(item.get(value))
-                .replaceAll("(?<!\\\\)_", ".")
-                .replaceAll("(?<!\\\\)%", ".*")
-                // \\%或\\_变成%或_
-                .replaceAll("\\\\\\\\(?=[_%])", "");
+        String compareValue = String.valueOf(item.get(value));
         // 如果是数组，只要有一个满足就行
         if (convert instanceof List) {
             List<?> list = (List<?>) convert;
             for (Object o1 : list) {
-                if (String.valueOf(o1).matches(compareValue)) {
+                if (like(String.valueOf(o1), compareValue)) {
                     equals = true;
                     break;
                 }
             }
         } else {
-            equals = String.valueOf(convert).matches(compareValue);
+            equals = like(String.valueOf(convert), compareValue);
         }
         return isReverse() != equals;
+    }
+
+    public static boolean like(String text, String likePattern) {
+        StringBuilder regex = new StringBuilder();
+        boolean escape = false;
+        for (int i = 0; i < likePattern.length(); i++) {
+            char c = likePattern.charAt(i);
+            // 上一个字符是 \
+            if (escape) {
+                // 如果是 % 或 _ ，它们应被当作普通字符
+                if (c == '%' || c == '_' || c == '\\') {
+                    // 转成正则安全字符
+                    regex.append("\\").append(c);
+                } else {
+                    // 其他字符：\x 的含义就是 x 字符本身
+                    if ("\\.[]{}()*+-?^$|".indexOf(c) != -1) {
+                        regex.append("\\");
+                    }
+                    regex.append(c);
+                }
+                escape = false;
+                continue;
+            }
+            if (c == '\\') {
+                escape = true;
+                continue;
+            }
+            switch (c) {
+                case '%':
+                    // 匹配任意长度字符（含换行）
+                    regex.append("[\\s\\S]*");
+                    break;
+                case '_':
+                    // 匹配一个字符（含换行）
+                    regex.append("[\\s\\S]");
+                    break;
+                default:
+                    // 处理正则特殊字符
+                    if ("\\.[]{}()*+-?^$|".indexOf(c) != -1) {
+                        regex.append("\\");
+                    }
+                    regex.append(c);
+            }
+        }
+        if (escape) {
+            // pattern 以 \ 结尾 (MySQL: 最后的 \ 当作普通字符)
+            regex.append("\\\\");
+        }
+        return text.matches("^" + regex + "$");
     }
 }
